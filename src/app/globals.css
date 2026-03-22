@@ -30,24 +30,21 @@
 @layer base {
   html, body {
     @apply h-full w-full;
+    margin: 0;
+    padding: 0;
     overflow-x: hidden;
     touch-action: manipulation;
     zoom: 1 !important;
     transform: none !important;
     -webkit-text-size-adjust: 100%;
-    background-color: #020617;
+    background-color: #e5e7eb;
+    display: flex;
+    justify-content: center;
   }
   
   * {
     @apply border-border;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Desktop Background Rule */
-  @media (min-width: 768px) {
-    body {
-      background: linear-gradient(180deg,#0f172a,#020617) !important;
-    }
   }
 
   /* Prevent zoom on input focus for iOS */
@@ -57,15 +54,15 @@
 }
 
 .app-container {
+  width: 100%;
   max-width: 420px;
-  margin: auto;
   min-height: 100vh;
-  background-color: white;
+  background-color: #ffffff;
   position: relative;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
 .smooth-scroll {
