@@ -4,8 +4,14 @@ import { Toaster } from '@/components/ui/toaster';
 import { BottomNav } from '@/components/bottom-nav';
 
 export const metadata: Metadata = {
-  title: 'MONEXO UPI | Premium Payments',
-  description: 'The secure and premium way to manage your finances.',
+  title: 'MONEXO UPI',
+  description: 'Premium Fintech Mobile App',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'MONEXO',
+  },
 };
 
 export const viewport: Viewport = {
@@ -14,6 +20,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
+  themeColor: '#1A7BFF',
 };
 
 export default function RootLayout({
@@ -22,22 +29,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        {/* Mobile App Meta Tags */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="font-body antialiased">
-        <div className="app-container">
-          {/* Main Content Area */}
-          <main className="flex-1 overflow-x-hidden pt-0 relative pb-20">
+      <body className="font-body antialiased bg-[#e5e7eb] flex justify-center h-full overflow-hidden">
+        <div className="app-container relative w-full max-w-[420px] bg-white h-full flex flex-col shadow-2xl overflow-hidden">
+          {/* Main Content Area - Scrollable */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden smooth-scroll relative pb-20">
             {children}
           </main>
+          
+          {/* Fixed Bottom Navigation */}
           <BottomNav />
+          
+          <Toaster />
         </div>
-        <Toaster />
       </body>
     </html>
   );

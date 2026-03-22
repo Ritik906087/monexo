@@ -7,13 +7,10 @@ import {
   ChevronRight, 
   Megaphone, 
   Headphones,
-  ShoppingBag,
   History
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
-import { cn } from '@/lib/utils';
 
 export default function DashboardPage() {
   const [userData, setUserData] = useState<any>(null);
@@ -52,10 +49,10 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="page-fade bg-[#F8FAFC] min-h-screen pb-24">
+    <div className="page-fade bg-[#F8FAFC] min-h-full pb-24 touch-pan-y">
       {/* Important Notice Banner */}
-      <div className="px-4 pt-4">
-        <div className="relative rounded-[20px] overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600 p-5 text-white shadow-lg border border-orange-300">
+      <div className="px-4 pt-4 animate-slide-up">
+        <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600 p-5 text-white shadow-lg border border-orange-300">
           <div className="absolute top-2 right-4 bg-white rounded-xl p-2 h-14 w-14 flex flex-col items-center justify-center shadow-inner">
              <div className="text-[10px] font-bold text-red-600 leading-none">MONEXO</div>
              <div className="text-[10px] font-bold text-blue-600 leading-none">UPI</div>
@@ -78,19 +75,12 @@ export default function DashboardPage() {
       </div>
 
       {/* IToken Section */}
-      <div className="px-4 mt-6">
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-50 relative overflow-hidden">
-          {/* Subtle coin background */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none flex flex-wrap gap-4 p-4 items-center justify-center rotate-12">
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="w-16 h-16 rounded-full border-4 border-slate-800"></div>
-            ))}
-          </div>
-
+      <div className="px-4 mt-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-50 relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-baseline gap-2 mb-4">
               <h3 className="font-bold text-slate-800 text-lg">My IToken</h3>
-              <span className="text-[10px] text-slate-400 font-medium">1 Rs = 1 IToken, 1 USDT ≈ 100 IToken</span>
+              <span className="text-[10px] text-slate-400 font-medium">1 Rs = 1 IToken</span>
             </div>
 
             <div className="flex items-center justify-between">
@@ -102,7 +92,7 @@ export default function DashboardPage() {
                   {userData?.itoken_balance?.toFixed(2) || '0.00'}
                 </span>
               </div>
-              <Button className="bg-[#2A85FF] hover:bg-[#1a75ef] rounded-xl h-12 px-6 shadow-md shadow-blue-200">
+              <Button className="bg-[#2A85FF] hover:bg-[#1a75ef] rounded-2xl h-12 px-6 shadow-md shadow-blue-200 active:scale-95 transition-transform">
                 <span className="bg-white text-blue-500 rounded-full w-5 h-5 flex items-center justify-center mr-2 text-[10px] font-bold">₹</span>
                 <span className="font-bold">Buy</span>
               </Button>
@@ -112,45 +102,30 @@ export default function DashboardPage() {
 
             {/* Grid Stats */}
             <div className="grid grid-cols-2 gap-y-6">
-              <div className="flex items-start justify-between pr-4">
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Today Profit</p>
-                  <p className="text-lg font-bold text-slate-800">{userData?.today_profit?.toFixed(0) || '0'}</p>
-                </div>
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Today Profit</p>
+                <p className="text-lg font-bold text-slate-800">{userData?.today_profit?.toFixed(0) || '0'}</p>
               </div>
-              <div className="flex items-start justify-between pl-4 border-l border-slate-100">
-                 <Button variant="outline" className="h-14 rounded-2xl flex-1 border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm">
+              <div className="pl-4 border-l border-slate-100 flex items-center">
+                 <Button variant="outline" className="h-12 rounded-2xl w-full border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm active:scale-95">
                    Buy History
                  </Button>
               </div>
 
-              <div className="flex items-start justify-between pr-4">
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reward</p>
-                  <p className="text-lg font-bold text-slate-800">{userData?.reward_percent || 5}%</p>
-                </div>
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reward</p>
+                <p className="text-lg font-bold text-slate-800">{userData?.reward_percent || 5}%</p>
               </div>
-              <div className="flex items-start justify-between pl-4 border-l border-slate-100">
-                 {/* Empty matching slot */}
-              </div>
+              <div className="pl-4 border-l border-slate-100"></div>
 
-              <div className="flex items-start justify-between pr-4 pt-2">
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Auto Selling</p>
-                  <p className="text-sm font-bold text-slate-800">Sell Set</p>
-                </div>
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Auto Selling</p>
+                <p className="text-sm font-bold text-slate-800">Sell Set</p>
               </div>
-              <div className="flex items-start justify-between pl-4 border-l border-slate-100">
-                 <Button variant="outline" className="h-14 rounded-2xl flex-1 border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm">
+              <div className="pl-4 border-l border-slate-100 flex items-center">
+                 <Button variant="outline" className="h-12 rounded-2xl w-full border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm active:scale-95">
                    Sell History
                  </Button>
-              </div>
-
-              <div className="flex items-start justify-between pr-4 pt-2">
-                <div className="space-y-1">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Sell Faster</p>
-                  <p className="text-sm font-bold text-blue-500">Link Upi</p>
-                </div>
               </div>
             </div>
           </div>
@@ -158,34 +133,33 @@ export default function DashboardPage() {
       </div>
 
       {/* Welcome Message */}
-      <div className="px-4 mt-4">
-        <div className="bg-white rounded-xl p-3 flex items-center justify-between shadow-sm border border-slate-50">
+      <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <div className="bg-white rounded-2xl p-4 flex items-center justify-between shadow-sm border border-slate-50">
           <div className="flex items-center gap-2">
-            <Megaphone className="h-4 w-4 text-slate-400 rotate-12" />
-            <span className="text-xs font-bold text-slate-500 tracking-tight">Welcome MONEXO</span>
+            <Megaphone className="h-4 w-4 text-blue-500" />
+            <span className="text-xs font-bold text-slate-600">Welcome to MONEXO UPI</span>
           </div>
           <Info className="h-4 w-4 text-slate-300" />
         </div>
       </div>
 
       {/* News Section */}
-      <div className="mt-8 px-4">
+      <div className="mt-8 px-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-slate-800">News</h3>
-          <div className="flex items-center text-slate-400 gap-1 text-xs font-bold cursor-pointer hover:text-primary transition-colors">
+          <div className="flex items-center text-slate-400 gap-1 text-xs font-bold cursor-pointer hover:text-primary">
             <span>More</span>
             <ChevronRight className="h-4 w-4" />
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="bg-white p-5 rounded-3xl shadow-sm border border-slate-50 flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer">
+        <div className="space-y-4 pb-10">
+          <div className="bg-white p-5 rounded-[28px] shadow-sm border border-slate-50 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
             <div className="space-y-1">
-              <p className="font-bold text-slate-800 tracking-tight">Reward</p>
-              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">2025-03-21 19:54:18</p>
+              <p className="font-bold text-slate-800 tracking-tight">Reward System Update</p>
+              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">2025-03-21</p>
             </div>
-            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-blue-400/10 rounded-full animate-ping opacity-20"></div>
+            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
               <Headphones className="h-6 w-6 text-blue-500" />
             </div>
           </div>

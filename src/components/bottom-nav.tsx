@@ -4,11 +4,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, ShoppingBag, CreditCard, Users, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 export function BottomNav() {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
 
-  // Navigation items configuration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hide navigation on auth and landing pages
+  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/';
+  
+  if (!mounted || isAuthPage) return null;
+
   const navItems = [
     { name: 'Home', icon: Home, path: '/dashboard' },
     { name: 'Buy', icon: ShoppingBag, path: '/buy' },
@@ -17,12 +27,8 @@ export function BottomNav() {
     { name: 'Mine', icon: User, path: '/mine' },
   ];
 
-  // Hide navigation on auth and landing pages
-  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/';
-  if (isAuthPage) return null;
-
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-100 flex items-center justify-around py-3 px-2 z-50 h-20 safe-area-bottom shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.05)]">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-50 flex items-center justify-around py-2 px-2 z-[100] h-20 safe-area-bottom shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.08)]">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.path;
@@ -31,19 +37,19 @@ export function BottomNav() {
             key={item.path} 
             href={item.path}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 transition-all duration-300 min-w-[64px]",
-              isActive ? "text-[#2A85FF] scale-105" : "text-slate-400"
+              "flex flex-col items-center justify-center gap-1.5 transition-all duration-200 min-w-[64px] active:scale-90",
+              isActive ? "text-[#2A85FF]" : "text-slate-400"
             )}
           >
             <div className={cn(
-              "transition-colors",
-              isActive ? "text-[#2A85FF]" : "text-slate-400"
+              "p-1 rounded-xl transition-all",
+              isActive ? "bg-blue-50" : "bg-transparent"
             )}>
               <Icon className="h-6 w-6" strokeWidth={isActive ? 2.5 : 2} />
             </div>
             <span className={cn(
-              "text-[11px] font-bold tracking-tight",
-              isActive ? "opacity-100" : "opacity-80"
+              "text-[10px] font-bold tracking-tight uppercase",
+              isActive ? "opacity-100" : "opacity-60"
             )}>
               {item.name}
             </span>
