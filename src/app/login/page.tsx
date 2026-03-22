@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Phone, Lock, ChevronRight, AlertCircle, Headphones } from 'lucide-react';
+import { Phone, Lock, ChevronRight, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -54,7 +54,7 @@ export default function LoginPage() {
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
       {/* Top Branding Section */}
-      <div className="bg-[#2A85FF] relative pt-10 pb-12 px-8 flex flex-col items-center overflow-hidden">
+      <div className="bg-[#2A85FF] relative pt-8 pb-10 px-8 flex flex-col items-center overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
         <h1 className="text-4xl font-black text-white tracking-tighter mb-1 relative z-10 italic">MONEXO</h1>
         <div className="bg-white/20 backdrop-blur-md px-4 py-1 rounded-full border border-white/30 relative z-10">
@@ -63,15 +63,15 @@ export default function LoginPage() {
       </div>
 
       {/* Login Form Container */}
-      <div className="flex-1 px-5 -mt-8 relative z-20">
-        <div className="bg-white rounded-[32px] p-6 shadow-xl space-y-5 h-fit">
-          <div className="space-y-0.5">
+      <div className="flex-1 px-5 -mt-6 relative z-20 overflow-hidden">
+        <div className="bg-white rounded-[32px] p-6 shadow-xl space-y-4 h-full flex flex-col">
+          <div className="space-y-0.5 shrink-0">
             <h2 className="text-xl font-bold text-slate-800">Account Login</h2>
             <p className="text-[12px] text-slate-400 font-medium tracking-tight">Enter your credentials to continue</p>
           </div>
 
           {errorMsg && (
-            <Alert variant="destructive" className="py-2 bg-red-50 border-red-100 text-red-600 rounded-xl animate-in fade-in">
+            <Alert variant="destructive" className="py-2 bg-red-50 border-red-100 text-red-600 rounded-xl animate-in fade-in shrink-0">
               <AlertCircle className="h-3 w-3" />
               <AlertDescription className="text-[10px] font-bold">
                 {errorMsg}
@@ -79,7 +79,7 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="flex-1 flex flex-col space-y-4">
             <div className="space-y-3">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -122,23 +122,14 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <div className="space-y-3 pt-1">
+            <div className="space-y-4 pt-1 mt-auto">
               <Button 
                 type="submit" 
                 disabled={loading}
-                className="w-full h-12 rounded-xl bg-[#fbbf24] hover:bg-[#f59e0b] text-white font-black text-sm shadow-md active:scale-[0.98] transition-all border-none"
+                className="w-full h-12 rounded-xl bg-[#2A85FF] hover:bg-[#1A7BFF] text-white font-black text-sm shadow-md active:scale-[0.98] transition-all border-none"
               >
                 {loading ? "AUTHENTICATING..." : "LOG IN"}
                 {!loading && <ChevronRight className="ml-1 h-4 w-4" />}
-              </Button>
-
-              <Button 
-                type="button"
-                variant="outline"
-                className="w-full h-12 rounded-xl border-slate-200 bg-slate-50 text-slate-500 font-black text-sm active:scale-[0.98] transition-all"
-              >
-                <Headphones className="mr-2 h-4 w-4" />
-                HELP CENTER
               </Button>
 
               <div className="text-center pt-2">
@@ -155,7 +146,7 @@ export default function LoginPage() {
       </div>
 
       {/* Footer Branding */}
-      <div className="pb-6 text-center mt-auto">
+      <div className="pb-6 text-center mt-auto shrink-0">
         <p className="text-[9px] font-black text-slate-300 tracking-[0.3em] uppercase">MONEXO PRO v2.0</p>
       </div>
     </div>
