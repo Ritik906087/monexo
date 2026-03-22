@@ -4,10 +4,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
 
 export default function RegisterPage() {
   const [phone, setPhone] = useState('');
@@ -41,7 +41,6 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      // Supabase uses email/password. We use a virtual email for phone.
       const email = `${phone}@monexo.app`;
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -52,7 +51,6 @@ export default function RegisterPage() {
       if (authError) throw authError;
 
       if (authData.user) {
-        // Insert user record into public.users table
         const { error: dbError } = await supabase
           .from('users')
           .insert([
@@ -83,84 +81,97 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0000FF] flex flex-col items-center animate-in fade-in duration-500">
-      {/* Top Welcome Section */}
-      <div className="w-full h-[240px] relative overflow-hidden flex flex-col justify-center px-10 pt-12">
-        <h1 className="text-5xl font-extrabold text-white tracking-tight mb-2 z-10">welcome</h1>
-        
-        {/* Floating Graphic Element (Simulating the phone/wallet graphic from the image) */}
-        <div className="absolute right-[-10px] top-8 opacity-90 z-0">
-          <div className="relative w-40 h-56 rotate-6">
-            <div className="absolute inset-0 bg-blue-400/20 blur-3xl rounded-full scale-150"></div>
-            <Smartphone className="w-full h-full text-white/30" strokeWidth={0.5} />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-40 border-2 border-white/20 rounded-[30px] flex flex-col items-center justify-center p-4">
-               <div className="w-10 h-8 bg-yellow-400/80 rounded shadow-lg flex items-center justify-center text-xs font-bold text-blue-900 mb-2">$</div>
-               <div className="w-8 h-8 bg-blue-500/80 rounded shadow-lg flex items-center justify-center text-xs font-bold text-white">✓</div>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-[#0033FF] to-[#001A80] flex flex-col items-center animate-in fade-in duration-700 font-sans">
+      {/* Header Section */}
+      <div className="w-full px-10 pt-16 pb-8">
+        <h1 className="text-5xl font-bold text-white tracking-tight leading-tight">welcome</h1>
+        <p className="text-white/60 text-sm font-medium tracking-wider mt-1 uppercase">Monexo Fintech</p>
       </div>
 
       {/* Register Form Card */}
-      <div className="w-full px-5 mt-[-20px] z-20">
-        <div className="bg-white rounded-[25px] p-10 shadow-2xl space-y-8">
-          <form onSubmit={handleRegister} className="space-y-2">
+      <div className="w-full px-5 z-20">
+        <div className="bg-white rounded-[25px] p-8 shadow-2xl space-y-8 min-h-[500px] flex flex-col">
+          <form onSubmit={handleRegister} className="space-y-6 flex-1">
             
-            {/* Phone Input */}
-            <div className="flex items-center border-b border-gray-100 py-4">
-              <span className="w-28 text-gray-700 font-medium text-base">Phone</span>
+            {/* Phone Input with Floating Label */}
+            <div className="relative group">
               <input
                 type="tel"
-                placeholder="Enter phone number"
-                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-base"
+                id="phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
+                placeholder=" "
                 required
               />
+              <label 
+                htmlFor="phone"
+                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
+              >
+                Phone
+              </label>
             </div>
 
             {/* Password Input */}
-            <div className="flex items-center border-b border-gray-100 py-4">
-              <span className="w-28 text-gray-700 font-medium text-base">Password</span>
+            <div className="relative group">
               <input
                 type="password"
-                placeholder="Enter password"
-                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-base"
+                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
+                placeholder=" "
                 required
               />
+              <label 
+                htmlFor="password"
+                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
+              >
+                Password
+              </label>
             </div>
 
             {/* Confirm Password */}
-            <div className="flex items-center border-b border-gray-100 py-4">
-              <span className="w-28 text-gray-700 font-medium text-base">Confirm</span>
+            <div className="relative group">
               <input
                 type="password"
-                placeholder="Password, Again"
-                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-base"
+                id="confirm"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
+                placeholder=" "
                 required
               />
+              <label 
+                htmlFor="confirm"
+                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
+              >
+                Confirm Password
+              </label>
             </div>
 
-            {/* Inviter Code */}
-            <div className="flex items-center border-b border-gray-100 py-4 mb-2">
-              <span className="w-28 text-gray-700 font-medium text-base">Invitercode</span>
+            {/* Invite Code */}
+            <div className="relative group">
               <input
                 type="text"
-                placeholder="Optional"
-                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-base"
+                id="invite"
                 value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value)}
+                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
+                placeholder=" "
               />
+              <label 
+                htmlFor="invite"
+                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
+              >
+                Inviter code (Optional)
+              </label>
             </div>
 
             {/* Login Link */}
-            <div className="text-right py-4">
-              <Link href="/login" className="text-sm text-[#1A7BFF] font-medium hover:underline">
-                Already have an account,Go login
+            <div className="text-right">
+              <Link href="/login" className="text-sm text-[#0033FF] font-semibold hover:underline">
+                Already have account? Go login
               </Link>
             </div>
 
@@ -169,7 +180,7 @@ export default function RegisterPage() {
               <Button 
                 type="submit" 
                 disabled={loading}
-                className="w-full h-14 rounded-xl bg-[#1A7BFF] text-white font-bold text-lg hover:bg-blue-600 transition-all shadow-lg active:scale-95"
+                className="w-full h-[56px] rounded-[14px] bg-gradient-to-r from-[#0033FF] to-[#0055FF] text-white font-bold text-lg hover:opacity-90 transition-all shadow-xl active:scale-95"
               >
                 {loading ? "Registering..." : "Register"}
               </Button>
@@ -179,8 +190,8 @@ export default function RegisterPage() {
       </div>
 
       {/* Footer Branding */}
-      <div className="mt-12 mb-10">
-        <p className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase">MONEXO UPI</p>
+      <div className="mt-auto mb-10 pt-10">
+        <p className="text-white/40 text-[11px] font-bold tracking-[0.3em] uppercase">MONEXO UPI</p>
       </div>
     </div>
   );
