@@ -21,7 +21,7 @@ export function BottomNav() {
   if (isAuthPage) return null;
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-100 flex items-center justify-around py-2 px-2 z-50 h-20 safe-area-bottom">
+    <div className="sticky bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-100 flex items-center justify-around py-2 px-2 z-50 h-20 safe-area-bottom">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.path;

@@ -4,15 +4,15 @@
 
 @layer base {
   :root {
-    --background: 214 60% 98%; /* #F5F8FC */
+    --background: 0 0% 100%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 214 100% 55%; /* #1A7BFF */
+    --primary: 214 100% 55%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 259 84% 67%; /* #9466F2 */
+    --secondary: 259 84% 67%;
     --secondary-foreground: 210 40% 98%;
     --muted: 214 32% 91%;
     --muted-foreground: 215 16% 47%;
@@ -23,28 +23,62 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 214 100% 55%;
-    --radius: 1.25rem; /* 20px */
+    --radius: 1.25rem;
   }
 }
 
 @layer base {
+  html, body {
+    @apply h-full w-full;
+    overflow-x: hidden;
+    touch-action: manipulation;
+    zoom: 1 !important;
+    transform: none !important;
+    -webkit-text-size-adjust: 100%;
+    background-color: #020617;
+  }
+  
   * {
     @apply border-border;
     -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
   }
-  
-  html, body {
-    @apply h-full overflow-hidden bg-slate-900;
-    overscroll-behavior-y: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+
+  /* Desktop Background Rule */
+  @media (min-width: 768px) {
+    body {
+      background: linear-gradient(180deg,#0f172a,#020617) !important;
+    }
   }
 
   /* Prevent zoom on input focus for iOS */
   input, textarea, select {
     font-size: 16px !important;
   }
+}
+
+.app-container {
+  max-width: 420px;
+  margin: auto;
+  min-height: 100vh;
+  background-color: white;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  ms-overflow-style: none;
+}
+.smooth-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.page-fade {
+  @apply animate-in fade-in duration-300;
 }
 
 .monexo-gradient {
@@ -61,19 +95,4 @@
 
 .glass-effect {
   @apply bg-white/80 backdrop-blur-md border border-white/20;
-}
-
-/* Smooth Native-like scrolling */
-.smooth-scroll {
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  ms-overflow-style: none;
-}
-.smooth-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* Page Transition */
-.page-fade {
-  @apply animate-in fade-in duration-500 fill-mode-forwards;
 }
