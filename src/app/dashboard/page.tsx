@@ -8,7 +8,9 @@ import {
   Award,
   Zap,
   ChevronRight,
-  Headphones
+  Headphones,
+  Info,
+  Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
@@ -50,7 +52,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="page-fade min-h-full pb-20">
+    <div className="page-fade min-h-full pb-20 bg-[#f8fafc]">
       {/* Notice Banner - Optimized Size */}
       <div className="px-4 pt-3 animate-slide-up">
         <div className="relative rounded-[20px] overflow-hidden bg-gradient-to-br from-[#f97316] to-[#ea580c] p-4 text-white shadow-lg border border-white/20">
@@ -68,91 +70,115 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Balance Card - Compact & Premium */}
+      {/* Main Balance Card - With Watermark */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-        <div className="glass-card rounded-[24px] p-5 relative overflow-hidden">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-black text-slate-400 text-[9px] uppercase tracking-[0.2em]">IToken Balance</h3>
-            <span className="text-[8px] text-blue-600 font-black bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 italic">1 Rs = 1 IToken</span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-lg shadow-inner border border-white">🇮🇳</div>
-              <span className="text-3xl font-black text-slate-800 tracking-tighter">
-                {userData?.itoken_balance?.toFixed(2) || '0.00'}
-              </span>
-            </div>
-            <Button size="sm" className="fintech-gradient hover:opacity-90 rounded-xl h-10 px-4 shadow-lg shadow-blue-200 active:scale-95 transition-all">
-              <span className="font-black text-[10px] uppercase tracking-wider">Buy Token</span>
-            </Button>
-          </div>
-
-          <div className="h-px bg-slate-100 my-4"></div>
-
-          {/* Core Stats Grid - Optimized */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-slate-50/80 p-3 rounded-xl border border-slate-100">
-              <div className="flex items-center gap-1.5 mb-1">
-                <TrendingUp className="h-2.5 w-2.5 text-green-500" />
-                <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Today Profit</p>
-              </div>
-              <p className="text-base font-black text-slate-800 tracking-tight">₹{userData?.today_profit?.toFixed(2) || '0.00'}</p>
-            </div>
-
-            <div className="bg-slate-50/80 p-3 rounded-xl border border-slate-100">
-              <div className="flex items-center gap-1.5 mb-1">
-                <Award className="h-2.5 w-2.5 text-orange-500" />
-                <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">My Reward</p>
-              </div>
-              <p className="text-base font-black text-slate-800 tracking-tight">{userData?.reward_percent || 5}%</p>
-            </div>
-          </div>
+        <div className="bg-white rounded-[24px] p-5 relative overflow-hidden shadow-sm border border-slate-100 min-h-[220px]">
+          {/* Watermark Background - Matching the gold coin texture from provided URL */}
+          <div 
+            className="absolute inset-0 opacity-[0.08] pointer-events-none" 
+            style={{ 
+              backgroundImage: 'url("https://csgdgbbwhmiyafwwxvxd.supabase.co/storage/v1/object/public/Watermark/watermarked-29249.jpg")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          />
           
-          {/* Action Row */}
-          <div className="grid grid-cols-2 gap-2 mt-3">
-             <Button variant="outline" className="h-9 rounded-xl border-slate-200 text-[9px] font-black text-slate-600 shadow-sm active:scale-95">BUY HISTORY</Button>
-             <Button variant="outline" className="h-9 rounded-xl border-slate-200 text-[9px] font-black text-slate-600 shadow-sm active:scale-95">SELL HISTORY</Button>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <h3 className="font-black text-slate-800 text-[13px] uppercase tracking-tight leading-none">My IToken</h3>
+                <span className="text-[8px] text-slate-400 font-bold uppercase tracking-tighter bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
+                  1 Rs = 1 IToken, 1 USDT ≈ 100 IToken
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-lg shadow-inner border border-white shrink-0">🇮🇳</div>
+                <span className="text-3xl font-black text-slate-800 tracking-tighter leading-none">
+                  {userData?.itoken_balance?.toFixed(2) || '14.30'}
+                </span>
+              </div>
+              <Button size="sm" className="bg-[#2A85FF] hover:bg-[#1A7BFF] rounded-xl h-10 px-5 shadow-lg shadow-blue-200 active:scale-95 transition-all gap-1.5 border-none">
+                <Zap className="h-3 w-3 fill-white text-white" />
+                <span className="font-black text-[11px] uppercase tracking-wider text-white">Buy</span>
+              </Button>
+            </div>
+
+            <div className="h-[1px] bg-slate-50/80 my-5"></div>
+
+            {/* Stats Grid - High Density */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <div className="space-y-4">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Today Profit</span>
+                  <span className="text-[14px] font-black text-slate-800 tracking-tight">{userData?.today_profit || '0'}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Auto Selling</span>
+                  <span className="text-[14px] font-black text-slate-800 tracking-tight">Sell Set</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Reward</span>
+                  <span className="text-[14px] font-black text-slate-800 tracking-tight">{userData?.reward_percent || '5'}%</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Sell Faster</span>
+                  <span className="text-[14px] font-black text-slate-800 tracking-tight">Link Upi</span>
+                </div>
+              </div>
+
+              {/* Action Buttons Integrated */}
+              <div className="col-span-2 grid grid-cols-2 gap-2.5 mt-2">
+                 <Button variant="outline" className="h-10 rounded-xl border-slate-100 bg-slate-50/30 text-[10px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-tight">Buy History</Button>
+                 <Button variant="outline" className="h-10 rounded-xl border-slate-100 bg-slate-50/30 text-[10px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-tight">Sell History</Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* News Ticker - Compact */}
+      {/* Ticker - Compact */}
       <div className="px-4 mt-3 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-        <div className="bg-white rounded-xl p-3 flex items-center justify-between shadow-sm border border-slate-50">
+        <div className="bg-white rounded-xl py-2.5 px-3 flex items-center justify-between shadow-sm border border-slate-50">
           <div className="flex items-center gap-2">
-            <div className="bg-blue-50 p-1.5 rounded-lg">
-              <Megaphone className="h-3.5 w-3.5 text-blue-500" />
-            </div>
-            <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight">Welcome to MONEXO UPI</span>
+            <Megaphone className="h-3.5 w-3.5 text-slate-300" />
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">Welcome MILES</span>
           </div>
-          <Zap className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
+          <Info className="h-3.5 w-3.5 text-slate-300" />
         </div>
       </div>
 
       {/* Recent Activity Section */}
       <div className="mt-5 px-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em]">Latest Updates</h3>
-          <div className="flex items-center text-blue-500 gap-0.5 text-[9px] font-black cursor-pointer uppercase">
-            <span>More</span>
-            <ChevronRight className="h-2.5 w-2.5" />
+        <div className="bg-white rounded-[24px] p-5 shadow-sm border border-slate-50">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[11px] font-black text-slate-800 uppercase tracking-[0.2em]">News</h3>
+            <div className="flex items-center text-[#2A85FF] gap-0.5 text-[10px] font-black cursor-pointer uppercase">
+              <span>More</span>
+              <ChevronRight className="h-3 w-3" />
+            </div>
           </div>
-        </div>
+          
+          <div className="h-[1px] bg-slate-50 my-4"></div>
 
-        <div className="space-y-3 pb-8">
-          <div className="glass-card p-3 rounded-[20px] flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                <Headphones className="h-5 w-5 text-blue-500" />
-              </div>
-              <div>
-                <p className="text-[11px] font-black text-slate-800 uppercase tracking-tight">Reward System v2.0</p>
-                <p className="text-[8px] font-bold text-slate-300 uppercase mt-0.5">Mar 21, 2025</p>
+          <div className="flex items-center justify-between group cursor-pointer active:scale-95 transition-all">
+            <div className="flex flex-col gap-1">
+              <p className="text-[12px] font-black text-slate-800 uppercase tracking-tight leading-none">Reward</p>
+              <div className="flex items-center gap-1.5 text-slate-300">
+                <Clock className="h-3 w-3" />
+                <p className="text-[9px] font-bold uppercase tracking-widest leading-none">2025-03-21 19:54:18</p>
               </div>
             </div>
-            <div className="bg-slate-100 px-2 py-0.5 rounded-lg">
-               <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">NEW</span>
+            <div className="relative">
+              <div className="w-11 h-11 bg-blue-50/50 rounded-2xl flex items-center justify-center text-[#2A85FF] border border-blue-100">
+                <Headphones className="h-6 w-6" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#2A85FF] rounded-full border-2 border-white animate-pulse"></div>
             </div>
           </div>
         </div>
