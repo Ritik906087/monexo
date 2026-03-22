@@ -7,7 +7,10 @@ import {
   ChevronRight, 
   Megaphone, 
   Headphones,
-  History
+  History,
+  TrendingUp,
+  Award,
+  Zap
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
@@ -49,118 +52,117 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="page-fade bg-[#F8FAFC] min-h-full pb-24 touch-pan-y">
-      {/* Important Notice Banner */}
+    <div className="page-fade bg-[#F9FAFB] min-h-full pb-24">
+      {/* Premium Banner */}
       <div className="px-4 pt-4 animate-slide-up">
-        <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600 p-5 text-white shadow-lg border border-orange-300">
-          <div className="absolute top-2 right-4 bg-white rounded-xl p-2 h-14 w-14 flex flex-col items-center justify-center shadow-inner">
-             <div className="text-[10px] font-bold text-red-600 leading-none">MONEXO</div>
-             <div className="text-[10px] font-bold text-blue-600 leading-none">UPI</div>
-             <div className="mt-1 flex gap-0.5">
-               <div className="w-2 h-1 bg-red-500"></div>
-               <div className="w-2 h-1 bg-yellow-500"></div>
-               <div className="w-2 h-1 bg-blue-500"></div>
-             </div>
+        <div className="relative rounded-[20px] overflow-hidden bg-gradient-to-br from-[#FF512F] to-[#DD2476] p-4 text-white shadow-lg border border-white/10">
+          <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-md rounded-lg px-2 py-1 flex items-center gap-1 border border-white/20">
+             <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
+             <span className="text-[8px] font-black tracking-widest uppercase">MONEXO UPI</span>
           </div>
-          <h2 className="text-xl font-black italic tracking-tighter mb-2">
+          <h2 className="text-lg font-black italic tracking-tighter mb-2 leading-none uppercase">
             MILESPAY <br />
-            IMPORTANT NOTICE!!
+            NOTICE
           </h2>
-          <div className="text-[9px] leading-tight text-white/95 font-medium space-y-1">
-            <p>If you didn't get tokens in 5 minutes,Pls contact our supporters with a payment screenshot.</p>
-            <p>To sell tokens and receive rupees fast, Pls follow the steps. Do not log in to UPI while selling, Otherwise your tokens won't be processed.</p>
-            <p>Thanks for your support!</p>
+          <div className="text-[10px] leading-snug text-white/90 font-semibold space-y-1 max-w-[85%]">
+            <p>If you didn't get tokens in 5 minutes, please contact support with payment screenshot.</p>
+            <p>Do not log in to UPI while selling for faster processing.</p>
           </div>
         </div>
       </div>
 
-      {/* IToken Section */}
-      <div className="px-4 mt-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-        <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-50 relative overflow-hidden">
-          <div className="relative z-10">
-            <div className="flex items-baseline gap-2 mb-4">
-              <h3 className="font-bold text-slate-800 text-lg">My IToken</h3>
-              <span className="text-[10px] text-slate-400 font-medium">1 Rs = 1 IToken</span>
+      {/* Balance Card */}
+      <div className="px-4 mt-5 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <div className="bg-white rounded-[24px] p-5 shadow-sm border border-slate-100 relative">
+          <div className="flex items-baseline gap-2 mb-3">
+            <h3 className="font-bold text-slate-400 text-[10px] uppercase tracking-widest">My IToken Balance</h3>
+            <span className="text-[9px] text-blue-500 font-black bg-blue-50 px-1.5 py-0.5 rounded">1 Rs = 1 IToken</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-lg shadow-inner border border-white">
+                🇮🇳
+              </div>
+              <span className="text-3xl font-black text-slate-800 tracking-tighter">
+                {userData?.itoken_balance?.toFixed(2) || '0.00'}
+              </span>
+            </div>
+            <Button size="sm" className="bg-[#2A85FF] hover:bg-[#1a75ef] rounded-xl h-10 px-5 shadow-lg shadow-blue-100 active:scale-95 transition-all">
+              <span className="font-bold text-xs">Buy Token</span>
+            </Button>
+          </div>
+
+          <div className="h-px bg-slate-50 my-5"></div>
+
+          {/* Optimized Stats Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-50">
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp className="h-3 w-3 text-green-500" />
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Today Profit</p>
+              </div>
+              <p className="text-base font-black text-slate-800 tracking-tight">₹{userData?.today_profit?.toFixed(2) || '0.00'}</p>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl shadow-inner border border-white">
-                  🇮🇳
-                </div>
-                <span className="text-4xl font-extrabold text-slate-800 tracking-tight">
-                  {userData?.itoken_balance?.toFixed(2) || '0.00'}
-                </span>
+            <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-50">
+              <div className="flex items-center gap-2 mb-1">
+                <Award className="h-3 w-3 text-orange-500" />
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">My Reward</p>
               </div>
-              <Button className="bg-[#2A85FF] hover:bg-[#1a75ef] rounded-2xl h-12 px-6 shadow-md shadow-blue-200 active:scale-95 transition-transform">
-                <span className="bg-white text-blue-500 rounded-full w-5 h-5 flex items-center justify-center mr-2 text-[10px] font-bold">₹</span>
-                <span className="font-bold">Buy</span>
-              </Button>
+              <p className="text-base font-black text-slate-800 tracking-tight">{userData?.reward_percent || 5}%</p>
             </div>
 
-            <div className="h-px bg-slate-100 my-6"></div>
-
-            {/* Grid Stats */}
-            <div className="grid grid-cols-2 gap-y-6">
-              <div className="space-y-1">
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Today Profit</p>
-                <p className="text-lg font-bold text-slate-800">{userData?.today_profit?.toFixed(0) || '0'}</p>
-              </div>
-              <div className="pl-4 border-l border-slate-100 flex items-center">
-                 <Button variant="outline" className="h-12 rounded-2xl w-full border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm active:scale-95">
-                   Buy History
-                 </Button>
-              </div>
-
-              <div className="space-y-1">
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reward</p>
-                <p className="text-lg font-bold text-slate-800">{userData?.reward_percent || 5}%</p>
-              </div>
-              <div className="pl-4 border-l border-slate-100"></div>
-
-              <div className="space-y-1">
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Auto Selling</p>
-                <p className="text-sm font-bold text-slate-800">Sell Set</p>
-              </div>
-              <div className="pl-4 border-l border-slate-100 flex items-center">
-                 <Button variant="outline" className="h-12 rounded-2xl w-full border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm active:scale-95">
-                   Sell History
-                 </Button>
-              </div>
+            <div className="col-span-1">
+               <Button variant="outline" className="h-10 rounded-xl w-full border-slate-100 text-[10px] font-black text-slate-600 hover:bg-slate-50 shadow-sm active:scale-95 transition-all">
+                 BUY HISTORY
+               </Button>
+            </div>
+            <div className="col-span-1">
+               <Button variant="outline" className="h-10 rounded-xl w-full border-slate-100 text-[10px] font-black text-slate-600 hover:bg-slate-50 shadow-sm active:scale-95 transition-all">
+                 SELL HISTORY
+               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Welcome Message */}
+      {/* Ticker Banner */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-        <div className="bg-white rounded-2xl p-4 flex items-center justify-between shadow-sm border border-slate-50">
+        <div className="bg-white rounded-xl p-3 flex items-center justify-between shadow-sm border border-slate-50">
           <div className="flex items-center gap-2">
-            <Megaphone className="h-4 w-4 text-blue-500" />
-            <span className="text-xs font-bold text-slate-600">Welcome to MONEXO UPI</span>
+            <div className="bg-blue-50 p-1.5 rounded-lg">
+              <Megaphone className="h-3.5 w-3.5 text-blue-500" />
+            </div>
+            <span className="text-[10px] font-bold text-slate-600">Welcome to MONEXO UPI Payments</span>
           </div>
-          <Info className="h-4 w-4 text-slate-300" />
+          <Zap className="h-3.5 w-3.5 text-yellow-400" />
         </div>
       </div>
 
-      {/* News Section */}
-      <div className="mt-8 px-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-slate-800">News</h3>
-          <div className="flex items-center text-slate-400 gap-1 text-xs font-bold cursor-pointer hover:text-primary">
+      {/* Sections Grid */}
+      <div className="mt-6 px-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Recent News</h3>
+          <div className="flex items-center text-blue-500 gap-0.5 text-[10px] font-black cursor-pointer hover:underline uppercase">
             <span>More</span>
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3 w-3" />
           </div>
         </div>
 
-        <div className="space-y-4 pb-10">
-          <div className="bg-white p-5 rounded-[28px] shadow-sm border border-slate-50 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
-            <div className="space-y-1">
-              <p className="font-bold text-slate-800 tracking-tight">Reward System Update</p>
-              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">2025-03-21</p>
+        <div className="space-y-3 pb-8">
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-50 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                <Headphones className="h-5 w-5 text-blue-500" />
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs font-black text-slate-800 tracking-tight">Reward System v2.0</p>
+                <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Mar 21, 2025</p>
+              </div>
             </div>
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
-              <Headphones className="h-6 w-6 text-blue-500" />
+            <div className="bg-slate-50 px-2 py-1 rounded-md">
+               <span className="text-[8px] font-black text-slate-400 uppercase">NEW</span>
             </div>
           </div>
         </div>
