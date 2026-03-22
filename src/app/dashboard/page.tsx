@@ -10,7 +10,9 @@ import {
   ChevronRight,
   Headphones,
   Info,
-  Clock
+  Clock,
+  ArrowUpRight,
+  History
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
@@ -46,36 +48,39 @@ export default function DashboardPage() {
   }, [router]);
 
   if (loading) return (
-    <div className="flex items-center justify-center h-full">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    <div className="flex items-center justify-center h-full bg-[#f8fafc]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2A85FF]"></div>
     </div>
   );
 
   return (
-    <div className="page-fade min-h-full pb-20 bg-[#f8fafc] overflow-hidden">
-      {/* Notice Banner - Compact */}
-      <div className="px-3 pt-2 animate-slide-up">
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#f97316] to-[#ea580c] p-3 text-white shadow-md border border-white/20">
-          <div className="absolute top-2 right-3 bg-white/20 backdrop-blur-md rounded-full px-1.5 py-0.5 flex items-center gap-1">
-             <div className="w-1 h-1 rounded-full bg-white animate-pulse"></div>
-             <span className="text-[6px] font-black tracking-widest uppercase">LIVE</span>
+    <div className="page-fade min-h-full pb-24 bg-[#f8fafc] overflow-hidden">
+      {/* Premium Notice Banner */}
+      <div className="px-4 pt-3 animate-slide-up">
+        <div className="relative rounded-[20px] overflow-hidden bg-gradient-to-r from-[#2A85FF] to-[#1A7BFF] p-3 text-white shadow-lg shadow-blue-100 border border-white/10">
+          <div className="absolute top-2 right-3 bg-white/20 backdrop-blur-md rounded-full px-2 py-0.5 flex items-center gap-1">
+             <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+             <span className="text-[7px] font-black tracking-widest uppercase">SYSTEM LIVE</span>
           </div>
-          <h2 className="text-[13px] font-black italic tracking-tighter mb-0.5 leading-none uppercase">
-            MONEXO NOTICE
-          </h2>
-          <div className="text-[8px] leading-tight text-white/90 font-bold space-y-0.5">
+          <div className="flex items-center gap-2 mb-1">
+             <Megaphone className="h-3 w-3 text-blue-100" />
+             <h2 className="text-[12px] font-black italic tracking-tighter uppercase leading-none">
+               Official Notice
+             </h2>
+          </div>
+          <div className="text-[9px] leading-tight text-white/90 font-bold space-y-0.5 mt-1">
             <p>• Fast support: share screenshot if tokens delay &gt; 5m.</p>
             <p>• Quick sell: avoid UPI login while selling.</p>
           </div>
         </div>
       </div>
 
-      {/* Main Balance Card - Optimized & Compact */}
-      <div className="px-3 mt-3 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-        <div className="bg-white rounded-[24px] p-4 relative overflow-hidden shadow-sm border border-slate-100 min-h-[140px]">
-          {/* Subtle Watermark - Very low opacity for readability */}
+      {/* Main Balance Card - Professional Height */}
+      <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <div className="bg-white rounded-[28px] p-5 relative overflow-hidden shadow-sm border border-slate-100 min-h-[180px] flex flex-col justify-between">
+          {/* Subtle Watermark - High Quality feel */}
           <div 
-            className="absolute inset-0 opacity-[0.05] pointer-events-none" 
+            className="absolute inset-0 opacity-[0.04] pointer-events-none" 
             style={{ 
               backgroundImage: 'url("https://csgdgbbwhmiyafwwxvxd.supabase.co/storage/v1/object/public/Watermark/watermarked-29249.jpg")',
               backgroundSize: 'cover',
@@ -84,85 +89,95 @@ export default function DashboardPage() {
           />
           
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center justify-between mb-2">
               <div className="flex flex-col">
-                <h3 className="font-black text-slate-800 text-[10px] uppercase tracking-tight leading-none mb-1">My IToken Balance</h3>
-                <span className="text-[7px] text-slate-400 font-bold uppercase tracking-tighter bg-slate-50 px-1 py-0.5 rounded border border-slate-100 w-fit">
-                  1 Rs = 1 IToken
-                </span>
+                <h3 className="font-black text-slate-400 text-[10px] uppercase tracking-[0.1em] leading-none mb-1.5">My IToken Balance</h3>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-4 rounded-sm bg-slate-50 flex items-center justify-center text-[10px] shadow-sm border border-slate-100 overflow-hidden shrink-0">🇮🇳</div>
+                  <span className="text-3xl font-black text-slate-800 tracking-tighter leading-none">
+                    {userData?.itoken_balance?.toFixed(2) || '14.30'}
+                  </span>
+                </div>
               </div>
-              <Button size="sm" className="bg-[#2A85FF] hover:bg-[#1A7BFF] rounded-lg h-7 px-3 shadow-lg shadow-blue-100 active:scale-95 transition-all gap-1 border-none">
-                <Zap className="h-2 w-2 fill-white text-white" />
-                <span className="font-black text-[8px] uppercase tracking-wider text-white">Buy</span>
+              <Button size="sm" className="bg-[#2A85FF] hover:bg-[#1A7BFF] rounded-xl h-9 px-4 shadow-xl shadow-blue-100 active:scale-95 transition-all gap-1.5 border-none">
+                <Zap className="h-3 w-3 fill-white text-white" />
+                <span className="font-black text-[10px] uppercase tracking-wider text-white">Buy</span>
               </Button>
             </div>
 
-            <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-xs shadow-inner border border-white shrink-0">🇮🇳</div>
-              <span className="text-xl font-black text-slate-800 tracking-tighter leading-none">
-                {userData?.itoken_balance?.toFixed(2) || '14.30'}
-              </span>
-            </div>
+            <div className="h-[1px] bg-slate-50 my-4"></div>
 
-            <div className="h-[1px] bg-slate-50/80 my-2"></div>
-
-            {/* Stats Grid - High Density */}
-            <div className="grid grid-cols-2 gap-x-2 gap-y-1.5">
+            {/* Stats Grid - High Professionalism */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
               <div className="flex flex-col">
-                <span className="text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Today Profit</span>
-                <span className="text-[11px] font-black text-slate-800 tracking-tight leading-none">₹{userData?.today_profit || '0'}</span>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                   <TrendingUp className="h-2.5 w-2.5 text-green-500" />
+                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Today Profit</span>
+                </div>
+                <span className="text-[14px] font-black text-slate-800 tracking-tight leading-none">₹{userData?.today_profit || '0.00'}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">My Reward</span>
-                <span className="text-[11px] font-black text-slate-800 tracking-tight leading-none">{userData?.reward_percent || '5'}%</span>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                   <Award className="h-2.5 w-2.5 text-orange-400" />
+                   <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">My Reward</span>
+                </div>
+                <span className="text-[14px] font-black text-slate-800 tracking-tight leading-none">{userData?.reward_percent || '5'}%</span>
               </div>
               
-              <div className="col-span-2 grid grid-cols-2 gap-2 mt-1">
-                 <Button variant="outline" className="h-7 rounded-lg border-slate-100 bg-slate-50/50 text-[8px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-tight">Buy Hist</Button>
-                 <Button variant="outline" className="h-7 rounded-lg border-slate-100 bg-slate-50/50 text-[8px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-tight">Sell Hist</Button>
+              <div className="col-span-2 grid grid-cols-2 gap-3 mt-1">
+                 <Button variant="outline" className="h-9 rounded-xl border-slate-100 bg-slate-50/50 text-[9px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-widest gap-2">
+                   <History className="h-3 w-3" />
+                   Buy Hist
+                 </Button>
+                 <Button variant="outline" className="h-9 rounded-xl border-slate-100 bg-slate-50/50 text-[9px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-widest gap-2">
+                   <ArrowUpRight className="h-3 w-3" />
+                   Sell Hist
+                 </Button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Ticker - Ultra Compact */}
-      <div className="px-3 mt-2.5 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-        <div className="bg-white rounded-xl py-1.5 px-3 flex items-center justify-between shadow-sm border border-slate-50">
-          <div className="flex items-center gap-2">
-            <Megaphone className="h-2.5 w-2.5 text-[#2A85FF]" />
-            <span className="text-[8px] font-bold text-slate-500 uppercase tracking-tight">Welcome User_{userData?.numeric_id?.toString().slice(-4) || '7092'}</span>
+      {/* User Status Ticker */}
+      <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <div className="bg-white rounded-2xl py-2 px-4 flex items-center justify-between shadow-sm border border-slate-50">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#2A85FF]"></div>
+            <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">User_{userData?.numeric_id?.toString().slice(-4) || '7092'} Connected</span>
           </div>
-          <Info className="h-2.5 w-2.5 text-slate-300" />
+          <div className="flex items-center gap-1 bg-blue-50 px-2 py-0.5 rounded-md">
+             <span className="text-[7px] font-black text-[#2A85FF] uppercase">Secure</span>
+          </div>
         </div>
       </div>
 
       {/* Recent Activity Section */}
-      <div className="mt-3 px-3 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-        <div className="bg-white rounded-[24px] p-3 shadow-sm border border-slate-50">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-[9px] font-black text-slate-800 uppercase tracking-[0.2em]">Live News</h3>
-            <div className="flex items-center text-[#2A85FF] gap-0.5 text-[8px] font-black cursor-pointer uppercase">
-              <span>View All</span>
-              <ChevronRight className="h-2 w-2" />
+      <div className="mt-4 px-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="bg-white rounded-[24px] p-4 shadow-sm border border-slate-50">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em]">News Feed</h3>
+            <div className="flex items-center text-[#2A85FF] gap-0.5 text-[9px] font-black cursor-pointer uppercase tracking-tight">
+              <span>Explore</span>
+              <ChevronRight className="h-2.5 w-2.5" />
             </div>
           </div>
           
-          <div className="h-[1px] bg-slate-50 my-2"></div>
-
-          <div className="flex items-center justify-between group cursor-pointer active:scale-95 transition-all">
-            <div className="flex flex-col gap-0.5">
-              <p className="text-[10px] font-black text-slate-800 uppercase tracking-tight leading-none">System Reward Added</p>
-              <div className="flex items-center gap-1.5 text-slate-300">
-                <Clock className="h-2 w-2" />
-                <p className="text-[7px] font-bold uppercase tracking-widest leading-none">2025-03-21 19:54</p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between group cursor-pointer active:scale-95 transition-all">
+              <div className="flex flex-col gap-1">
+                <p className="text-[11px] font-black text-slate-800 uppercase tracking-tight leading-none">System Reward Update</p>
+                <div className="flex items-center gap-1.5 text-slate-300">
+                  <Clock className="h-2.5 w-2.5" />
+                  <p className="text-[8px] font-bold uppercase tracking-widest leading-none">2025-03-21 19:54</p>
+                </div>
               </div>
-            </div>
-            <div className="relative">
-              <div className="w-8 h-8 bg-blue-50/50 rounded-xl flex items-center justify-center text-[#2A85FF] border border-blue-100">
-                <Headphones className="h-4 w-4" />
+              <div className="relative">
+                <div className="w-10 h-10 bg-blue-50/50 rounded-2xl flex items-center justify-center text-[#2A85FF] border border-blue-100">
+                  <Headphones className="h-5 w-5" />
+                </div>
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#2A85FF] rounded-full border border-white animate-pulse"></div>
               </div>
-              <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-[#2A85FF] rounded-full border border-white animate-pulse"></div>
             </div>
           </div>
         </div>
