@@ -82,9 +82,9 @@ export default function MinePage() {
 
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden font-sans">
-      {/* Header - Branded MONEXO-PAY */}
-      <div className="text-center py-3 bg-white border-b flex items-center justify-center relative shadow-sm">
-        <h1 className="text-[18px] font-black text-blue-600 italic tracking-tighter uppercase">MONEXO-PAY</h1>
+      {/* Header - Branded MONEXO-PAY with Sky Background */}
+      <div className="text-center py-3 bg-sky-500 flex items-center justify-center relative shadow-sm">
+        <h1 className="text-[18px] font-black text-white italic tracking-tighter uppercase">MONEXO-PAY</h1>
       </div>
 
       {/* Profile Section - Compact */}
