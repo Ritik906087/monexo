@@ -12,17 +12,15 @@ import {
   Lock, 
   Gift,
   ArrowRightLeft,
-  Settings,
   Bell,
-  ShieldCheck,
-  Download
+  Download,
+  ClipboardList,
+  LayoutGrid
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 
 export default function MinePage() {
   const [userData, setUserData] = useState<any>(null);
@@ -67,136 +65,85 @@ export default function MinePage() {
     </div>
   );
 
-  const menuSections = [
-    {
-      title: "Transactions",
-      items: [
-        { label: 'UPI Sell History', icon: CreditCard, color: 'text-blue-500' },
-        { label: 'Buy History', icon: History, color: 'text-blue-600' },
-        { label: 'Transfer History', icon: ArrowRightLeft, color: 'text-blue-400' },
-      ]
-    },
-    {
-      title: "Account & Safety",
-      items: [
-        { label: 'Event Center', icon: Ticket, color: 'text-orange-400' },
-        { label: 'Tutorial', icon: PlayCircle, color: 'text-slate-700' },
-        { label: 'Official Service', icon: Headphones, color: 'text-indigo-600' },
-        { label: 'Security Settings', icon: Lock, color: 'text-blue-500' },
-      ]
-    }
+  const menuItems = [
+    { label: 'IToken', icon: () => <span className="text-lg">🇮🇳</span>, value: `₹${userData?.itoken_balance?.toFixed(2) || '0.00'}`, color: 'text-slate-800' },
+    { label: 'Today Profit', icon: Gift, value: `₹${userData?.today_profit?.toFixed(2) || '0.00'}`, color: 'text-orange-400' },
+    { label: 'UPI Sell History', icon: LayoutGrid, color: 'text-blue-400' },
+    { label: 'Buy History', icon: ClipboardList, color: 'text-blue-500' },
+    { label: 'Transfer IToken History', icon: ClipboardList, color: 'text-blue-400' },
+    { label: 'Event Center', icon: Ticket, color: 'text-orange-400' },
+    { label: 'Tutorial', icon: PlayCircle, color: 'text-slate-700' },
+    { label: 'Official Service', icon: Headphones, color: 'text-blue-500' },
+    { label: 'Modify Password', icon: Lock, color: 'text-blue-400' },
   ];
 
   return (
-    <div className="pb-24 page-fade bg-[#F9FAFB] min-h-full">
-      {/* Mini Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-b sticky top-0 z-50">
-        <h1 className="font-black text-xs uppercase tracking-widest text-slate-800">Profile</h1>
-        <div className="flex gap-4">
-           <Bell className="h-4 w-4 text-slate-400" />
-           <Settings className="h-4 w-4 text-slate-400" />
-        </div>
+    <div className="pb-24 page-fade bg-white min-h-full font-sans">
+      {/* Header */}
+      <div className="text-center py-4 bg-white border-b sticky top-0 z-50">
+        <h1 className="text-lg font-medium text-slate-700">Mine</h1>
       </div>
 
-      {/* Profile Card */}
-      <div className="px-4 mt-4">
-        <div className="bg-white rounded-[20px] p-4 shadow-sm border border-slate-50 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Avatar className="h-12 w-12 border-2 border-blue-50 shadow-sm">
-                <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/200`} />
-                <AvatarFallback className="bg-slate-50 font-black text-xs text-slate-400">UN</AvatarFallback>
-              </Avatar>
-              <div className="absolute -bottom-1 -right-1 bg-green-500 border-2 border-white w-3.5 h-3.5 rounded-full"></div>
-            </div>
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] font-black text-slate-800 uppercase tracking-tight">Reward: {userData?.reward_percent || 5}%</span>
-                <ShieldCheck className="h-3 w-3 text-blue-500" />
-              </div>
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">UID: {userData?.numeric_id || 'Generating...'}</p>
+      {/* Profile Section */}
+      <div className="px-5 py-6 flex items-center justify-between border-b border-slate-50">
+        <div className="flex items-center gap-4">
+          <Avatar className="h-16 w-16 border-2 border-slate-100">
+            <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/200`} />
+            <AvatarFallback className="bg-blue-50 text-blue-500 font-bold">U</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-12">
+               <span className="text-[13px] text-slate-400">Reward:{userData?.reward_percent || 5}%</span>
+               <span className="text-[13px] text-slate-400">ID:{userData?.numeric_id || '530087092'}</span>
             </div>
           </div>
-          <ChevronRight className="text-slate-300 h-4 w-4" />
         </div>
-      </div>
-
-      {/* Wallets Grid */}
-      <div className="grid grid-cols-2 gap-3 px-4 mt-4">
-        <div className="bg-white p-3.5 rounded-[18px] shadow-sm border border-slate-50 space-y-2">
-          <div className="flex items-center gap-1.5 opacity-60">
-             <div className="w-5 h-5 rounded-full bg-slate-50 flex items-center justify-center text-[10px] shadow-inner">🇮🇳</div>
-             <span className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">IToken</span>
-          </div>
-          <p className="text-lg font-black text-slate-800 tracking-tighter">₹{userData?.itoken_balance?.toFixed(2) || '0.00'}</p>
-        </div>
-
-        <div className="bg-white p-3.5 rounded-[18px] shadow-sm border border-slate-50 space-y-2">
-          <div className="flex items-center gap-1.5 opacity-60">
-             <div className="w-5 h-5 rounded-full bg-orange-50 flex items-center justify-center shadow-inner">
-               <Gift className="text-orange-400 h-3 w-3" />
-             </div>
-             <span className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">Profit</span>
-          </div>
-          <p className="text-lg font-black text-orange-500 tracking-tighter">₹{userData?.today_profit?.toFixed(2) || '0.00'}</p>
-        </div>
+        <ChevronRight className="text-slate-300 h-5 w-5" />
       </div>
 
       {/* Menu List */}
-      <div className="mt-5 space-y-5">
-        {menuSections.map((section, sIdx) => (
-          <div key={sIdx} className="px-4">
-            <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] mb-2.5 px-1">{section.title}</h3>
-            <div className="bg-white rounded-[20px] overflow-hidden border border-slate-50 shadow-sm">
-              {section.items.map((item, iIdx) => (
-                <div 
-                  key={iIdx} 
-                  className={cn(
-                    "flex items-center justify-between p-3.5 hover:bg-slate-50 transition-colors cursor-pointer active:bg-slate-100",
-                    iIdx !== section.items.length - 1 && "border-b border-slate-50"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center bg-slate-50 shadow-sm")}>
-                      <item.icon className={cn("h-4 w-4", item.color)} />
-                    </div>
-                    <span className="text-[10px] font-black text-slate-700 uppercase tracking-tight">{item.label}</span>
-                  </div>
-                  <ChevronRight className="text-slate-300 h-3.5 w-3.5" />
-                </div>
-              ))}
+      <div className="mt-2">
+        {menuItems.map((item, idx) => (
+          <div 
+            key={idx} 
+            className="flex items-center justify-between px-5 py-4 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-6 h-6 flex items-center justify-center">
+                {typeof item.icon === 'function' ? <item.icon /> : <item.icon className={`h-5 w-5 ${item.color}`} />}
+              </div>
+              <span className="text-[14px] font-medium text-slate-600">{item.label}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {item.value && <span className={`text-[14px] font-bold ${item.label === 'IToken' ? 'text-yellow-500' : 'text-yellow-500'}`}>{item.value.replace('₹', '')}</span>}
+              <ChevronRight className="text-slate-200 h-5 w-5" />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Version & Action */}
-      <div className="px-4 mt-8 flex flex-col gap-4">
+      {/* Action Section */}
+      <div className="px-5 mt-10 relative">
         <Button 
           variant="outline" 
           onClick={handleSignOut}
-          className="w-full h-12 rounded-[16px] border-red-100 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all active:scale-95"
+          className="w-full h-14 rounded-xl border-slate-200 text-slate-600 font-medium text-lg hover:bg-slate-50 transition-all shadow-sm"
         >
-          LOG OUT FROM MONEXO
+          Sign Out
         </Button>
         
-        <div className="bg-blue-50/50 p-4 rounded-2xl flex items-center justify-between">
-           <div className="flex items-center gap-3">
-             <div className="bg-white p-2 rounded-xl shadow-sm">
-               <Download className="h-4 w-4 text-blue-500" />
-             </div>
-             <div>
-               <p className="text-[10px] font-black text-slate-800 uppercase">Update to v2.0.1</p>
-               <p className="text-[8px] font-bold text-slate-400">Better performance & UI fixes</p>
-             </div>
-           </div>
-           <Button size="sm" className="h-7 rounded-lg bg-blue-500 text-[8px] font-black uppercase px-3">Download</Button>
+        {/* Floating Headphones Icon */}
+        <div className="absolute right-6 -bottom-2 bg-blue-50 p-2.5 rounded-full shadow-md border border-white">
+          <Headphones className="h-6 w-6 text-blue-400" />
         </div>
+      </div>
 
-        <div className="text-center py-4">
-           <p className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em]">Monexo Upi Premium Payments</p>
-           <p className="text-[8px] font-bold text-slate-300 mt-1">© 2025 MONEXO GLOBAL</p>
-        </div>
+      {/* Footer Info */}
+      <div className="text-center mt-12 px-6">
+        <p className="text-[11px] text-slate-300">APP Version : 2.0.0</p>
+        <p className="text-[11px] text-slate-300 mt-1">
+          Haven't downloaded the APK? <span className="text-blue-400 font-medium">Click here and Download now</span>
+        </p>
       </div>
     </div>
   );
