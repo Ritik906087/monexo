@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Phone, Lock, ChevronRight, Fingerprint } from 'lucide-react';
+import { Phone, Lock, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -60,7 +60,7 @@ export default function LoginPage() {
       {/* Login Card */}
       <div className="px-6 -mt-8 flex-1 pb-10">
         <div className="bg-white rounded-[32px] p-8 card-shadow space-y-8">
-          <div className="space-y-2">
+          <div className="space-y-2 text-center sm:text-left">
             <h2 className="text-2xl font-bold text-slate-800">Login</h2>
             <p className="text-sm text-muted-foreground">Please sign in to your account</p>
           </div>
@@ -122,31 +122,19 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="flex flex-col items-center space-y-4">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <div className="h-[1px] w-12 bg-slate-200"></div>
-              <span className="text-[10px] uppercase font-bold tracking-widest">Or login with</span>
-              <div className="h-[1px] w-12 bg-slate-200"></div>
-            </div>
-            
-            <Button variant="outline" className="w-14 h-14 rounded-2xl border-slate-100 bg-slate-50 text-slate-400 hover:text-primary transition-colors">
-              <Fingerprint className="h-8 w-8" />
-            </Button>
+          <div className="text-center pt-2">
+            <p className="text-sm text-slate-500">
+              Don't have an account?{' '}
+              <Link href="/register" className="text-primary font-bold hover:underline">
+                Create Account
+              </Link>
+            </p>
           </div>
-        </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-sm text-slate-500">
-            Don't have an account?{' '}
-            <Link href="/register" className="text-primary font-bold hover:underline">
-              Create Account
-            </Link>
-          </p>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="pb-8 text-center">
+      <div className="pb-8 text-center mt-auto">
         <p className="text-[10px] font-bold text-slate-300 tracking-[0.4em] uppercase">MONEXO UPI</p>
       </div>
     </div>
