@@ -2,135 +2,195 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Wallet, ArrowUpRight, ArrowDownLeft, Bell, Scan } from 'lucide-react';
+import { 
+  Info, 
+  ChevronRight, 
+  Megaphone, 
+  Headphones,
+  ShoppingBag,
+  History
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
-import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 export default function DashboardPage() {
-  const [session, setSession] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { toast } = useToast();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    async function fetchUserData() {
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/login');
-      } else {
-        setSession(session);
+        return;
       }
-    });
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+      } else {
+        setUserData(data);
+      }
+      setLoading(false);
+    }
+
+    fetchUserData();
   }, [router]);
 
-  if (!session) return null;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  );
 
   return (
-    <div className="page-fade px-4 pt-6 pb-20">
-      {/* Header */}
-      <header className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full monexo-gradient flex items-center justify-center text-white border-4 border-white shadow-lg">
-            <User className="h-6 w-6" />
+    <div className="page-fade bg-[#F8FAFC] min-h-screen pb-24">
+      {/* Important Notice Banner */}
+      <div className="px-4 pt-4">
+        <div className="relative rounded-[20px] overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600 p-5 text-white shadow-lg border border-orange-300">
+          <div className="absolute top-2 right-4 bg-white rounded-xl p-2 h-14 w-14 flex flex-col items-center justify-center shadow-inner">
+             <div className="text-[10px] font-bold text-red-600 leading-none">MONEXO</div>
+             <div className="text-[10px] font-bold text-blue-600 leading-none">UPI</div>
+             <div className="mt-1 flex gap-0.5">
+               <div className="w-2 h-1 bg-red-500"></div>
+               <div className="w-2 h-1 bg-yellow-500"></div>
+               <div className="w-2 h-1 bg-blue-500"></div>
+             </div>
           </div>
-          <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Premium Member</p>
-            <p className="font-bold text-lg text-slate-800 leading-tight">
-              Hello, {session.user.email?.split('@')[0]}
-            </p>
+          <h2 className="text-xl font-black italic tracking-tighter mb-2">
+            MILESPAY <br />
+            IMPORTANT NOTICE!!
+          </h2>
+          <div className="text-[9px] leading-tight text-white/95 font-medium space-y-1">
+            <p>If you didn't get tokens in 5 minutes,Pls contact our supporters with a payment screenshot.</p>
+            <p>To sell tokens and receive rupees fast, Pls follow the steps. Do not log in to UPI while selling, Otherwise your tokens won't be processed.</p>
+            <p>Thanks for your support!</p>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="ghost" size="icon" className="rounded-full bg-slate-100 h-10 w-10">
-            <Bell className="h-5 w-5 text-slate-600" />
-          </Button>
-        </div>
-      </header>
-
-      {/* Balance Card */}
-      <Card className="monexo-gradient border-none text-white overflow-hidden rounded-[30px] shadow-2xl mb-8 relative">
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-        <CardContent className="p-8 relative z-10">
-          <div className="flex justify-between items-start mb-8">
-            <div className="flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-white/70" />
-              <span className="text-xs font-bold tracking-widest uppercase text-white/80">Current Balance</span>
-            </div>
-            <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold">
-              UPI: {session.user.email?.split('@')[0]}@monexo
-            </div>
-          </div>
-          
-          <div className="space-y-1">
-            <p className="text-sm text-white/70">Total Savings</p>
-            <h2 className="text-4xl font-extrabold tracking-tight">$12,450.00</h2>
-          </div>
-
-          <div className="flex gap-4 mt-8">
-            <Button className="bg-white text-primary font-bold rounded-2xl flex-1 hover:bg-slate-100 h-12 shadow-lg">
-              <ArrowUpRight className="mr-2 h-4 w-4" /> Send
-            </Button>
-            <Button className="bg-white/20 text-white backdrop-blur-sm border-none rounded-2xl flex-1 h-12 font-bold">
-              <Scan className="mr-2 h-4 w-4" /> Scan
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Quick Actions / Categories */}
-      <div className="mb-8">
-        <h3 className="font-bold text-slate-800 mb-4 px-1">Quick Services</h3>
-        <div className="grid grid-cols-4 gap-4">
-          {[
-            { name: 'Recharge', icon: '📱' },
-            { name: 'DTH', icon: '📡' },
-            { name: 'Bills', icon: '📝' },
-            { name: 'Offers', icon: '🎁' }
-          ].map((item) => (
-            <div key={item.name} className="flex flex-col items-center gap-2">
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-slate-50">
-                {item.icon}
-              </div>
-              <span className="text-[10px] font-bold text-slate-500">{item.name}</span>
-            </div>
-          ))}
         </div>
       </div>
 
-      {/* Transactions */}
-      <div className="space-y-4 pb-10">
-        <div className="flex justify-between items-center px-1">
-          <h3 className="font-bold text-slate-800 text-lg">Recent Transactions</h3>
-          <Button variant="link" className="text-primary font-bold text-xs">See All</Button>
-        </div>
-        
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-[24px] p-4 flex items-center justify-between border border-slate-50 shadow-sm active:scale-[0.98] transition-transform cursor-pointer">
-            <div className="flex items-center gap-4">
-              <div className={cn(
-                "w-12 h-12 rounded-2xl flex items-center justify-center",
-                i % 2 === 0 ? "bg-green-50 text-green-600" : "bg-blue-50 text-blue-600"
-              )}>
-                {i % 2 === 0 ? <ArrowDownLeft className="h-6 w-6" /> : <ArrowUpRight className="h-6 w-6" />}
+      {/* IToken Section */}
+      <div className="px-4 mt-6">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-50 relative overflow-hidden">
+          {/* Subtle coin background */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none flex flex-wrap gap-4 p-4 items-center justify-center rotate-12">
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="w-16 h-16 rounded-full border-4 border-slate-800"></div>
+            ))}
+          </div>
+
+          <div className="relative z-10">
+            <div className="flex items-baseline gap-2 mb-4">
+              <h3 className="font-bold text-slate-800 text-lg">My IToken</h3>
+              <span className="text-[10px] text-slate-400 font-medium">1 Rs = 1 IToken, 1 USDT ≈ 100 IToken</span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl shadow-inner border border-white">
+                  🇮🇳
+                </div>
+                <span className="text-4xl font-extrabold text-slate-800 tracking-tight">
+                  {userData?.itoken_balance?.toFixed(2) || '0.00'}
+                </span>
               </div>
-              <div>
-                <p className="font-bold text-sm text-slate-800">{i % 2 === 0 ? 'Cashback Received' : 'Payment to Netflix'}</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">24 Oct • 10:45 AM</p>
+              <Button className="bg-[#2A85FF] hover:bg-[#1a75ef] rounded-xl h-12 px-6 shadow-md shadow-blue-200">
+                <span className="bg-white text-blue-500 rounded-full w-5 h-5 flex items-center justify-center mr-2 text-[10px] font-bold">₹</span>
+                <span className="font-bold">Buy</span>
+              </Button>
+            </div>
+
+            <div className="h-px bg-slate-100 my-6"></div>
+
+            {/* Grid Stats */}
+            <div className="grid grid-cols-2 gap-y-6">
+              <div className="flex items-start justify-between pr-4">
+                <div className="space-y-1">
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Today Profit</p>
+                  <p className="text-lg font-bold text-slate-800">{userData?.today_profit?.toFixed(0) || '0'}</p>
+                </div>
+              </div>
+              <div className="flex items-start justify-between pl-4 border-l border-slate-100">
+                 <Button variant="outline" className="h-14 rounded-2xl flex-1 border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm">
+                   Buy History
+                 </Button>
+              </div>
+
+              <div className="flex items-start justify-between pr-4">
+                <div className="space-y-1">
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Reward</p>
+                  <p className="text-lg font-bold text-slate-800">{userData?.reward_percent || 5}%</p>
+                </div>
+              </div>
+              <div className="flex items-start justify-between pl-4 border-l border-slate-100">
+                 {/* Empty matching slot */}
+              </div>
+
+              <div className="flex items-start justify-between pr-4 pt-2">
+                <div className="space-y-1">
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Auto Selling</p>
+                  <p className="text-sm font-bold text-slate-800">Sell Set</p>
+                </div>
+              </div>
+              <div className="flex items-start justify-between pl-4 border-l border-slate-100">
+                 <Button variant="outline" className="h-14 rounded-2xl flex-1 border-slate-200 text-slate-600 font-bold hover:bg-slate-50 shadow-sm">
+                   Sell History
+                 </Button>
+              </div>
+
+              <div className="flex items-start justify-between pr-4 pt-2">
+                <div className="space-y-1">
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Sell Faster</p>
+                  <p className="text-sm font-bold text-blue-500">Link Upi</p>
+                </div>
               </div>
             </div>
-            <p className={cn(
-              "font-extrabold text-sm",
-              i % 2 === 0 ? "text-green-500" : "text-slate-800"
-            )}>
-              {i % 2 === 0 ? '+$50.00' : '-$15.99'}
-            </p>
           </div>
-        ))}
+        </div>
+      </div>
+
+      {/* Welcome Message */}
+      <div className="px-4 mt-4">
+        <div className="bg-white rounded-xl p-3 flex items-center justify-between shadow-sm border border-slate-50">
+          <div className="flex items-center gap-2">
+            <Megaphone className="h-4 w-4 text-slate-400 rotate-12" />
+            <span className="text-xs font-bold text-slate-500 tracking-tight">Welcome MONEXO</span>
+          </div>
+          <Info className="h-4 w-4 text-slate-300" />
+        </div>
+      </div>
+
+      {/* News Section */}
+      <div className="mt-8 px-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-slate-800">News</h3>
+          <div className="flex items-center text-slate-400 gap-1 text-xs font-bold cursor-pointer hover:text-primary transition-colors">
+            <span>More</span>
+            <ChevronRight className="h-4 w-4" />
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="bg-white p-5 rounded-3xl shadow-sm border border-slate-50 flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer">
+            <div className="space-y-1">
+              <p className="font-bold text-slate-800 tracking-tight">Reward</p>
+              <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">2025-03-21 19:54:18</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center relative">
+              <div className="absolute inset-0 bg-blue-400/10 rounded-full animate-ping opacity-20"></div>
+              <Headphones className="h-6 w-6 text-blue-500" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
-
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(' ');
 }
