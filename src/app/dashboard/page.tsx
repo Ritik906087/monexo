@@ -61,7 +61,7 @@ export default function DashboardPage() {
              <span className="text-[8px] font-black tracking-widest uppercase">MONEXO UPI</span>
           </div>
           <h2 className="text-lg font-black italic tracking-tighter mb-2 leading-none uppercase">
-            MILESPAY <br />
+            MONEXO <br />
             NOTICE
           </h2>
           <div className="text-[10px] leading-snug text-white/90 font-semibold space-y-1 max-w-[85%]">
