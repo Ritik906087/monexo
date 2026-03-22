@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <div className="app-container">
           {/* Main Content Area */}
-          <main className="flex-1 overflow-x-hidden pt-0 relative">
+          <main className="flex-1 overflow-x-hidden pt-0 relative pb-20">
             {children}
           </main>
           <BottomNav />
