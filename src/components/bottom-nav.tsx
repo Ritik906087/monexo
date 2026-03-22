@@ -27,7 +27,7 @@ export function BottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-100 flex items-center justify-around z-[100] h-[72px] safe-area-bottom shadow-[0_-8px_25px_-10px_rgba(0,0,0,0.06)]">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-100 flex items-center justify-around z-[100] h-[64px] safe-area-bottom shadow-[0_-8px_25px_-10px_rgba(0,0,0,0.06)]">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.path;
@@ -36,18 +36,18 @@ export function BottomNav() {
             key={item.path} 
             href={item.path}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 transition-all duration-200 min-w-[64px] active:scale-95 py-1",
+              "flex flex-col items-center justify-center gap-0.5 transition-all duration-200 min-w-[60px] active:scale-90 py-1",
               isActive ? "text-[#2A85FF]" : "text-slate-400"
             )}
           >
             <div className={cn(
               "p-1.5 rounded-xl transition-all",
-              isActive ? "bg-blue-50" : "bg-transparent"
+              isActive ? "bg-blue-50/80" : "bg-transparent"
             )}>
-              <Icon className="h-[22px] w-[22px]" strokeWidth={isActive ? 2.5 : 2} />
+              <Icon className="h-[20px] w-[20px]" strokeWidth={isActive ? 2.5 : 2} />
             </div>
             <span className={cn(
-              "text-[9px] font-extrabold tracking-tight uppercase",
+              "text-[8.5px] font-black tracking-tight uppercase",
               isActive ? "opacity-100" : "opacity-70"
             )}>
               {item.name}

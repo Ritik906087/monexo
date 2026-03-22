@@ -37,6 +37,7 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     user-select: none;
+    touch-action: manipulation;
   }
   
   * {
@@ -57,6 +58,8 @@
   position: relative;
   touch-action: pan-y;
   background-color: white;
+  width: 100%;
+  max-width: 420px;
 }
 
 .smooth-scroll {
@@ -95,4 +98,10 @@
 
 .animate-slide-up {
   animation: slideUp 0.3s ease-out forwards;
+}
+
+/* Force mobile-like font sizes for compact UI */
+.font-compact {
+  font-size: 0.85rem;
+  line-height: 1.25;
 }
