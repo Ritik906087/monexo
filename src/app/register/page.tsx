@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -42,7 +41,6 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      // 1. Deriving virtual email for Supabase Auth
       const email = `${phone}@monexo.app`;
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -53,7 +51,7 @@ export default function RegisterPage() {
       if (authError) throw authError;
 
       if (authData.user) {
-        // 2. Inserting user details into Supabase 'users' table
+        // SQL Table: users (must be created in Supabase SQL editor first)
         const { error: dbError } = await supabase
           .from('users')
           .insert([
@@ -61,26 +59,23 @@ export default function RegisterPage() {
               id: authData.user.id,
               phone: phone,
               invite_code: inviteCode || null,
-              created_at: new Date().toISOString(),
             },
           ]);
 
-        // Note: If table 'users' doesn't exist yet, this will fail but auth succeeds.
-        // In a real production setup, this table would be prepared.
         if (dbError) {
-           console.error("DB Error (Table might not exist):", dbError);
+          console.error("DB Insert Error:", dbError);
         }
 
         toast({
           title: "Account Created!",
-          description: "Welcome to Monexo. Redirecting to dashboard...",
+          description: "Welcome to Monexo.",
         });
         router.push('/dashboard');
       }
     } catch (error: any) {
       toast({
         title: "Registration Failed",
-        description: error.message || "Something went wrong. Please try again.",
+        description: error.message || "Something went wrong.",
         variant: "destructive",
       });
     } finally {

@@ -1,7 +1,7 @@
-
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { BottomNav } from '@/components/bottom-nav';
 
 export const metadata: Metadata = {
   title: 'MONEXO | Premium Fintech',
@@ -21,11 +21,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
-        <main className="min-h-screen flex flex-col items-center justify-center p-4">
+        <main className="min-h-screen flex flex-col items-center justify-start p-4 bg-slate-50">
           <div className="w-full max-w-[420px]">
             {children}
           </div>
         </main>
+        <BottomNav />
         <Toaster />
       </body>
     </html>
