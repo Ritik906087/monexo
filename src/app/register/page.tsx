@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
-import { Phone, Lock, Ticket, UserPlus } from 'lucide-react';
+import { Phone, Lock, Ticket, UserPlus, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 export default function RegisterPage() {
@@ -58,22 +58,32 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="page-fade min-h-full flex flex-col bg-[#F8FAFC]">
-      {/* Header Section */}
-      <div className="monexo-gradient pt-16 pb-12 px-8">
-        <h1 className="text-4xl font-bold text-white tracking-tight">Welcome to</h1>
-        <p className="text-white/80 text-xl font-medium tracking-wide">Monexo UPI</p>
+    <div className="page-fade min-h-screen flex flex-col bg-[#F8FAFC]">
+      {/* Premium Header Section */}
+      <div className="monexo-gradient pt-20 pb-16 px-8 relative overflow-hidden">
+        {/* Decorative Circle */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+        
+        <div className="relative z-10 space-y-1">
+          <h1 className="text-4xl font-extrabold text-white tracking-tight">Welcome to</h1>
+          <div className="flex items-center gap-2">
+            <span className="text-white/90 text-2xl font-bold tracking-wide">MONEXO</span>
+            <div className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded border border-white/30">
+              <span className="text-[10px] font-black text-white uppercase tracking-wider">UPI</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Form Container */}
-      <div className="px-5 -mt-8 flex-1">
-        <div className="bg-white rounded-[25px] p-8 shadow-2xl space-y-8 flex flex-col">
+      <div className="px-5 -mt-10 flex-1 relative z-20">
+        <div className="bg-white rounded-[32px] p-8 shadow-xl border border-slate-50 space-y-8 flex flex-col">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold text-slate-800">Registration</h2>
-            <p className="text-sm text-slate-500">Fill details to join us</p>
+            <p className="text-sm text-slate-500">Create your account to start</p>
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-5">
+          <form onSubmit={handleRegister} className="space-y-6">
             <div className="space-y-4">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -81,8 +91,8 @@ export default function RegisterPage() {
                 </div>
                 <Input
                   type="tel"
-                  placeholder="Phone"
-                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  placeholder="Phone Number"
+                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
@@ -96,7 +106,7 @@ export default function RegisterPage() {
                 <Input
                   type="password"
                   placeholder="Password"
-                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -110,7 +120,7 @@ export default function RegisterPage() {
                 <Input
                   type="password"
                   placeholder="Confirm Password"
-                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -124,33 +134,38 @@ export default function RegisterPage() {
                 <Input
                   type="text"
                   placeholder="Invite code (Optional)"
-                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base"
                   value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className="text-right">
-              <Link href="/login" className="text-sm text-primary font-semibold hover:underline">
-                Already have account? Login
-              </Link>
-            </div>
+            <div className="space-y-4">
+              <Button 
+                type="submit" 
+                disabled={loading}
+                className="w-full h-14 rounded-2xl monexo-gradient text-white font-bold text-lg shadow-lg shadow-blue-200 active:scale-[0.98] transition-all"
+              >
+                {loading ? "Registering..." : "Create Account"}
+                {!loading && <ChevronRight className="ml-2 h-5 w-5" />}
+              </Button>
 
-            <Button 
-              type="submit" 
-              disabled={loading}
-              className="w-full h-14 rounded-2xl monexo-gradient text-white font-bold text-lg shadow-lg active:scale-95 transition-all"
-            >
-              <UserPlus className="mr-2 h-5 w-5" />
-              {loading ? "Registering..." : "Register"}
-            </Button>
+              <div className="text-center">
+                <p className="text-sm text-slate-500">
+                  Already have an account?{' '}
+                  <Link href="/login" className="text-primary font-bold hover:underline">
+                    Sign In
+                  </Link>
+                </p>
+              </div>
+            </div>
           </form>
         </div>
       </div>
 
       <div className="mt-auto py-8 text-center">
-        <p className="text-slate-400 text-[10px] font-bold tracking-[0.4em] uppercase">MONEXO UPI</p>
+        <p className="text-slate-300 text-[10px] font-bold tracking-[0.4em] uppercase">SECURE UPI PAYMENTS</p>
       </div>
     </div>
   );
