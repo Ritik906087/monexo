@@ -6,7 +6,9 @@ import {
   AlertCircle, 
   Link as LinkIcon, 
   Info,
-  ChevronRight
+  ChevronRight,
+  ShieldCheck,
+  Activity
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -17,25 +19,26 @@ export default function UPIPage() {
   const [isStopped, setIsStopped] = useState(false);
 
   return (
-    <div className="flex flex-col h-full bg-[#f8fafc] pb-20 animate-slide-up overflow-hidden">
-      {/* Page Header - Compact */}
+    <div className="flex flex-col h-full bg-[#f8fafc] animate-slide-up overflow-hidden">
+      {/* Page Header - Ultra Compact */}
       <div className="bg-white pt-3 pb-1.5 text-center border-b border-slate-100 shrink-0">
-        <h1 className="text-[16px] font-black text-[#1e293b] uppercase tracking-tight">UPI</h1>
+        <h1 className="text-[15px] font-black text-[#1e293b] uppercase tracking-[0.1em]">UPI Management</h1>
       </div>
 
-      <div className="flex-1 overflow-y-auto smooth-scroll">
-        {/* Red Warning Banner - Precise Styling */}
-        <div className="bg-red-50/50 px-4 py-2 flex items-center justify-center gap-2 border-b border-red-50">
+      {/* Main Scrollable Area (Limited to prevent actual scrolling if possible) */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Red Warning Banner - Slim */}
+        <div className="bg-red-50 px-4 py-1.5 flex items-center justify-center gap-2 border-b border-red-100 shrink-0">
           <AlertCircle className="h-3 w-3 text-red-500" />
-          <p className="text-[10px] font-bold text-red-500 uppercase tracking-tight leading-none">
+          <p className="text-[9px] font-black text-red-500 uppercase tracking-tight">
             If you Change your upi id, please relink UPI.
           </p>
         </div>
 
-        {/* Action Button - Link New UPI */}
-        <div className="p-4">
-          <Button className="w-full bg-[#2A85FF] hover:bg-[#1A7BFF] h-12 rounded-2xl shadow-lg shadow-blue-100 font-black text-[13px] uppercase tracking-widest gap-2 active:scale-95 transition-all">
-            <LinkIcon className="h-4 w-4" />
+        {/* Action Button Area */}
+        <div className="p-3 shrink-0">
+          <Button className="w-full bg-[#2A85FF] hover:bg-[#1A7BFF] h-11 rounded-xl shadow-md shadow-blue-100 font-black text-[12px] uppercase tracking-widest gap-2 active:scale-95 transition-all border-none">
+            <LinkIcon className="h-3.5 w-3.5" />
             Link New UPI
           </Button>
         </div>
@@ -45,63 +48,67 @@ export default function UPIPage() {
           <button 
             onClick={() => setActiveTab('Buy')}
             className={cn(
-              "flex-1 py-3 text-[12px] font-black transition-all relative uppercase tracking-wider",
+              "flex-1 py-2.5 text-[11px] font-black transition-all relative uppercase tracking-widest",
               activeTab === 'Buy' ? "text-[#2A85FF]" : "text-slate-400"
             )}
           >
-            Buy
-            {activeTab === 'Buy' && <div className="absolute bottom-0 left-1/4 w-1/2 h-[2.5px] bg-[#2A85FF]" />}
+            Buy Settings
+            {activeTab === 'Buy' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#2A85FF]" />}
           </button>
           <button 
             onClick={() => setActiveTab('Sell')}
             className={cn(
-              "flex-1 py-3 text-[12px] font-black transition-all relative uppercase tracking-wider",
+              "flex-1 py-2.5 text-[11px] font-black transition-all relative uppercase tracking-widest",
               activeTab === 'Sell' ? "text-[#2A85FF]" : "text-slate-400"
             )}
           >
-            Sell
-            {activeTab === 'Sell' && <div className="absolute bottom-0 left-1/4 w-1/2 h-[2.5px] bg-[#2A85FF]" />}
+            Sell Settings
+            {activeTab === 'Sell' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#2A85FF]" />}
           </button>
         </div>
 
-        {/* UPI Account Card - High Density */}
-        <div className="p-4">
-          <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden animate-slide-up">
-            <div className="p-4 flex items-start gap-4">
+        {/* UPI Account Card - Optimized for space */}
+        <div className="p-3 space-y-3 overflow-y-auto smooth-scroll">
+          <div className="bg-white rounded-[20px] border border-slate-100 shadow-sm overflow-hidden">
+            <div className="p-3 flex items-start gap-3">
               {/* Avatar Icon */}
-              <div className="w-12 h-12 rounded-full bg-[#2A85FF] flex items-center justify-center text-white text-xl font-black shadow-inner">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#2A85FF] to-[#1A7BFF] flex items-center justify-center text-white text-base font-black shadow-inner shrink-0">
                 M
               </div>
               
-              <div className="flex-1">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-[14px] font-black text-slate-800 tracking-tight leading-none mb-1">
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start mb-1">
+                  <div className="truncate">
+                    <h3 className="text-[13px] font-black text-slate-800 tracking-tight leading-none mb-1 truncate">
                       Mobikwik (705****570)
                     </h3>
-                    <p className="text-[11px] font-bold text-slate-400 tracking-tight">
+                    <p className="text-[10px] font-bold text-slate-400 tracking-tight truncate">
                       705****570@mbk
                     </p>
                   </div>
-                  {/* UnLink button removed as per request */}
                 </div>
 
                 {/* Status Toggle Area */}
-                <div className="mt-4 flex items-center justify-between">
+                <div className="mt-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-black text-slate-300 uppercase tracking-tighter">Stopped</span>
+                    <span className={cn(
+                      "text-[9px] font-black uppercase tracking-tighter transition-colors",
+                      isStopped ? "text-red-400" : "text-green-500"
+                    )}>
+                      {isStopped ? "Stopped" : "Active"}
+                    </span>
                     <Switch 
-                      checked={isStopped} 
-                      onCheckedChange={setIsStopped}
-                      className="scale-90"
+                      checked={!isStopped} 
+                      onCheckedChange={(checked) => setIsStopped(!checked)}
+                      className="scale-75"
                     />
                   </div>
                   
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-lg border-blue-100 text-[#2A85FF] text-[10px] font-black uppercase tracking-tighter hover:bg-blue-50">
+                  <div className="flex gap-1.5">
+                    <Button variant="outline" size="sm" className="h-7 px-2.5 rounded-lg border-blue-50 text-[#2A85FF] text-[9px] font-black uppercase tracking-tighter hover:bg-blue-50">
                       Operate
                     </Button>
-                    <Button variant="outline" size="sm" className="h-8 px-3 rounded-lg border-blue-100 text-[#2A85FF] text-[10px] font-black uppercase tracking-tighter hover:bg-blue-50">
+                    <Button variant="outline" size="sm" className="h-7 px-2.5 rounded-lg border-blue-50 text-[#2A85FF] text-[9px] font-black uppercase tracking-tighter hover:bg-blue-50">
                       Details
                     </Button>
                   </div>
@@ -109,28 +116,37 @@ export default function UPIPage() {
               </div>
             </div>
 
-            {/* Bottom Info Banner - Photo Match */}
-            <div className="bg-orange-50/70 p-2 flex items-center gap-2 border-t border-orange-100">
-              <Info className="h-3 w-3 text-orange-400" />
-              <p className="text-[10px] font-black text-orange-500 uppercase tracking-tighter">
-                UPI unlinked – Please relink
+            {/* Bottom Info Banner - Integrated */}
+            <div className="bg-orange-50/70 p-1.5 flex items-center gap-2 border-t border-orange-100">
+              <Info className="h-2.5 w-2.5 text-orange-400" />
+              <p className="text-[9px] font-black text-orange-500 uppercase tracking-tighter">
+                UPI unlinked – Please relink for settlements
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Status Monitor Section */}
-        <div className="px-4 pb-4">
-          <div className="bg-blue-50/40 rounded-2xl p-4 border border-dashed border-blue-100">
-             <div className="flex items-center gap-3 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#2A85FF] animate-pulse"></div>
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Status Monitor</span>
+          {/* Status Monitor Section - Aesthetic addition */}
+          <div className="bg-white/50 rounded-[20px] p-3 border border-slate-100">
+             <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-3 w-3 text-blue-500" />
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Security Monitor</span>
+                </div>
+                <div className="flex items-center gap-1">
+                   <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse"></div>
+                   <span className="text-[8px] font-black text-green-600 uppercase">Live</span>
+                </div>
              </div>
-             <p className="text-[10px] font-bold text-slate-500 leading-snug">
-               Ensure your UPI ID is correct for instant settlements. If you face any issues, contact 24/7 support.
+             <p className="text-[10px] font-medium text-slate-400 leading-snug">
+               Encryption active. Your UPI data is stored securely using 256-bit AES protocols. Ensure correct UPI for instant settlements.
              </p>
           </div>
         </div>
+      </div>
+
+      {/* Footer Branding - Fixed at bottom */}
+      <div className="bg-white py-2 text-center border-t border-slate-50 shrink-0">
+        <p className="text-[8px] font-black text-slate-300 tracking-[0.3em] uppercase">Secure Terminal v2.0</p>
       </div>
     </div>
   );
