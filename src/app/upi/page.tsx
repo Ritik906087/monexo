@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -19,13 +18,13 @@ export default function UPIPage() {
 
   return (
     <div className="flex flex-col h-full bg-[#f8fafc] pb-20 animate-slide-up overflow-hidden">
-      {/* Page Header */}
+      {/* Page Header - Compact */}
       <div className="bg-white pt-3 pb-1.5 text-center border-b border-slate-100 shrink-0">
         <h1 className="text-[16px] font-black text-[#1e293b] uppercase tracking-tight">UPI</h1>
       </div>
 
       <div className="flex-1 overflow-y-auto smooth-scroll">
-        {/* Red Warning Banner */}
+        {/* Red Warning Banner - Precise Styling */}
         <div className="bg-red-50/50 px-4 py-2 flex items-center justify-center gap-2 border-b border-red-50">
           <AlertCircle className="h-3 w-3 text-red-500" />
           <p className="text-[10px] font-bold text-red-500 uppercase tracking-tight leading-none">
@@ -41,7 +40,7 @@ export default function UPIPage() {
           </Button>
         </div>
 
-        {/* Tabs System */}
+        {/* Tabs System - Native Feel */}
         <div className="bg-white flex border-b border-slate-100 shrink-0">
           <button 
             onClick={() => setActiveTab('Buy')}
@@ -65,7 +64,7 @@ export default function UPIPage() {
           </button>
         </div>
 
-        {/* UPI Account Card */}
+        {/* UPI Account Card - High Density */}
         <div className="p-4">
           <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden animate-slide-up">
             <div className="p-4 flex items-start gap-4">
@@ -84,9 +83,7 @@ export default function UPIPage() {
                       705****570@mbk
                     </p>
                   </div>
-                  <button className="text-[10px] font-black text-blue-500 uppercase hover:underline">
-                    UnLink
-                  </button>
+                  {/* UnLink button removed as per request */}
                 </div>
 
                 {/* Status Toggle Area */}
@@ -112,7 +109,7 @@ export default function UPIPage() {
               </div>
             </div>
 
-            {/* Bottom Warning Banner */}
+            {/* Bottom Info Banner - Photo Match */}
             <div className="bg-orange-50/70 p-2 flex items-center gap-2 border-t border-orange-100">
               <Info className="h-3 w-3 text-orange-400" />
               <p className="text-[10px] font-black text-orange-500 uppercase tracking-tighter">
@@ -122,7 +119,7 @@ export default function UPIPage() {
           </div>
         </div>
 
-        {/* Secondary Info Area */}
+        {/* Status Monitor Section */}
         <div className="px-4 pb-4">
           <div className="bg-blue-50/40 rounded-2xl p-4 border border-dashed border-blue-100">
              <div className="flex items-center gap-3 mb-2">
@@ -138,4 +135,3 @@ export default function UPIPage() {
     </div>
   );
 }
-
