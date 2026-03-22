@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Phone, Lock, Ticket, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -23,8 +24,8 @@ export default function RegisterPage() {
 
     if (password !== confirmPassword) {
       toast({
-        title: "Passwords mismatch",
-        description: "Please make sure passwords match.",
+        title: "Error",
+        description: "Passwords do not match.",
         variant: "destructive",
       });
       return;
@@ -32,8 +33,8 @@ export default function RegisterPage() {
 
     if (password.length < 6) {
       toast({
-        title: "Weak Password",
-        description: "Password should be at least 6 characters.",
+        title: "Error",
+        description: "Password must be at least 6 characters.",
         variant: "destructive",
       });
       return;
@@ -41,6 +42,7 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
+      // Supabase uses email/password. We use a virtual email for phone.
       const email = `${phone}@monexo.app`;
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -51,7 +53,7 @@ export default function RegisterPage() {
       if (authError) throw authError;
 
       if (authData.user) {
-        // SQL Table: users (must be created in Supabase SQL editor first)
+        // Insert user record into public.users table
         const { error: dbError } = await supabase
           .from('users')
           .insert([
@@ -62,20 +64,18 @@ export default function RegisterPage() {
             },
           ]);
 
-        if (dbError) {
-          console.error("DB Insert Error:", dbError);
-        }
+        if (dbError) throw dbError;
 
         toast({
-          title: "Account Created!",
-          description: "Welcome to Monexo.",
+          title: "Success",
+          description: "Welcome to Monexo! Account created.",
         });
         router.push('/dashboard');
       }
     } catch (error: any) {
       toast({
         title: "Registration Failed",
-        description: error.message || "Something went wrong.",
+        description: error.message || "An error occurred during registration.",
         variant: "destructive",
       });
     } finally {
@@ -84,86 +84,97 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-      <div className="monexo-gradient w-full h-32 rounded-[20px] mb-[-40px] flex items-center justify-between px-8 text-white relative z-0">
-        <div>
-          <h1 className="text-2xl font-bold">Welcome</h1>
-          <p className="text-white/80 text-sm">Join Monexo today</p>
+    <div className="min-h-screen bg-[#0000FF] flex flex-col items-center animate-in fade-in duration-500">
+      {/* Top Welcome Section */}
+      <div className="w-full h-[280px] relative overflow-hidden flex flex-col justify-center px-8 pt-10">
+        <h1 className="text-5xl font-extrabold text-white tracking-tight mb-2 z-10">welcome</h1>
+        
+        {/* Floating Graphic Element (Simulating the phone/wallet graphic) */}
+        <div className="absolute right-[-20px] top-10 opacity-80 rotate-12 z-0">
+          <div className="relative w-48 h-64">
+            <Smartphone className="w-full h-full text-white/20" strokeWidth={0.5} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-cyan-400/30 blur-3xl rounded-full"></div>
+            <div className="absolute top-10 right-0 w-16 h-10 bg-yellow-400/20 rounded-lg backdrop-blur-sm border border-white/20 flex items-center justify-center text-white font-bold text-xl">$</div>
+          </div>
         </div>
-        <ShieldCheck className="h-12 w-12 opacity-30" />
       </div>
 
-      <div className="bg-white rounded-[20px] p-8 card-shadow space-y-6 relative z-10">
-        <form onSubmit={handleRegister} className="space-y-4 pt-2">
-          <div className="space-y-2">
-            <div className="relative">
-              <Phone className="absolute left-4 top-3 h-5 w-5 text-muted-foreground" />
-              <Input
+      {/* Register Form Card */}
+      <div className="w-full px-5 mt-[-40px] z-20">
+        <div className="bg-white rounded-[25px] p-8 shadow-2xl space-y-6">
+          <form onSubmit={handleRegister} className="space-y-4">
+            {/* Phone Input */}
+            <div className="flex items-center border-b border-gray-100 py-3">
+              <span className="w-24 text-gray-700 font-medium">Phone</span>
+              <input
                 type="tel"
-                placeholder="Phone Number"
-                className="pl-12 h-12 bg-background/50 border-none focus-visible:ring-primary"
+                placeholder="Enter phone number"
+                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-sm"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
               />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <div className="relative">
-              <Lock className="absolute left-4 top-3 h-5 w-5 text-muted-foreground" />
-              <Input
+            {/* Password Input */}
+            <div className="flex items-center border-b border-gray-100 py-3">
+              <span className="w-24 text-gray-700 font-medium">Password</span>
+              <input
                 type="password"
-                placeholder="Create Password"
-                className="pl-12 h-12 bg-background/50 border-none focus-visible:ring-primary"
+                placeholder="Enter password"
+                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <div className="relative">
-              <Lock className="absolute left-4 top-3 h-5 w-5 text-muted-foreground" />
-              <Input
+            {/* Confirm Password */}
+            <div className="flex items-center border-b border-gray-100 py-3">
+              <span className="w-24 text-gray-700 font-medium">Confirm</span>
+              <input
                 type="password"
-                placeholder="Confirm Password"
-                className="pl-12 h-12 bg-background/50 border-none focus-visible:ring-primary"
+                placeholder="Password, Again"
+                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-sm"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <div className="relative">
-              <Ticket className="absolute left-4 top-3 h-5 w-5 text-muted-foreground" />
-              <Input
+            {/* Inviter Code */}
+            <div className="flex items-center border-b border-gray-100 py-3 mb-2">
+              <span className="w-24 text-gray-700 font-medium">Invitercode</span>
+              <input
                 type="text"
-                placeholder="Invite Code (Optional)"
-                className="pl-12 h-12 bg-background/50 border-none focus-visible:ring-primary"
+                placeholder="T75DvonJ4P"
+                className="flex-1 outline-none text-gray-800 placeholder:text-gray-300 bg-transparent text-sm"
                 value={inviteCode}
                 onChange={(e) => setInviteCode(e.target.value)}
               />
             </div>
-          </div>
 
-          <Button 
-            type="submit" 
-            disabled={loading}
-            className="w-full h-12 rounded-full monexo-gradient text-white font-bold text-lg mt-4 hover:opacity-90 transition-opacity"
-          >
-            {loading ? "Creating Account..." : "Register"}
-          </Button>
-        </form>
+            {/* Login Link */}
+            <div className="text-right pb-4">
+              <Link href="/login" className="text-[13px] text-primary font-medium hover:underline">
+                Already have an account,Go login
+              </Link>
+            </div>
 
-        <div className="text-center pt-2">
-          <Link href="/login" className="text-sm text-muted-foreground flex items-center justify-center gap-1 hover:text-primary transition-colors">
-            <ArrowLeft className="h-4 w-4" /> Already have an account? <span className="text-primary font-bold">Login</span>
-          </Link>
+            {/* Register Button */}
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="w-full h-14 rounded-xl bg-primary text-white font-bold text-lg hover:bg-blue-700 transition-all shadow-lg active:scale-95"
+            >
+              {loading ? "Registering..." : "Register"}
+            </Button>
+          </form>
         </div>
+      </div>
+
+      <div className="mt-8 mb-10">
+        <p className="text-white/60 text-xs font-bold tracking-widest uppercase">MONEXO UPI</p>
       </div>
     </div>
   );
