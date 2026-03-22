@@ -5,8 +5,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { BottomNav } from '@/components/bottom-nav';
 
 export const metadata: Metadata = {
-  title: 'MONEXO | Premium Fintech',
-  description: 'The secure way to manage your finances.',
+  title: 'MONEXO UPI',
+  description: 'The secure way to manage your finances with UPI.',
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center justify-start bg-slate-50">
-          <div className="w-full max-w-[420px] bg-white min-h-screen relative">
+          <div className="w-full max-w-[420px] bg-white min-h-screen relative shadow-2xl">
             {children}
           </div>
         </main>

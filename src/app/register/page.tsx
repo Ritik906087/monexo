@@ -65,7 +65,7 @@ export default function RegisterPage() {
 
         toast({
           title: "Success",
-          description: "Welcome to Monexo! Account created.",
+          description: "Welcome to Monexo UPI! Account created.",
         });
         router.push('/dashboard');
       }
@@ -81,11 +81,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0033FF] to-[#001A80] flex flex-col items-center animate-in fade-in duration-700 font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-[#1A7BFF] to-[#0055FF] flex flex-col items-center animate-in fade-in duration-700 font-sans">
       {/* Header Section */}
       <div className="w-full px-10 pt-16 pb-8">
         <h1 className="text-5xl font-bold text-white tracking-tight leading-tight">welcome</h1>
-        <p className="text-white/60 text-sm font-medium tracking-wider mt-1 uppercase">Monexo Fintech</p>
+        <p className="text-white/60 text-sm font-medium tracking-wider mt-1 uppercase">Monexo UPI</p>
       </div>
 
       {/* Register Form Card */}
