@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Phone, Lock, ChevronRight, AlertCircle } from 'lucide-react';
+import { Phone, Lock, ChevronRight, AlertCircle, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -52,46 +52,43 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="page-fade min-h-screen flex flex-col bg-slate-50">
+    <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
       {/* Top Branding Section */}
-      <div className="monexo-gradient relative pt-20 pb-16 px-8 flex flex-col items-center overflow-hidden">
-        {/* Decorative elements */}
+      <div className="bg-[#2A85FF] relative pt-10 pb-12 px-8 flex flex-col items-center overflow-hidden">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
-        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full blur-2xl" />
-        
-        <h1 className="text-5xl font-black text-white tracking-tighter mb-1 relative z-10 italic">MONEXO</h1>
+        <h1 className="text-4xl font-black text-white tracking-tighter mb-1 relative z-10 italic">MONEXO</h1>
         <div className="bg-white/20 backdrop-blur-md px-4 py-1 rounded-full border border-white/30 relative z-10">
-          <p className="text-[10px] font-black tracking-[0.4em] text-white uppercase">UPI PAYMENTS</p>
+          <p className="text-[9px] font-black tracking-[0.4em] text-white uppercase">UPI PAYMENTS</p>
         </div>
       </div>
 
       {/* Login Form Container */}
-      <div className="flex-1 px-6 -mt-8 relative z-20">
-        <div className="bg-white rounded-[32px] p-8 card-shadow space-y-8 min-h-[480px]">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-bold text-slate-800">Sign In</h2>
-            <p className="text-sm text-slate-400 font-medium">Enter your credentials to continue</p>
+      <div className="flex-1 px-5 -mt-8 relative z-20">
+        <div className="bg-white rounded-[32px] p-6 shadow-xl space-y-5 h-fit">
+          <div className="space-y-0.5">
+            <h2 className="text-xl font-bold text-slate-800">Account Login</h2>
+            <p className="text-[12px] text-slate-400 font-medium tracking-tight">Enter your credentials to continue</p>
           </div>
 
           {errorMsg && (
-            <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-600 rounded-2xl animate-in fade-in slide-in-from-top-2">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="text-xs font-bold">
+            <Alert variant="destructive" className="py-2 bg-red-50 border-red-100 text-red-600 rounded-xl animate-in fade-in">
+              <AlertCircle className="h-3 w-3" />
+              <AlertDescription className="text-[10px] font-bold">
                 {errorMsg}
               </AlertDescription>
             </Alert>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-3">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Phone className="h-5 w-5" />
+                  <Phone className="h-4 w-4" />
                 </div>
                 <Input
                   type="tel"
                   placeholder="Phone Number"
-                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-lg transition-all font-medium"
+                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
@@ -100,12 +97,12 @@ export default function LoginPage() {
 
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Lock className="h-5 w-5" />
+                  <Lock className="h-4 w-4" />
                 </div>
                 <Input
                   type="password"
                   placeholder="Password"
-                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-lg transition-all font-medium"
+                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -115,31 +112,40 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center space-x-2">
-                <Checkbox id="save" defaultChecked className="rounded-md border-slate-200" />
-                <label htmlFor="save" className="text-xs font-bold text-slate-400 cursor-pointer">
+                <Checkbox id="save" defaultChecked className="rounded border-slate-200" />
+                <label htmlFor="save" className="text-[11px] font-bold text-slate-400 cursor-pointer">
                   Remember me
                 </label>
               </div>
-              <Link href="#" className="text-xs text-primary font-bold hover:underline">
+              <Link href="#" className="text-[11px] text-[#2A85FF] font-bold hover:underline">
                 Forgot?
               </Link>
             </div>
 
-            <div className="space-y-5 pt-2">
+            <div className="space-y-3 pt-1">
               <Button 
                 type="submit" 
                 disabled={loading}
-                className="w-full h-14 rounded-2xl monexo-gradient text-white font-bold text-lg shadow-xl active:scale-[0.98] transition-transform"
+                className="w-full h-12 rounded-xl bg-[#fbbf24] hover:bg-[#f59e0b] text-white font-black text-sm shadow-md active:scale-[0.98] transition-all border-none"
               >
-                {loading ? "Authenticating..." : "Sign In"}
-                {!loading && <ChevronRight className="ml-2 h-5 w-5" />}
+                {loading ? "AUTHENTICATING..." : "LOG IN"}
+                {!loading && <ChevronRight className="ml-1 h-4 w-4" />}
               </Button>
 
-              <div className="text-center">
-                <p className="text-sm text-slate-400 font-medium">
-                  Don't have an account?{' '}
-                  <Link href="/register" className="text-primary font-extrabold hover:underline">
-                    Create Account
+              <Button 
+                type="button"
+                variant="outline"
+                className="w-full h-12 rounded-xl border-slate-200 bg-slate-50 text-slate-500 font-black text-sm active:scale-[0.98] transition-all"
+              >
+                <Headphones className="mr-2 h-4 w-4" />
+                HELP CENTER
+              </Button>
+
+              <div className="text-center pt-2">
+                <p className="text-[12px] text-slate-400 font-medium">
+                  No Account?{' '}
+                  <Link href="/register" className="text-[#2A85FF] font-black hover:underline uppercase tracking-tight">
+                    Register Now &raquo;
                   </Link>
                 </p>
               </div>
@@ -149,8 +155,8 @@ export default function LoginPage() {
       </div>
 
       {/* Footer Branding */}
-      <div className="pb-8 pt-4 text-center mt-auto">
-        <p className="text-[10px] font-bold text-slate-300 tracking-[0.4em] uppercase">MONEXO PRO v2.0</p>
+      <div className="pb-6 text-center mt-auto">
+        <p className="text-[9px] font-black text-slate-300 tracking-[0.3em] uppercase">MONEXO PRO v2.0</p>
       </div>
     </div>
   );

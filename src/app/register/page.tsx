@@ -72,49 +72,45 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="page-fade min-h-screen flex flex-col bg-slate-50">
+    <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
       {/* Premium Header Section */}
-      <div className="monexo-gradient pt-20 pb-16 px-8 relative overflow-hidden">
+      <div className="bg-[#2A85FF] pt-10 pb-12 px-8 relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-        
-        <div className="relative z-10 space-y-1">
-          <h1 className="text-4xl font-extrabold text-white tracking-tight">Create your</h1>
+        <div className="relative z-10 space-y-0">
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">Create</h1>
           <div className="flex items-center gap-2">
-            <span className="text-white/90 text-2xl font-black italic tracking-wide">MONEXO</span>
-            <div className="bg-white/20 backdrop-blur-md px-2 py-0.5 rounded border border-white/30">
-              <span className="text-[10px] font-black text-white uppercase tracking-wider">UPI</span>
-            </div>
+            <span className="text-white/90 text-xl font-black italic tracking-wide">MONEXO UPI</span>
           </div>
         </div>
       </div>
 
       {/* Form Container */}
       <div className="px-5 -mt-10 flex-1 relative z-20">
-        <div className="bg-white rounded-[32px] p-8 shadow-xl border border-slate-50 space-y-8 flex flex-col min-h-[520px]">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-bold text-slate-800">Registration</h2>
-            <p className="text-sm text-slate-400 font-medium">Join the premium UPI network</p>
+        <div className="bg-white rounded-[32px] p-6 shadow-xl space-y-5 h-fit">
+          <div className="space-y-0.5">
+            <h2 className="text-xl font-bold text-slate-800">Registration</h2>
+            <p className="text-[12px] text-slate-400 font-medium tracking-tight">Join the premium UPI network</p>
           </div>
 
           {errorMsg && (
-            <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-600 rounded-2xl animate-in fade-in slide-in-from-top-2">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="text-xs font-bold">
+            <Alert variant="destructive" className="py-2 bg-red-50 border-red-100 text-red-600 rounded-xl animate-in fade-in">
+              <AlertCircle className="h-3 w-3" />
+              <AlertDescription className="text-[10px] font-bold">
                 {errorMsg}
               </AlertDescription>
             </Alert>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-5">
-            <div className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-3.5">
+            <div className="space-y-2.5">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Phone className="h-5 w-5" />
+                  <Phone className="h-4 w-4" />
                 </div>
                 <Input
                   type="tel"
                   placeholder="Phone Number"
-                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base font-medium"
+                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
@@ -123,12 +119,12 @@ export default function RegisterPage() {
 
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Lock className="h-5 w-5" />
+                  <Lock className="h-4 w-4" />
                 </div>
                 <Input
                   type="password"
                   placeholder="Password"
-                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base font-medium"
+                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -137,12 +133,12 @@ export default function RegisterPage() {
 
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Lock className="h-5 w-5" />
+                  <Lock className="h-4 w-4" />
                 </div>
                 <Input
                   type="password"
                   placeholder="Confirm Password"
-                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base font-medium"
+                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -151,33 +147,33 @@ export default function RegisterPage() {
 
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Ticket className="h-5 w-5" />
+                  <Ticket className="h-4 w-4" />
                 </div>
                 <Input
                   type="text"
                   placeholder="Invite code (Optional)"
-                  className="pl-12 h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl text-base font-medium"
+                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value)}
                 />
               </div>
             </div>
 
-            <div className="space-y-4 pt-2">
+            <div className="space-y-3 pt-1">
               <Button 
                 type="submit" 
                 disabled={loading}
-                className="w-full h-14 rounded-2xl monexo-gradient text-white font-bold text-lg shadow-lg shadow-blue-100 active:scale-[0.98] transition-all"
+                className="w-full h-12 rounded-xl bg-[#2A85FF] hover:bg-[#1A7BFF] text-white font-black text-sm shadow-md active:scale-[0.98] transition-all"
               >
-                {loading ? "Creating Account..." : "Register Now"}
-                {!loading && <ChevronRight className="ml-2 h-5 w-5" />}
+                {loading ? "CREATING ACCOUNT..." : "REGISTER NOW"}
+                {!loading && <ChevronRight className="ml-1 h-4 w-4" />}
               </Button>
 
               <div className="text-center">
-                <p className="text-sm text-slate-400 font-medium">
+                <p className="text-[12px] text-slate-400 font-medium">
                   Already have an account?{' '}
-                  <Link href="/login" className="text-primary font-extrabold hover:underline">
-                    Sign In
+                  <Link href="/login" className="text-[#2A85FF] font-black hover:underline uppercase tracking-tight">
+                    Sign In &raquo;
                   </Link>
                 </p>
               </div>
@@ -186,8 +182,8 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <div className="mt-auto py-8 text-center">
-        <p className="text-slate-300 text-[10px] font-bold tracking-[0.4em] uppercase">SECURE UPI PAYMENTS v2.0</p>
+      <div className="mt-auto py-6 text-center">
+        <p className="text-slate-300 text-[9px] font-black tracking-[0.3em] uppercase">SECURE UPI PAYMENTS v2.0</p>
       </div>
     </div>
   );
