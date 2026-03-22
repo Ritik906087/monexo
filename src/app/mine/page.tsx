@@ -82,47 +82,44 @@ export default function MinePage() {
 
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden font-sans">
-      {/* Header - Compact but bold */}
+      {/* Header - Branded MONEXO-PAY */}
       <div className="text-center py-3 bg-white border-b flex items-center justify-center relative shadow-sm">
-        <h1 className="text-[16px] font-extrabold text-slate-800 uppercase tracking-tight">Profile</h1>
-        <div className="absolute right-4">
-          <Settings className="h-5 w-5 text-slate-400" />
-        </div>
+        <h1 className="text-[18px] font-black text-blue-600 italic tracking-tighter uppercase">MONEXO-PAY</h1>
       </div>
 
-      {/* Profile Section - Enhanced Visibility */}
-      <div className="px-5 py-4 flex items-center justify-between border-b border-slate-50 bg-slate-50/20">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-14 w-14 border-2 border-white shadow-md">
+      {/* Profile Section - Compact */}
+      <div className="px-5 py-3 flex items-center justify-between border-b border-slate-50 bg-slate-50/20">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12 border-2 border-white shadow-sm">
             <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/150`} />
-            <AvatarFallback className="bg-blue-100 text-blue-600 text-sm font-black">U</AvatarFallback>
+            <AvatarFallback className="bg-blue-100 text-blue-600 text-xs font-black">U</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col gap-0.5">
-             <span className="text-[15px] font-black text-slate-900 uppercase tracking-tight">
+          <div className="flex flex-col gap-0">
+             <span className="text-[14px] font-black text-slate-900 uppercase tracking-tight">
                User_{userData?.numeric_id?.toString().slice(-4) || '7092'}
              </span>
-             <div className="flex items-center gap-4">
+             <div className="flex items-center gap-3">
                <div className="flex items-center gap-1">
                  <ShieldCheck className="h-3 w-3 text-green-500" />
-                 <span className="text-[11px] font-bold text-slate-400 uppercase">Reward: {userData?.reward_percent || 5}%</span>
+                 <span className="text-[10px] font-bold text-slate-400 uppercase">Reward: {userData?.reward_percent || 5}%</span>
                </div>
-               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">ID: {userData?.numeric_id || '530087092'}</span>
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ID: {userData?.numeric_id || '530087092'}</span>
              </div>
           </div>
         </div>
-        <ChevronRight className="text-slate-300 h-5 w-5" />
+        <ChevronRight className="text-slate-300 h-4 w-4" />
       </div>
 
-      {/* Menu List - Perfectly Spaced to fit without scroll */}
+      {/* Menu List - Optimized for No-Scroll */}
       <div className="flex-1 overflow-hidden">
         {menuItems.map((item, idx) => (
           <div 
             key={idx} 
-            className="flex items-center justify-between px-5 py-3 active:bg-slate-50 transition-colors border-b border-slate-50/80 last:border-0"
+            className="flex items-center justify-between px-5 py-[10px] active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
           >
             <div className="flex items-center gap-4">
-              <div className="w-6 h-6 flex items-center justify-center">
-                {typeof item.icon === 'function' ? <item.icon /> : <item.icon className={`h-5 w-5 ${item.color}`} strokeWidth={2.5} />}
+              <div className="w-5 h-5 flex items-center justify-center">
+                {typeof item.icon === 'function' ? <item.icon /> : <item.icon className={`h-4 w-4 ${item.color}`} strokeWidth={2.5} />}
               </div>
               <span className="text-[13px] font-bold text-slate-700 uppercase tracking-tight">{item.label}</span>
             </div>
@@ -139,25 +136,25 @@ export default function MinePage() {
       </div>
 
       {/* Action Section - Fixed at Bottom */}
-      <div className="px-5 py-4 border-t border-slate-100 bg-white relative">
+      <div className="px-5 py-3 border-t border-slate-100 bg-white relative">
         <Button 
           variant="outline" 
           onClick={handleSignOut}
-          className="w-full h-12 rounded-2xl border-slate-200 text-red-500 font-black text-[13px] hover:bg-red-50 hover:border-red-100 transition-all shadow-sm uppercase tracking-widest active:scale-95"
+          className="w-full h-11 rounded-2xl border-slate-200 text-red-500 font-black text-[12px] hover:bg-red-50 hover:border-red-100 transition-all shadow-sm uppercase tracking-widest active:scale-95"
         >
           Sign Out
         </Button>
         
         {/* Floating Headphones Icon */}
-        <div className="absolute right-8 -top-6 bg-white p-2.5 rounded-full shadow-xl border border-slate-100 active:scale-90 transition-transform">
-          <Headphones className="h-6 w-6 text-blue-500" />
+        <div className="absolute right-8 -top-5 bg-white p-2 rounded-full shadow-lg border border-slate-100 active:scale-90 transition-transform">
+          <Headphones className="h-5 w-5 text-blue-500" />
         </div>
       </div>
 
       {/* Footer Info - Compact */}
-      <div className="text-center pb-6 bg-white">
-        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Version 2.0.0 PRO</p>
-        <p className="text-[9px] font-black text-blue-500 mt-1 uppercase cursor-pointer hover:underline">
+      <div className="text-center pb-4 bg-white">
+        <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Version 2.0.0 PRO</p>
+        <p className="text-[8px] font-black text-blue-500 mt-0.5 uppercase cursor-pointer hover:underline">
           Download APK Official
         </p>
       </div>
