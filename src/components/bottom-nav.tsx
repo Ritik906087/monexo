@@ -16,13 +16,12 @@ export function BottomNav() {
     { name: 'Mine', icon: User, path: '/mine' },
   ];
 
-  // Don't show nav on login/register pages
-  if (pathname === '/login' || pathname === '/register' || pathname === '/') {
-    return null;
-  }
+  // Only show nav on internal pages
+  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/';
+  if (isAuthPage) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t flex items-center justify-around py-3 px-2 z-50">
+    <div className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-100 flex items-center justify-around py-2 px-2 z-50 h-20 safe-area-bottom">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.path;
@@ -31,12 +30,22 @@ export function BottomNav() {
             key={item.path} 
             href={item.path}
             className={cn(
-              "flex flex-col items-center gap-1 transition-colors",
-              isActive ? "text-primary font-semibold" : "text-muted-foreground"
+              "flex flex-col items-center justify-center gap-1 transition-all duration-300 w-16 h-12 rounded-xl",
+              isActive ? "text-primary scale-110" : "text-slate-400 hover:text-slate-600"
             )}
           >
-            <Icon className="h-6 w-6" />
-            <span className="text-[11px]">{item.name}</span>
+            <div className={cn(
+              "p-1 rounded-lg transition-colors",
+              isActive ? "bg-primary/10" : "bg-transparent"
+            )}>
+              <Icon className="h-6 w-6" strokeWidth={isActive ? 2.5 : 2} />
+            </div>
+            <span className={cn(
+              "text-[10px] font-bold tracking-tight",
+              isActive ? "opacity-100" : "opacity-70"
+            )}>
+              {item.name}
+            </span>
           </Link>
         );
       })}

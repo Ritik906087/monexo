@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -7,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
-import { cn } from '@/lib/utils';
+import { Phone, Lock, Ticket, UserPlus } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 export default function RegisterPage() {
   const [phone, setPhone] = useState('');
@@ -22,27 +22,13 @@ export default function RegisterPage() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (password.length < 6) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 6 characters.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Passwords do not match.", variant: "destructive" });
       return;
     }
 
     setLoading(true);
     try {
       const email = `${phone}@monexo.app`;
-      
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -53,145 +39,118 @@ export default function RegisterPage() {
       if (authData.user) {
         const { error: dbError } = await supabase
           .from('users')
-          .insert([
-            {
-              id: authData.user.id,
-              phone: phone,
-              invite_code: inviteCode || null,
-            },
-          ]);
+          .insert([{
+            id: authData.user.id,
+            phone: phone,
+            invite_code: inviteCode || null,
+          }]);
 
         if (dbError) throw dbError;
 
-        toast({
-          title: "Success",
-          description: "Welcome to Monexo UPI! Account created.",
-        });
+        toast({ title: "Success", description: "Account created successfully!" });
         router.push('/dashboard');
       }
     } catch (error: any) {
-      toast({
-        title: "Registration Failed",
-        description: error.message || "An error occurred during registration.",
-        variant: "destructive",
-      });
+      toast({ title: "Failed", description: error.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1A7BFF] to-[#0055FF] flex flex-col items-center animate-in fade-in duration-700 font-sans">
+    <div className="page-fade min-h-full flex flex-col bg-[#F8FAFC]">
       {/* Header Section */}
-      <div className="w-full px-10 pt-16 pb-8">
-        <h1 className="text-5xl font-bold text-white tracking-tight leading-tight">welcome</h1>
-        <p className="text-white/60 text-sm font-medium tracking-wider mt-1 uppercase">Monexo UPI</p>
+      <div className="monexo-gradient pt-16 pb-12 px-8">
+        <h1 className="text-4xl font-bold text-white tracking-tight">Welcome to</h1>
+        <p className="text-white/80 text-xl font-medium tracking-wide">Monexo UPI</p>
       </div>
 
-      {/* Register Form Card */}
-      <div className="w-full px-5 z-20">
-        <div className="bg-white rounded-[25px] p-8 shadow-2xl space-y-8 min-h-[500px] flex flex-col">
-          <form onSubmit={handleRegister} className="space-y-6 flex-1">
-            
-            {/* Phone Input with Floating Label */}
-            <div className="relative group">
-              <input
-                type="tel"
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
-                placeholder=" "
-                required
-              />
-              <label 
-                htmlFor="phone"
-                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
-              >
-                Phone
-              </label>
+      {/* Form Container */}
+      <div className="px-5 -mt-8 flex-1">
+        <div className="bg-white rounded-[25px] p-8 shadow-2xl space-y-8 flex flex-col">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-bold text-slate-800">Registration</h2>
+            <p className="text-sm text-slate-500">Fill details to join us</p>
+          </div>
+
+          <form onSubmit={handleRegister} className="space-y-5">
+            <div className="space-y-4">
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Phone className="h-5 w-5" />
+                </div>
+                <Input
+                  type="tel"
+                  placeholder="Phone"
+                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <Input
+                  type="password"
+                  placeholder="Confirm Password"
+                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Ticket className="h-5 w-5" />
+                </div>
+                <Input
+                  type="text"
+                  placeholder="Invite code (Optional)"
+                  className="pl-12 h-14 bg-slate-50 border-none rounded-2xl text-base"
+                  value={inviteCode}
+                  onChange={(e) => setInviteCode(e.target.value)}
+                />
+              </div>
             </div>
 
-            {/* Password Input */}
-            <div className="relative group">
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
-                placeholder=" "
-                required
-              />
-              <label 
-                htmlFor="password"
-                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
-              >
-                Password
-              </label>
-            </div>
-
-            {/* Confirm Password */}
-            <div className="relative group">
-              <input
-                type="password"
-                id="confirm"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
-                placeholder=" "
-                required
-              />
-              <label 
-                htmlFor="confirm"
-                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
-              >
-                Confirm Password
-              </label>
-            </div>
-
-            {/* Invite Code */}
-            <div className="relative group">
-              <input
-                type="text"
-                id="invite"
-                value={inviteCode}
-                onChange={(e) => setInviteCode(e.target.value)}
-                className="peer w-full h-14 bg-gray-50 border-b-2 border-transparent px-4 pt-4 outline-none transition-all focus:border-[#0033FF] focus:bg-white rounded-t-lg"
-                placeholder=" "
-              />
-              <label 
-                htmlFor="invite"
-                className="absolute left-4 top-4 text-gray-400 text-base transition-all peer-focus:text-xs peer-focus:top-1 peer-focus:text-[#0033FF] peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:top-1"
-              >
-                Inviter code (Optional)
-              </label>
-            </div>
-
-            {/* Login Link */}
             <div className="text-right">
-              <Link href="/login" className="text-sm text-[#0033FF] font-semibold hover:underline">
-                Already have account? Go login
+              <Link href="/login" className="text-sm text-primary font-semibold hover:underline">
+                Already have account? Login
               </Link>
             </div>
 
-            {/* Register Button */}
-            <div className="pt-4">
-              <Button 
-                type="submit" 
-                disabled={loading}
-                className="w-full h-[56px] rounded-[14px] bg-gradient-to-r from-[#0033FF] to-[#0055FF] text-white font-bold text-lg hover:opacity-90 transition-all shadow-xl active:scale-95"
-              >
-                {loading ? "Registering..." : "Register"}
-              </Button>
-            </div>
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="w-full h-14 rounded-2xl monexo-gradient text-white font-bold text-lg shadow-lg active:scale-95 transition-all"
+            >
+              <UserPlus className="mr-2 h-5 w-5" />
+              {loading ? "Registering..." : "Register"}
+            </Button>
           </form>
         </div>
       </div>
 
-      {/* Footer Branding */}
-      <div className="mt-auto mb-10 pt-10">
-        <p className="text-white/40 text-[11px] font-bold tracking-[0.3em] uppercase">MONEXO UPI</p>
+      <div className="mt-auto py-8 text-center">
+        <p className="text-slate-400 text-[10px] font-bold tracking-[0.4em] uppercase">MONEXO UPI</p>
       </div>
     </div>
   );
