@@ -107,8 +107,8 @@ export default function RegisterPage() {
 
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
-      {/* Premium Header Section - Increased Padding for "Create" text visibility */}
-      <div className="bg-[#2A85FF] pt-20 pb-16 px-8 relative overflow-hidden shrink-0">
+      {/* Premium Header Section - Optimized for No-Scroll */}
+      <div className="bg-[#2A85FF] pt-14 pb-12 px-8 relative overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute top-20 -left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
         <div className="relative z-10 space-y-0">
@@ -119,16 +119,16 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Form Container */}
-      <div className="px-5 -mt-10 flex-1 relative z-20 overflow-y-auto smooth-scroll pb-10">
-        <div className="bg-white rounded-[32px] p-6 shadow-xl space-y-5">
-          <div className="space-y-0.5">
-            <h2 className="text-xl font-bold text-slate-800">Registration</h2>
-            <p className="text-[12px] text-slate-400 font-medium tracking-tight">Join the premium UPI network</p>
+      {/* Form Container - Fixed Position */}
+      <div className="px-5 -mt-8 flex-1 relative z-20 flex flex-col overflow-hidden pb-4">
+        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col h-full max-h-[520px]">
+          <div className="space-y-0.5 mb-4 shrink-0">
+            <h2 className="text-lg font-bold text-slate-800">Registration</h2>
+            <p className="text-[11px] text-slate-400 font-medium tracking-tight leading-none">Join the premium UPI network</p>
           </div>
 
           {errorMsg && (
-            <Alert variant="destructive" className="py-2 bg-red-50 border-red-100 text-red-600 rounded-xl animate-in fade-in">
+            <Alert variant="destructive" className="py-1.5 px-3 bg-red-50 border-red-100 text-red-600 rounded-xl mb-3 shrink-0">
               <AlertCircle className="h-3 w-3" />
               <AlertDescription className="text-[10px] font-bold">
                 {errorMsg}
@@ -136,8 +136,8 @@ export default function RegisterPage() {
             </Alert>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-3.5">
-            <div className="space-y-2.5">
+          <form onSubmit={handleRegister} className="flex-1 flex flex-col justify-between overflow-hidden">
+            <div className="space-y-2.5 overflow-y-auto pr-1">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <Phone className="h-4 w-4" />
@@ -145,7 +145,7 @@ export default function RegisterPage() {
                 <Input
                   type="tel"
                   placeholder="Phone Number"
-                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
+                  className="pl-11 h-11 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
@@ -159,7 +159,7 @@ export default function RegisterPage() {
                 <Input
                   type="password"
                   placeholder="Password"
-                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
+                  className="pl-11 h-11 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -173,7 +173,7 @@ export default function RegisterPage() {
                 <Input
                   type="password"
                   placeholder="Confirm Password"
-                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
+                  className="pl-11 h-11 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -187,7 +187,7 @@ export default function RegisterPage() {
                 <Input
                   type="text"
                   placeholder="Invite code (Optional)"
-                  className={`pl-11 h-12 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium ${isInviteFixed ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50'}`}
+                  className={`pl-11 h-11 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium ${isInviteFixed ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50'}`}
                   value={inviteCode}
                   onChange={(e) => !isInviteFixed && setInviteCode(e.target.value)}
                   readOnly={isInviteFixed}
@@ -200,7 +200,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="space-y-3 pt-1">
+            <div className="space-y-3 pt-4 shrink-0 mt-auto">
               <Button 
                 type="submit" 
                 disabled={loading}
@@ -211,7 +211,7 @@ export default function RegisterPage() {
               </Button>
 
               <div className="text-center">
-                <p className="text-[12px] text-slate-400 font-medium">
+                <p className="text-[11px] text-slate-400 font-medium">
                   Already have an account?{' '}
                   <Link href="/login" className="text-[#2A85FF] font-black hover:underline uppercase tracking-tight">
                     Sign In &raquo;
@@ -223,8 +223,8 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <div className="mt-auto py-6 text-center shrink-0">
-        <p className="text-slate-300 text-[9px] font-black tracking-[0.3em] uppercase">SECURE UPI PAYMENTS v2.0</p>
+      <div className="mt-auto py-3 text-center shrink-0">
+        <p className="text-slate-300 text-[8px] font-black tracking-[0.3em] uppercase leading-none">SECURE UPI PAYMENTS v2.0</p>
       </div>
     </div>
   );
