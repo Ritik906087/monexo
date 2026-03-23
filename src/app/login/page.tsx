@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -63,7 +64,7 @@ export default function LoginPage() {
 
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden select-none">
-      {/* Top Branding Section - Shrink-0 prevents keyboard squashing it */}
+      {/* Fixed Branding Header */}
       <div className="bg-[#2A85FF] relative pt-12 pb-14 px-8 flex flex-col items-center overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
         <h1 className="text-4xl font-black text-white tracking-tighter mb-1 relative z-10 italic">MONEXO</h1>
@@ -72,7 +73,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Login Form Container - Flex-1 with min-h-0 allows internal scrolling when keyboard is up */}
+      {/* Login Card - Flexible height with internal scroll */}
       <div className="flex-1 px-5 -mt-8 relative z-20 overflow-hidden flex flex-col pb-4">
         <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col flex-1 min-h-0">
           <div className="space-y-0.5 shrink-0 mb-4">
@@ -90,7 +91,7 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleLogin} className="flex-1 flex flex-col min-h-0">
-            {/* Scrollable area for inputs */}
+            {/* Scrollable inputs inside card */}
             <div className="flex-1 overflow-y-auto smooth-scroll space-y-4 pr-1 mb-4">
               <div className="space-y-3">
                 <div className="relative">
@@ -135,7 +136,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Action Buttons area - Shrink-0 keeps it visible or at the bottom of the card */}
+            {/* Fixed Buttons */}
             <div className="space-y-4 pt-2 shrink-0">
               <Button 
                 type="submit" 

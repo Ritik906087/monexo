@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { Phone, Lock, Ticket, ChevronRight, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,7 +33,7 @@ export default function RegisterPage() {
     }
     checkUser();
 
-    // Correctly parsing the hash-based invite code
+    // Handle invite code from URL search params or hash
     const queryInvite = searchParams.get('invite');
     const url = typeof window !== 'undefined' ? window.location.href : '';
     const hashInviteMatch = url.match(/[?&]invite=([^&]+)/);
@@ -103,8 +104,8 @@ export default function RegisterPage() {
 
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden select-none">
-      {/* Premium Header Section - Shrink-0 to protect against keyboard squeeze */}
-      <div className="bg-[#2A85FF] pt-14 pb-14 px-8 relative overflow-hidden shrink-0">
+      {/* Fixed Header Section - Protected from keyboard squash */}
+      <div className="bg-[#2A85FF] pt-16 pb-14 px-8 relative overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute top-20 -left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
         <div className="relative z-10 space-y-0">
@@ -115,7 +116,7 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Form Container - Flex-1 and min-h-0 allows internal card scrolling when viewport height changes */}
+      {/* Main Form Area - Flex-1 with min-h-0 for internal scroll when keyboard is up */}
       <div className="px-5 -mt-10 flex-1 relative z-20 flex flex-col overflow-hidden pb-4">
         <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col flex-1 min-h-0">
           <div className="space-y-0.5 mb-4 shrink-0">
@@ -133,7 +134,7 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleRegister} className="flex-1 flex flex-col min-h-0">
-            {/* Scrollable Form Content */}
+            {/* Scrollable Form Content Inside Card */}
             <div className="flex-1 overflow-y-auto smooth-scroll space-y-3 pr-1 mb-4">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -191,13 +192,13 @@ export default function RegisterPage() {
                 />
                 {isInviteFixed && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <div className="bg-blue-100 text-[#2A85FF] text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Fixed</div>
+                    <div className="bg-blue-100 text-[#2A85FF] text-[8px] font-black px-1.5 py-0.5 rounded uppercase">Locked</div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Bottom Button Section - Fixed relative to card bottom */}
+            {/* Fixed Action Buttons */}
             <div className="space-y-3 pt-2 shrink-0">
               <Button 
                 type="submit" 
@@ -221,5 +222,17 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-full bg-slate-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2A85FF]"></div>
+      </div>
+    }>
+      <RegisterForm />
+    </Suspense>
   );
 }
