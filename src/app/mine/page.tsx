@@ -92,7 +92,7 @@ export default function MinePage() {
   ];
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-hidden font-sans pb-20">
+    <div className="h-full flex flex-col bg-white overflow-hidden font-sans pb-0">
       {/* Header - Branded MONEXO-PAY */}
       <div className="text-center py-3 bg-[#2A85FF] flex items-center justify-center relative shadow-sm shrink-0">
         <h1 className="text-[18px] font-black text-white italic tracking-tighter uppercase">MONEXO-PAY</h1>
@@ -136,8 +136,8 @@ export default function MinePage() {
         </div>
       </div>
 
-      {/* Menu List - Optimized for No-Scroll */}
-      <div className="flex-1 overflow-y-auto smooth-scroll">
+      {/* Menu List - Scrollable */}
+      <div className="flex-1 overflow-y-auto smooth-scroll pb-24">
         {menuItems.map((item, idx) => (
           <div 
             key={idx} 
@@ -161,7 +161,7 @@ export default function MinePage() {
           </div>
         ))}
 
-        {/* Action Section - Injected in Scroll */}
+        {/* Action Section */}
         <div className="px-5 py-6 space-y-4">
           <Button 
             variant="outline" 
@@ -177,13 +177,6 @@ export default function MinePage() {
               Download APK Official
             </p>
           </div>
-        </div>
-      </div>
-
-      {/* Floating Service Icon */}
-      <div className="fixed right-6 bottom-24 z-[110]">
-        <div className="bg-white p-3 rounded-full shadow-2xl border border-blue-50 active:scale-90 transition-transform cursor-pointer animate-bounce">
-          <Headphones className="h-6 w-6 text-[#2A85FF]" />
         </div>
       </div>
     </div>

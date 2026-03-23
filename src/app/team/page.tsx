@@ -69,13 +69,13 @@ export default function TeamPage() {
   );
 
   return (
-    <div className="flex flex-col h-full bg-white animate-slide-up overflow-hidden relative pb-20">
+    <div className="flex flex-col h-full bg-white animate-slide-up overflow-hidden relative pb-0">
       {/* Page Header */}
       <div className="bg-white pt-3 pb-2 text-center border-b border-slate-50 shrink-0">
         <h1 className="text-[16px] font-black text-slate-800 uppercase tracking-tight">Team Center</h1>
       </div>
 
-      <div className="flex-1 overflow-y-auto smooth-scroll">
+      <div className="flex-1 overflow-y-auto smooth-scroll pb-24">
         {/* Real Profile Header Section */}
         <div className="px-5 py-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 shrink-0">
           <div className="flex items-center gap-3">
@@ -197,12 +197,6 @@ export default function TeamPage() {
               <p className="text-[12px] font-black text-slate-800">Buy Amount × <span className="text-orange-500">0.1 %</span></p>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="fixed right-6 bottom-24 z-[110]">
-        <div className="bg-white p-3 rounded-full shadow-2xl border border-blue-50 active:scale-90 transition-transform cursor-pointer animate-bounce">
-          <Headphones className="h-6 w-6 text-[#2A85FF]" />
         </div>
       </div>
     </div>

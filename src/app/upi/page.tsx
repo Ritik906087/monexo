@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -25,7 +26,7 @@ export default function UPIPage() {
         <h1 className="text-[15px] font-black text-[#1e293b] uppercase tracking-[0.1em]">UPI Management</h1>
       </div>
 
-      {/* Main Scrollable Area (Limited to prevent actual scrolling if possible) */}
+      {/* Main Scrollable Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Red Warning Banner - Slim */}
         <div className="bg-red-50 px-4 py-1.5 flex items-center justify-center gap-2 border-b border-red-100 shrink-0">
@@ -68,7 +69,7 @@ export default function UPIPage() {
         </div>
 
         {/* UPI Account Card - Optimized for space */}
-        <div className="p-3 space-y-3 overflow-y-auto smooth-scroll">
+        <div className="p-3 space-y-3 overflow-y-auto smooth-scroll pb-24">
           <div className="bg-white rounded-[20px] border border-slate-100 shadow-sm overflow-hidden">
             <div className="p-3 flex items-start gap-3">
               {/* Avatar Icon */}
@@ -125,7 +126,7 @@ export default function UPIPage() {
             </div>
           </div>
 
-          {/* Status Monitor Section - Aesthetic addition */}
+          {/* Status Monitor Section */}
           <div className="bg-white/50 rounded-[20px] p-3 border border-slate-100">
              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -144,7 +145,7 @@ export default function UPIPage() {
         </div>
       </div>
 
-      {/* Footer Branding - Fixed at bottom */}
+      {/* Footer Branding */}
       <div className="bg-white py-2 text-center border-t border-slate-50 shrink-0">
         <p className="text-[8px] font-black text-slate-300 tracking-[0.3em] uppercase">Secure Terminal v2.0</p>
       </div>
