@@ -50,10 +50,9 @@ export default function DashboardPage() {
 
   return (
     <div className="page-fade min-h-full pb-24 bg-[#f8fafc] overflow-hidden">
-      {/* Premium Compact Notice Banner - Improved UI */}
+      {/* Premium Compact Notice Banner */}
       <div className="px-4 pt-3 animate-slide-up">
         <div className="relative rounded-[28px] overflow-hidden bg-gradient-to-br from-[#2A85FF] to-[#1A7BFF] p-5 text-white shadow-lg shadow-blue-100/50 border border-white/20">
-          {/* Floating Logo Badge - Compact & Refined */}
           <div className="absolute top-3 right-3 w-10 h-10 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-0.5 border border-blue-100 z-20">
              <span className="text-[6px] font-black text-[#2A85FF] leading-none uppercase text-center">MONEXO</span>
              <span className="text-[5px] font-bold text-slate-400 leading-none mt-0.5 uppercase tracking-tighter">UPI</span>
@@ -65,12 +64,9 @@ export default function DashboardPage() {
           </div>
 
           <div className="relative z-10 flex flex-col items-center text-center">
-            {/* Title - Avoids the logo badge with controlled padding */}
             <h2 className="text-[17px] font-black italic tracking-tighter uppercase leading-tight mb-3 px-10 drop-shadow-sm">
               MONEXOPAY IMPORTANT NOTICE!!
             </h2>
-            
-            {/* Instruction Text - Clean & Readable */}
             <p className="text-[11.5px] leading-relaxed text-white/95 font-bold drop-shadow-sm px-1">
               If you didn't get tokens in 5 minutes, Pls contact our supporters with a payment screenshot. 
               To sell tokens and receive rupees fast, Pls follow the steps. Do not log in to UPI while selling, 
@@ -80,10 +76,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Balance Card - Photo Layout Match */}
+      {/* Main Balance Card */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="bg-white rounded-[32px] p-6 relative overflow-hidden shadow-sm border border-slate-100">
-          {/* Watermark Background */}
           <div 
             className="absolute inset-0 opacity-[0.08] pointer-events-none" 
             style={{ 
@@ -106,7 +101,10 @@ export default function DashboardPage() {
                   {userData?.itoken_balance?.toFixed(2) || '0.00'}
                 </span>
               </div>
-              <Button className="bg-[#2A85FF] hover:bg-[#1A7BFF] rounded-2xl h-12 px-6 shadow-lg shadow-blue-100 active:scale-95 transition-all gap-2 border-none">
+              <Button 
+                onClick={() => router.push('/buy')}
+                className="bg-[#2A85FF] hover:bg-[#1A7BFF] rounded-2xl h-12 px-6 shadow-lg shadow-blue-100 active:scale-95 transition-all gap-2 border-none"
+              >
                 <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
                   <span className="text-[11px] font-black text-white">₹</span>
                 </div>
@@ -114,7 +112,6 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            {/* Grid Layout - Exact Photo Match */}
             <div className="grid grid-cols-3 gap-y-6 gap-x-2">
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Today Profit</span>
@@ -125,10 +122,18 @@ export default function DashboardPage() {
                 <span className="text-[15px] font-black text-slate-800">{userData?.reward_percent || '5'}%</span>
               </div>
               <div className="row-span-2 flex flex-col gap-3">
-                 <Button variant="outline" className="h-10 rounded-xl border-slate-100 bg-white text-[10px] font-black text-slate-600 shadow-none active:scale-95 px-2 uppercase tracking-tight">
+                 <Button 
+                   onClick={() => router.push('/buy-history')}
+                   variant="outline" 
+                   className="h-10 rounded-xl border-slate-100 bg-white text-[10px] font-black text-slate-600 shadow-none active:scale-95 px-2 uppercase tracking-tight"
+                 >
                    Buy History
                  </Button>
-                 <Button variant="outline" className="h-10 rounded-xl border-slate-100 bg-white text-[10px] font-black text-slate-600 shadow-none active:scale-95 px-2 uppercase tracking-tight">
+                 <Button 
+                   onClick={() => router.push('/sell-history')}
+                   variant="outline" 
+                   className="h-10 rounded-xl border-slate-100 bg-white text-[10px] font-black text-slate-600 shadow-none active:scale-95 px-2 uppercase tracking-tight"
+                 >
                    Sell History
                  </Button>
               </div>

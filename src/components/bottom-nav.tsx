@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -14,9 +15,15 @@ export function BottomNav() {
     setMounted(true);
   }, []);
 
-  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/';
+  // Hide nav bar on auth pages and sub-history pages
+  const isExcludedPage = 
+    pathname === '/login' || 
+    pathname === '/register' || 
+    pathname === '/' ||
+    pathname === '/buy-history' ||
+    pathname === '/sell-history';
   
-  if (!mounted || isAuthPage) return null;
+  if (!mounted || isExcludedPage) return null;
 
   const navItems = [
     { name: 'Home', icon: Home, path: '/dashboard' },

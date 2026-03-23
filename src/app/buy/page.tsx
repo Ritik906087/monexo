@@ -2,14 +2,15 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   Star, 
   ArrowLeftRight, 
   Copy, 
   Globe, 
-  Save, 
   Headphones,
-  Info
+  Info,
+  ChevronLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function BuyPage() {
   const [activeTab, setActiveTab] = useState('UPI');
   const [quantity, setQuantity] = useState('');
+  const router = useRouter();
   const { toast } = useToast();
 
   const buyItems = [
@@ -37,8 +39,14 @@ export default function BuyPage() {
 
   return (
     <div className="flex flex-col h-full bg-[#f8fafc] pb-20 animate-slide-up overflow-hidden">
-      {/* Page Header */}
-      <div className="bg-white pt-3 pb-1.5 text-center border-b border-slate-100 shrink-0">
+      {/* Page Header with Back Button */}
+      <div className="bg-white pt-3 pb-1.5 text-center border-b border-slate-100 shrink-0 relative">
+        <button 
+          onClick={() => router.back()}
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center active:scale-90 transition-all border border-slate-100"
+        >
+          <ChevronLeft className="h-5 w-5 text-slate-600" />
+        </button>
         <h1 className="text-[16px] font-black text-[#1e293b] uppercase tracking-tight">Buy</h1>
       </div>
 
@@ -117,13 +125,12 @@ export default function BuyPage() {
             </div>
           </>
         ) : (
-          /* USDT Tab UI - Exact Photo Match */
+          /* USDT Tab UI */
           <div className="space-y-4 pt-2">
             <div className="text-center">
               <span className="text-[14px] font-bold text-slate-400 tracking-tight">1 USDT ≈ 100 ITokens</span>
             </div>
 
-            {/* Input with Icon */}
             <div className="relative group">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">
                 T
@@ -139,7 +146,6 @@ export default function BuyPage() {
               </div>
             </div>
 
-            {/* Notice Banner */}
             <div className="bg-orange-50 border border-orange-100 py-1.5 px-4 rounded-md flex items-center justify-center gap-2">
               <div className="w-3.5 h-3.5 bg-orange-100 rounded-sm flex items-center justify-center">
                 <Info className="h-2 w-2 text-orange-400" />
@@ -147,7 +153,6 @@ export default function BuyPage() {
               <p className="text-[11px] font-bold text-orange-400">Please enter the value you want buy</p>
             </div>
 
-            {/* QR Code Section */}
             <div className="flex flex-col items-center py-4 bg-white rounded-3xl shadow-sm border border-slate-50">
               <div className="w-40 h-40 bg-white p-2 border-2 border-slate-100 rounded-2xl mb-3 overflow-hidden">
                 <img 
@@ -162,7 +167,6 @@ export default function BuyPage() {
             </div>
 
             <div className="space-y-4 bg-white p-4 rounded-3xl shadow-sm border border-slate-50">
-              {/* Wallet Address */}
               <div className="flex items-center justify-between group" onClick={() => handleCopy('TYfyV4FsVmCWin26KqjMSRGHzLN6pzk9dp')}>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-bold text-slate-300 uppercase">Wallet Address</span>
@@ -171,7 +175,6 @@ export default function BuyPage() {
                 <Copy className="h-5 w-5 text-slate-400 group-active:scale-90 transition-transform" />
               </div>
 
-              {/* Network */}
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-[10px] font-bold text-slate-300 uppercase">Network</span>
@@ -180,7 +183,6 @@ export default function BuyPage() {
                 <Globe className="h-5 w-5 text-slate-800" />
               </div>
 
-              {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <Button variant="outline" className="h-11 rounded-xl border-slate-100 text-slate-600 font-black text-[12px] uppercase tracking-widest active:scale-95">
                   Save Image
@@ -194,14 +196,12 @@ export default function BuyPage() {
               </div>
             </div>
 
-            {/* Last USDT Buy Area */}
             <div className="relative pt-2">
               <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 px-1">Last 2 Usdt buy</h3>
               <div className="bg-white rounded-2xl py-6 flex flex-col items-center justify-center border border-dashed border-slate-200">
                 <span className="text-[10px] font-bold text-slate-300 uppercase">No Records Found</span>
               </div>
               
-              {/* Support Icon */}
               <div className="absolute right-0 -bottom-2 bg-blue-50 p-2 rounded-full border border-blue-100 shadow-sm animate-bounce">
                 <Headphones className="h-5 w-5 text-[#2A85FF]" />
               </div>
