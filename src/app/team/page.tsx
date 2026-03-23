@@ -79,9 +79,10 @@ export default function TeamPage() {
         {/* Real Profile Header Section */}
         <div className="px-5 py-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 shrink-0">
           <div className="flex items-center gap-3">
-            <Avatar className="h-14 w-14 border-2 border-white shadow-md">
-              <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/150`} />
-              <AvatarFallback className="bg-blue-50 text-blue-600 font-black uppercase text-xs">U</AvatarFallback>
+            <Avatar className="h-14 w-14 border-2 border-white shadow-md bg-blue-50">
+              <AvatarFallback className="bg-blue-50 text-blue-600">
+                <User className="h-7 w-7" />
+              </AvatarFallback>
             </Avatar>
             <div className="flex flex-col gap-1">
               <div 
@@ -93,7 +94,7 @@ export default function TeamPage() {
                 </span>
                 <Copy className="h-3 w-3 text-slate-400" />
               </div>
-              <span className="text-[11px] font-bold text-slate-400">Reward: {userData?.reward_percent || 5}%</span>
+              <span className="text-[11px] font-bold text-slate-400">Reward: {userData?.reward_percent || 7}%</span>
             </div>
           </div>
           <div 

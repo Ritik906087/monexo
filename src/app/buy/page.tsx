@@ -24,9 +24,9 @@ export default function BuyPage() {
   const { toast } = useToast();
 
   const buyItems = [
-    { id: '48540735793', price: 2241, reward: 112.05, itoken: 2353.05, rewardPercent: 5 },
-    { id: '48540735794', price: 5500, reward: 275, itoken: 5775, rewardPercent: 5 },
-    { id: '48540735795', price: 1000, reward: 50, itoken: 1050, rewardPercent: 5 },
+    { id: '48540735793', price: 2241, reward: 156.87, itoken: 2397.87, rewardPercent: 7 },
+    { id: '48540735794', price: 5500, reward: 385, itoken: 5885, rewardPercent: 7 },
+    { id: '48540735795', price: 1000, reward: 70, itoken: 1070, rewardPercent: 7 },
   ];
 
   const handleCopy = (text: string) => {

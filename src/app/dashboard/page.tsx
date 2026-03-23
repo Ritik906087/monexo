@@ -119,7 +119,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex flex-col">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">Reward</span>
-                <span className="text-[15px] font-black text-slate-800">{userData?.reward_percent || '5'}%</span>
+                <span className="text-[15px] font-black text-slate-800">{userData?.reward_percent || '7'}%</span>
               </div>
               <div className="row-span-2 flex flex-col gap-3">
                  <Button 

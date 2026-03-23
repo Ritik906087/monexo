@@ -92,13 +92,11 @@ export default function MinePage() {
         <h1 className="text-[14px] font-black text-white tracking-[0.2em] uppercase">MONEXO-PAY</h1>
       </div>
 
-      {/* Profile Section - Updated Avatar & Reward 7% */}
+      {/* Profile Section - Stacked Info & Human Body Avatar */}
       <div className="px-5 py-3 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-12 w-12 border-2 border-white shadow-sm bg-blue-50">
-            {/* Custom Human Illustration placeholder for a professional look */}
-            <AvatarImage src={`https://picsum.photos/seed/user66/200`} />
-            <AvatarFallback className="bg-blue-100 text-blue-600">
+            <AvatarFallback className="bg-blue-50 text-blue-600">
               <User className="h-6 w-6" />
             </AvatarFallback>
           </Avatar>
@@ -134,7 +132,6 @@ export default function MinePage() {
           >
             <div className="flex items-center gap-3.5">
               <div className="w-5 h-5 flex items-center justify-center">
-                {/* Fixed conditional icon rendering */}
                 {typeof item.icon === 'function' ? (
                   item.label === 'IToken' ? (
                     <item.icon />
