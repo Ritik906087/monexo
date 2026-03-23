@@ -64,12 +64,24 @@ export default function DashboardPage() {
           {/* Circular accents like in photo */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
           
+          {/* Floating Logo Badge Placeholder - Adjusted positioning and z-index */}
+          <div className="absolute top-2 right-4 w-12 h-12 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center p-1 border-2 border-[#2A85FF] z-20">
+             <span className="text-[6px] font-black text-[#2A85FF] leading-none uppercase text-center">MONEXO</span>
+             <span className="text-[5px] font-bold text-slate-400 leading-none mt-0.5 uppercase">UPI</span>
+             <div className="flex gap-0.5 mt-1">
+               <div className="w-2 h-0.5 bg-red-500"></div>
+               <div className="w-2 h-0.5 bg-yellow-400"></div>
+               <div className="w-2 h-0.5 bg-blue-500"></div>
+             </div>
+          </div>
+
           <div className="relative z-10 flex flex-col items-center text-center">
-            <h2 className="text-[18px] font-black italic tracking-tighter uppercase leading-none mb-3 drop-shadow-md">
+            {/* Added px-10 to prevent overlap with logo in corners */}
+            <h2 className="text-[17px] font-black italic tracking-tighter uppercase leading-none mb-3 drop-shadow-md px-10">
               MONEXOPAY IMPORTANT NOTICE!!
             </h2>
             
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/20">
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/20 w-full">
               <p className="text-[10px] leading-tight text-white font-bold text-center">
                 If you didn't get tokens in 5 minutes, Pls contact our supporters with a payment screenshot. 
                 To sell tokens and receive rupees fast, Pls follow the steps. Do not log in to UPI while selling, 
@@ -77,24 +89,13 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-
-          {/* Floating Logo Badge Placeholder - Visual Match */}
-          <div className="absolute top-2 right-4 w-12 h-12 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center p-1 border-2 border-[#2A85FF]">
-             <span className="text-[6px] font-black text-[#2A85FF] leading-none uppercase">MONEXO</span>
-             <span className="text-[5px] font-bold text-slate-400 leading-none mt-0.5">UPI</span>
-             <div className="flex gap-0.5 mt-1">
-               <div className="w-2 h-0.5 bg-red-500"></div>
-               <div className="w-2 h-0.5 bg-yellow-400"></div>
-               <div className="w-2 h-0.5 bg-blue-500"></div>
-             </div>
-          </div>
         </div>
       </div>
 
       {/* Main Balance Card - Photo Layout Match */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="bg-white rounded-[28px] p-5 relative overflow-hidden shadow-sm border border-slate-100">
-          {/* Watermark - As requested previously */}
+          {/* Watermark */}
           <div 
             className="absolute inset-0 opacity-[0.12] pointer-events-none" 
             style={{ 
@@ -129,7 +130,6 @@ export default function DashboardPage() {
 
             {/* Stats Grid - Photo Matching 3-Column Layout */}
             <div className="grid grid-cols-3 gap-4 items-center">
-              {/* Column 1 */}
               <div className="space-y-4">
                 <div className="flex flex-col">
                   <span className="text-[11px] font-bold text-slate-400">Today Profit</span>
@@ -141,7 +141,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Column 2 */}
               <div className="space-y-4">
                 <div className="flex flex-col">
                   <span className="text-[11px] font-bold text-slate-400">Reward</span>
@@ -153,7 +152,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Column 3 - Buttons */}
               <div className="space-y-3">
                  <Button variant="outline" className="w-full h-11 rounded-xl border-slate-100 bg-white text-[11px] font-bold text-slate-600 shadow-none active:scale-95 px-3">
                    Buy History
@@ -167,7 +165,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Ticker - Welcome Ticker from Photo */}
+      {/* Ticker */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
         <div className="bg-white rounded-xl py-2 px-4 flex items-center justify-between shadow-sm border border-slate-50">
           <div className="flex items-center gap-2">
@@ -178,7 +176,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* News Section - Visual Match */}
+      {/* News Section */}
       <div className="mt-4 px-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
         <div className="bg-white rounded-[24px] p-4 shadow-sm border border-slate-50">
           <div className="flex items-center justify-between mb-4 border-b border-slate-50 pb-2">
