@@ -10,6 +10,7 @@ import {
   Copy, 
   Headphones,
   User,
+  ShieldCheck
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -47,22 +48,18 @@ export default function TeamPage() {
     fetchUserData();
   }, [router]);
 
-  // Generate real dynamic working temporary invite link using current origin and numeric_id
-  const getInviteLink = () => {
-    // Use numeric_id as the unique referral code for the user
-    const code = userData?.numeric_id || 'MONEXO';
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    // Format requested: [origin]/#/register?invite=REAL_CODE
-    return `${origin}/#/register?invite=${code}`;
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${label} has been copied to clipboard.`,
+    });
   };
 
-  const handleCopyLink = () => {
-    const inviteLink = getInviteLink();
-    navigator.clipboard.writeText(inviteLink);
-    toast({
-      title: "Link Copied!",
-      description: "Your real invitation link is ready to share.",
-    });
+  const getInviteLink = () => {
+    const code = userData?.numeric_id || 'MONEXO';
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    return `${origin}/#/register?invite=${code}`;
   };
 
   if (loading) return (
@@ -72,30 +69,42 @@ export default function TeamPage() {
   );
 
   return (
-    <div className="flex flex-col h-full bg-white animate-slide-up overflow-hidden relative">
+    <div className="flex flex-col h-full bg-white animate-slide-up overflow-hidden relative pb-20">
       {/* Page Header */}
       <div className="bg-white pt-3 pb-2 text-center border-b border-slate-50 shrink-0">
         <h1 className="text-[16px] font-black text-slate-800 uppercase tracking-tight">Team Center</h1>
       </div>
 
-      <div className="flex-1 overflow-y-auto smooth-scroll pb-24">
+      <div className="flex-1 overflow-y-auto smooth-scroll">
         {/* Real Profile Header Section */}
-        <div className="px-5 py-4 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
+        <div className="px-5 py-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 shrink-0">
           <div className="flex items-center gap-3">
-            <Avatar className="h-14 w-14 border-2 border-white shadow-sm">
+            <Avatar className="h-14 w-14 border-2 border-white shadow-md">
               <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/150`} />
               <AvatarFallback className="bg-blue-50 text-blue-600 font-black uppercase text-xs">U</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col">
-              <span className="text-[13px] font-black text-slate-800 uppercase leading-none mb-1">
-                User_{userData?.numeric_id?.toString().slice(-4) || '7092'}
-              </span>
+            <div className="flex flex-col gap-1">
+              <div 
+                onClick={() => handleCopy(userData?.phone || '', 'Phone Number')}
+                className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
+              >
+                <span className="text-[14px] font-black text-slate-800 uppercase leading-none">
+                  {userData?.phone || 'Loading...'}
+                </span>
+                <Copy className="h-3 w-3 text-slate-400" />
+              </div>
               <span className="text-[11px] font-bold text-slate-400">Reward: {userData?.reward_percent || 5}%</span>
             </div>
           </div>
-          <div className="text-right">
-            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest block leading-none mb-1">Account ID</span>
-            <span className="text-[12px] font-black text-slate-700 tracking-tight">{userData?.numeric_id || '---'}</span>
+          <div 
+            onClick={() => handleCopy(userData?.numeric_id?.toString() || '', 'Account ID')}
+            className="text-right active:scale-95 transition-transform cursor-pointer bg-white p-2 rounded-xl border border-slate-50 shadow-sm"
+          >
+            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block leading-none mb-1">Account ID</span>
+            <div className="flex items-center justify-end gap-1">
+              <span className="text-[12px] font-black text-[#2A85FF] tracking-tight">{userData?.numeric_id || '---'}</span>
+              <Copy className="h-2.5 w-2.5 text-blue-300" />
+            </div>
           </div>
         </div>
 
@@ -135,18 +144,18 @@ export default function TeamPage() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[13px] font-black text-slate-800 uppercase tracking-tight">Invitation Link</span>
-                  <div className="bg-blue-50 px-2 py-0.5 rounded text-[8px] font-black text-[#2A85FF] uppercase">Live</div>
+                  <div className="bg-blue-50 px-2 py-0.5 rounded text-[8px] font-black text-[#2A85FF] uppercase animate-pulse">Live</div>
                 </div>
                 <QrCode className="h-4 w-4 text-orange-400" />
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl flex items-center justify-between border border-slate-100 group">
+              <div 
+                onClick={() => handleCopy(getInviteLink(), 'Invite Link')}
+                className="bg-slate-50 p-3 rounded-xl flex items-center justify-between border border-slate-100 active:scale-[0.98] transition-all cursor-pointer group"
+              >
                 <p className="text-[11px] font-bold text-slate-400 truncate tracking-tight pr-3 lowercase">
                   {getInviteLink()}
                 </p>
-                <div 
-                  onClick={handleCopyLink}
-                  className="bg-white p-1.5 rounded-lg shadow-sm border border-slate-100 active:scale-90 transition-all cursor-pointer"
-                >
+                <div className="bg-white p-1.5 rounded-lg shadow-sm border border-slate-100">
                   <Copy className="h-3.5 w-3.5 text-[#2A85FF]" />
                 </div>
               </div>
@@ -191,8 +200,8 @@ export default function TeamPage() {
         </div>
       </div>
 
-      <div className="absolute right-6 bottom-24 z-50">
-        <div className="bg-white p-2.5 rounded-full border border-blue-50 shadow-xl animate-bounce active:scale-90 transition-transform cursor-pointer">
+      <div className="fixed right-6 bottom-24 z-[110]">
+        <div className="bg-white p-3 rounded-full shadow-2xl border border-blue-50 active:scale-90 transition-transform cursor-pointer animate-bounce">
           <Headphones className="h-6 w-6 text-[#2A85FF]" />
         </div>
       </div>
