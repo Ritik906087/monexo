@@ -196,28 +196,11 @@ export default function BuyPage() {
               </div>
             </div>
 
-            <div className="relative pt-2">
-              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 px-1">Last 2 Usdt buy</h3>
-              <div className="bg-white rounded-2xl py-6 flex flex-col items-center justify-center border border-dashed border-slate-200">
-                <span className="text-[10px] font-bold text-slate-300 uppercase">No Records Found</span>
-              </div>
-              
-              <div className="absolute right-0 -bottom-2 bg-blue-50 p-2 rounded-full border border-blue-100 shadow-sm animate-bounce">
+            {/* Support button removed the "History" label but kept the bounce button for UX if needed, or we can just keep the space clean */}
+            <div className="relative pt-2 pb-6">
+              <div className="absolute right-0 bottom-0 bg-blue-50 p-2.5 rounded-full border border-blue-100 shadow-sm animate-bounce">
                 <Headphones className="h-5 w-5 text-[#2A85FF]" />
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Universal History Section Label for UPI */}
-        {activeTab === 'UPI' && (
-          <div className="mt-4 pb-4">
-            <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Buy History</h3>
-            <div className="bg-white rounded-2xl py-8 flex flex-col items-center justify-center border border-dashed border-slate-200">
-              <div className="bg-slate-50 p-2 rounded-full mb-2">
-                <ArrowLeftRight className="h-5 w-5 text-slate-300" />
-              </div>
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">No Records Found</span>
             </div>
           </div>
         )}
