@@ -19,18 +19,36 @@ export default function RegisterPage() {
   const [isInviteFixed, setIsInviteFixed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Manually parse invite code from URL/Hash for maximum reliability
+    // Check if user is already logged in
+    async function checkUser() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push('/dashboard');
+      }
+    }
+    checkUser();
+
+    // Parse invite code from URL search params OR manually from window location for hash links
+    const queryInvite = searchParams.get('invite');
+    
+    // Manually parse from hash as a fallback for the custom /#/register links
     const url = typeof window !== 'undefined' ? window.location.href : '';
-    const inviteMatch = url.match(/[?&]invite=([^&]+)/);
-    if (inviteMatch && inviteMatch[1]) {
-      setInviteCode(inviteMatch[1]);
+    const hashInviteMatch = url.match(/[?&]invite=([^&]+)/);
+    const hashInvite = hashInviteMatch ? hashInviteMatch[1] : null;
+
+    const finalInvite = queryInvite || hashInvite;
+
+    if (finalInvite) {
+      setInviteCode(finalInvite);
       setIsInviteFixed(true);
     }
-  }, []);
+  }, [searchParams, router]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,8 +107,8 @@ export default function RegisterPage() {
 
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
-      {/* Premium Header Section - Fixed Padding for "Create" text visibility */}
-      <div className="bg-[#2A85FF] pt-14 pb-14 px-8 relative overflow-hidden shrink-0">
+      {/* Premium Header Section - Increased Padding for "Create" text visibility */}
+      <div className="bg-[#2A85FF] pt-20 pb-16 px-8 relative overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute top-20 -left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
         <div className="relative z-10 space-y-0">
