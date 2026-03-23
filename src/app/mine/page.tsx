@@ -13,15 +13,9 @@ import {
   Lock, 
   Gift,
   ArrowRightLeft,
-  Bell,
-  Download,
-  ClipboardList,
   LayoutGrid,
-  Settings,
-  User,
-  ShieldCheck,
-  Copy,
-  CheckCircle2
+  ClipboardList,
+  ChevronRightSquare
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -59,14 +53,6 @@ export default function MinePage() {
     fetchUserData();
   }, [router]);
 
-  const handleCopy = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied!",
-      description: `${label} has been copied to clipboard.`,
-    });
-  };
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     toast({ title: "Logged Out", description: "Successfully signed out." });
@@ -74,86 +60,65 @@ export default function MinePage() {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2A85FF]"></div>
     </div>
   );
 
   const menuItems = [
-    { label: 'IToken', icon: () => <span className="text-lg">🇮🇳</span>, value: `₹${userData?.itoken_balance?.toFixed(2) || '0.00'}`, color: 'text-slate-800' },
-    { label: 'Today Profit', icon: Gift, value: `₹${userData?.today_profit?.toFixed(2) || '0.00'}`, color: 'text-orange-500' },
+    { label: 'IToken', icon: () => <span className="text-[14px]">🇮🇳</span>, value: userData?.itoken_balance?.toFixed(2) || '0.00', color: 'text-orange-400' },
+    { label: 'Today Profit', icon: Gift, value: userData?.today_profit || '0', color: 'text-yellow-500' },
     { label: 'UPI Sell History', icon: LayoutGrid, color: 'text-blue-500', onClick: () => router.push('/sell-history') },
     { label: 'Buy History', icon: ClipboardList, color: 'text-blue-600', onClick: () => router.push('/buy-history') },
-    { label: 'Transfer IToken History', icon: ArrowRightLeft, color: 'text-indigo-500' },
-    { label: 'Event Center', icon: Ticket, color: 'text-orange-500' },
-    { label: 'Tutorial', icon: PlayCircle, color: 'text-slate-600' },
+    { label: 'Transfer IToken History', icon: ArrowRightLeft, color: 'text-blue-400' },
+    { label: 'Event Center', icon: Ticket, color: 'text-orange-400' },
+    { label: 'Tutorial', icon: PlayCircle, color: 'text-slate-700' },
     { label: 'Official Service', icon: Headphones, color: 'text-blue-600' },
-    { label: 'Modify Password', icon: Lock, color: 'text-blue-500' },
+    { label: 'Modify Password', icon: Lock, color: 'text-blue-400' },
   ];
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-hidden font-sans pb-0">
-      {/* Header - Branded MONEXO-PAY */}
-      <div className="text-center py-3 bg-[#2A85FF] flex items-center justify-center relative shadow-sm shrink-0">
-        <h1 className="text-[18px] font-black text-white italic tracking-tighter uppercase">MONEXO-PAY</h1>
+    <div className="h-full flex flex-col bg-white overflow-hidden select-none">
+      {/* Header - Simple Title */}
+      <div className="text-center py-2.5 border-b border-slate-50 shrink-0">
+        <h1 className="text-[15px] font-bold text-slate-700">Mine</h1>
       </div>
 
-      {/* Profile Section - Compact & Functional */}
-      <div className="px-5 py-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/20 shrink-0">
+      {/* Profile Section - Ultra Compact */}
+      <div className="px-5 py-3 flex items-center justify-between border-b border-slate-50 shrink-0">
         <div className="flex items-center gap-3">
-          <Avatar className="h-14 w-14 border-2 border-white shadow-md">
+          <Avatar className="h-12 w-12 border-2 border-slate-50">
             <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/150`} />
-            <AvatarFallback className="bg-blue-100 text-blue-600 text-xs font-black">U</AvatarFallback>
+            <AvatarFallback className="bg-blue-50 text-blue-600 text-[10px] font-bold">U</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col gap-1">
-             <div 
-               onClick={() => handleCopy(userData?.phone || '', 'Phone Number')}
-               className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
-             >
-               <span className="text-[15px] font-black text-slate-900 tracking-tight">
-                 {userData?.phone || 'Loading...'}
-               </span>
-               <Copy className="h-3 w-3 text-slate-400" />
-             </div>
-             
-             <div className="flex items-center gap-3">
-               <div 
-                 onClick={() => handleCopy(userData?.numeric_id?.toString() || '', 'UID')}
-                 className="flex items-center gap-1 bg-white px-2 py-0.5 rounded-lg border border-slate-100 shadow-sm active:scale-95 transition-transform cursor-pointer"
-               >
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ID: {userData?.numeric_id || '---'}</span>
-                 <Copy className="h-2.5 w-2.5 text-slate-300" />
-               </div>
-               <div className="flex items-center gap-1">
-                 <ShieldCheck className="h-3 w-3 text-green-500" />
-                 <span className="text-[10px] font-black text-green-600 uppercase">Reward: {userData?.reward_percent || 5}%</span>
-               </div>
-             </div>
+          <div className="flex items-center gap-4">
+            <span className="text-[12px] font-bold text-slate-400">Reward: {userData?.reward_percent || 5}%</span>
           </div>
         </div>
-        <div className="bg-blue-50 p-2 rounded-full">
-          <ChevronRight className="text-[#2A85FF] h-4 w-4" />
+        <div className="flex items-center gap-1.5">
+          <span className="text-[12px] font-bold text-slate-400">ID:{userData?.numeric_id || '---'}</span>
+          <ChevronRight className="h-4 w-4 text-slate-200" />
         </div>
       </div>
 
-      {/* Menu List - Scrollable */}
-      <div className="flex-1 overflow-y-auto smooth-scroll pb-24">
+      {/* Menu List - Tightened for Single Screen View */}
+      <div className="flex-1 overflow-y-auto smooth-scroll px-1">
         {menuItems.map((item, idx) => (
           <div 
             key={idx} 
             onClick={item.onClick}
-            className="flex items-center justify-between px-5 py-[14px] active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
+            className="flex items-center justify-between px-5 py-3.5 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3.5">
               <div className="w-5 h-5 flex items-center justify-center">
-                {typeof item.icon === 'function' ? <item.icon /> : <item.icon className={`h-4.5 w-4.5 ${item.color}`} strokeWidth={2.5} />}
+                {typeof item.icon === 'function' ? <item.icon /> : <item.icon className={`h-[18px] w-[18px] ${item.color}`} strokeWidth={1.5} />}
               </div>
-              <span className="text-[13px] font-bold text-slate-700 uppercase tracking-tight">{item.label}</span>
+              <span className="text-[13px] font-medium text-slate-700">{item.label}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {item.value && (
-                <span className="text-[13px] font-black text-orange-500">
-                  {item.value.replace('₹', '')}
+                <span className={`text-[13px] font-bold ${item.label === 'IToken' ? 'text-yellow-500' : 'text-slate-300'}`}>
+                  {item.value}
                 </span>
               )}
               <ChevronRight className="text-slate-200 h-4 w-4" />
@@ -166,15 +131,16 @@ export default function MinePage() {
           <Button 
             variant="outline" 
             onClick={handleSignOut}
-            className="w-full h-12 rounded-2xl border-slate-200 text-red-500 font-black text-[12px] hover:bg-red-50 hover:border-red-100 transition-all shadow-sm uppercase tracking-widest active:scale-95"
+            className="w-full h-11 rounded-xl border-slate-100 text-slate-700 font-bold text-[15px] hover:bg-slate-50 transition-all shadow-none border"
           >
-            Sign Out Account
+            Sign Out
           </Button>
           
-          <div className="text-center">
-            <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Version 2.0.0 PRO</p>
-            <p className="text-[8px] font-black text-[#2A85FF] mt-1 uppercase cursor-pointer hover:underline">
-              Download APK Official
+          <div className="text-center space-y-1 pb-4">
+            <p className="text-[10px] text-slate-300 uppercase tracking-tighter">APP Version : 2.0.0</p>
+            <p className="text-[10px] font-medium text-slate-400">
+              Haven't downloaded the APK?{' '}
+              <span className="text-blue-400 cursor-pointer hover:underline">Click here and Download now</span>
             </p>
           </div>
         </div>
