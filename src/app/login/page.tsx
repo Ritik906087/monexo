@@ -74,15 +74,15 @@ export default function LoginPage() {
       </div>
 
       {/* Login Form Container */}
-      <div className="flex-1 px-5 -mt-8 relative z-20 overflow-hidden pb-8">
-        <div className="bg-white rounded-[32px] p-6 shadow-xl space-y-4 h-full flex flex-col">
-          <div className="space-y-0.5 shrink-0">
+      <div className="flex-1 px-5 -mt-8 relative z-20 overflow-hidden pb-8 flex flex-col">
+        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col max-h-full">
+          <div className="space-y-0.5 shrink-0 mb-4">
             <h2 className="text-xl font-bold text-slate-800">Account Login</h2>
             <p className="text-[12px] text-slate-400 font-medium tracking-tight">Enter your credentials to continue</p>
           </div>
 
           {errorMsg && (
-            <Alert variant="destructive" className="py-2 bg-red-50 border-red-100 text-red-600 rounded-xl animate-in fade-in shrink-0">
+            <Alert variant="destructive" className="py-2 bg-red-50 border-red-100 text-red-600 rounded-xl animate-in fade-in shrink-0 mb-3">
               <AlertCircle className="h-3 w-3" />
               <AlertDescription className="text-[10px] font-bold">
                 {errorMsg}
@@ -90,50 +90,52 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <form onSubmit={handleLogin} className="flex-1 flex flex-col space-y-4">
-            <div className="space-y-3">
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Phone className="h-4 w-4" />
+          <form onSubmit={handleLogin} className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4">
+              <div className="space-y-3">
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <Phone className="h-4 w-4" />
+                  </div>
+                  <Input
+                    type="tel"
+                    placeholder="Phone Number"
+                    className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
                 </div>
-                <Input
-                  type="tel"
-                  placeholder="Phone Number"
-                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                />
+
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <Lock className="h-4 w-4" />
+                  </div>
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <Lock className="h-4 w-4" />
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="save" defaultChecked className="rounded border-slate-200" />
+                  <label htmlFor="save" className="text-[11px] font-bold text-slate-400 cursor-pointer">
+                    Remember me
+                  </label>
                 </div>
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  className="pl-11 h-12 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-[#2A85FF] rounded-xl text-sm font-medium"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <Link href="#" className="text-[11px] text-[#2A85FF] font-bold hover:underline">
+                  Forgot?
+                </Link>
               </div>
             </div>
 
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center space-x-2">
-                <Checkbox id="save" defaultChecked className="rounded border-slate-200" />
-                <label htmlFor="save" className="text-[11px] font-bold text-slate-400 cursor-pointer">
-                  Remember me
-                </label>
-              </div>
-              <Link href="#" className="text-[11px] text-[#2A85FF] font-bold hover:underline">
-                Forgot?
-              </Link>
-            </div>
-
-            <div className="space-y-4 pt-4 mt-auto">
+            <div className="space-y-4 pt-2 shrink-0">
               <Button 
                 type="submit" 
                 disabled={loading}
@@ -143,7 +145,7 @@ export default function LoginPage() {
                 {!loading && <ChevronRight className="ml-1 h-4 w-4" />}
               </Button>
 
-              <div className="text-center pt-2">
+              <div className="text-center pt-1 pb-2">
                 <p className="text-[12px] text-slate-400 font-medium">
                   No Account?{' '}
                   <Link href="/register" className="text-[#2A85FF] font-black hover:underline uppercase tracking-tight">

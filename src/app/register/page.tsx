@@ -25,7 +25,6 @@ export default function RegisterPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in
     async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -34,10 +33,7 @@ export default function RegisterPage() {
     }
     checkUser();
 
-    // Parse invite code from URL search params OR manually from window location for hash links
     const queryInvite = searchParams.get('invite');
-    
-    // Manually parse from hash as a fallback for the custom /#/register links
     const url = typeof window !== 'undefined' ? window.location.href : '';
     const hashInviteMatch = url.match(/[?&]invite=([^&]+)/);
     const hashInvite = hashInviteMatch ? hashInviteMatch[1] : null;
@@ -107,7 +103,7 @@ export default function RegisterPage() {
 
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
-      {/* Premium Header Section - Optimized for No-Scroll */}
+      {/* Premium Header Section */}
       <div className="bg-[#2A85FF] pt-16 pb-14 px-8 relative overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute top-20 -left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
@@ -119,9 +115,9 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Form Container - Fixed Position */}
+      {/* Form Container */}
       <div className="px-5 -mt-10 flex-1 relative z-20 flex flex-col overflow-hidden pb-8">
-        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col h-full max-h-[520px]">
+        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col flex-1 max-h-full overflow-hidden">
           <div className="space-y-0.5 mb-4 shrink-0">
             <h2 className="text-lg font-bold text-slate-800">Registration</h2>
             <p className="text-[11px] text-slate-400 font-medium tracking-tight leading-none">Join the premium UPI network</p>
@@ -136,8 +132,8 @@ export default function RegisterPage() {
             </Alert>
           )}
 
-          <form onSubmit={handleRegister} className="flex-1 flex flex-col justify-between overflow-hidden">
-            <div className="space-y-3 overflow-y-auto pr-1">
+          <form onSubmit={handleRegister} className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto space-y-3 pr-1 mb-4">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <Phone className="h-4 w-4" />
@@ -200,7 +196,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="space-y-3 pt-6 shrink-0 mt-auto">
+            <div className="space-y-3 pt-2 shrink-0">
               <Button 
                 type="submit" 
                 disabled={loading}
@@ -210,7 +206,7 @@ export default function RegisterPage() {
                 {!loading && <ChevronRight className="ml-1 h-4 w-4" />}
               </Button>
 
-              <div className="text-center">
+              <div className="text-center pb-2">
                 <p className="text-[11px] text-slate-400 font-medium">
                   Already have an account?{' '}
                   <Link href="/login" className="text-[#2A85FF] font-black hover:underline uppercase tracking-tight">
