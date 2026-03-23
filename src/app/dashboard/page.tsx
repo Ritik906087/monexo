@@ -50,28 +50,28 @@ export default function DashboardPage() {
 
   return (
     <div className="page-fade min-h-full pb-24 bg-[#f8fafc] overflow-hidden">
-      {/* Premium Large Notice Banner - Exact Photo Match */}
+      {/* Premium Compact Notice Banner - Improved UI */}
       <div className="px-4 pt-3 animate-slide-up">
-        <div className="relative rounded-[32px] overflow-hidden bg-gradient-to-br from-[#2A85FF] to-[#1A7BFF] p-6 text-white shadow-xl shadow-blue-100 border border-white/20">
-          {/* Floating Logo Badge - Top Right */}
-          <div className="absolute top-4 right-4 w-12 h-12 bg-white rounded-2xl shadow-lg flex flex-col items-center justify-center p-1 border-2 border-blue-100 z-20">
-             <span className="text-[7px] font-black text-[#2A85FF] leading-none uppercase text-center">MONEXO</span>
-             <span className="text-[6px] font-bold text-slate-400 leading-none mt-0.5 uppercase">UPI</span>
-             <div className="flex gap-0.5 mt-1">
-               <div className="w-2.5 h-0.5 bg-red-500"></div>
-               <div className="w-2.5 h-0.5 bg-yellow-400"></div>
-               <div className="w-2.5 h-0.5 bg-blue-500"></div>
+        <div className="relative rounded-[28px] overflow-hidden bg-gradient-to-br from-[#2A85FF] to-[#1A7BFF] p-5 text-white shadow-lg shadow-blue-100/50 border border-white/20">
+          {/* Floating Logo Badge - Compact & Refined */}
+          <div className="absolute top-3 right-3 w-10 h-10 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-0.5 border border-blue-100 z-20">
+             <span className="text-[6px] font-black text-[#2A85FF] leading-none uppercase text-center">MONEXO</span>
+             <span className="text-[5px] font-bold text-slate-400 leading-none mt-0.5 uppercase tracking-tighter">UPI</span>
+             <div className="flex gap-0.5 mt-0.5">
+               <div className="w-1.5 h-0.5 bg-red-500 rounded-full"></div>
+               <div className="w-1.5 h-0.5 bg-yellow-400 rounded-full"></div>
+               <div className="w-1.5 h-0.5 bg-blue-500 rounded-full"></div>
              </div>
           </div>
 
           <div className="relative z-10 flex flex-col items-center text-center">
-            {/* Title - Centered with padding to avoid logo */}
-            <h2 className="text-[19px] font-black italic tracking-tighter uppercase leading-tight mb-4 px-12 drop-shadow-md">
+            {/* Title - Avoids the logo badge with controlled padding */}
+            <h2 className="text-[17px] font-black italic tracking-tighter uppercase leading-tight mb-3 px-10 drop-shadow-sm">
               MONEXOPAY IMPORTANT NOTICE!!
             </h2>
             
-            {/* Instruction Text - Larger and Readable */}
-            <p className="text-[12px] leading-relaxed text-white font-bold drop-shadow-sm px-2">
+            {/* Instruction Text - Clean & Readable */}
+            <p className="text-[11.5px] leading-relaxed text-white/95 font-bold drop-shadow-sm px-1">
               If you didn't get tokens in 5 minutes, Pls contact our supporters with a payment screenshot. 
               To sell tokens and receive rupees fast, Pls follow the steps. Do not log in to UPI while selling, 
               Otherwise your tokens won't be processed. Thanks for your support!
