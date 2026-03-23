@@ -118,7 +118,7 @@ export default function MinePage() {
           </div>
         </div>
         <div className="flex items-center">
-          <span className="text-[9px] font-black text-[#2A85FF] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 uppercase tracking-tighter">Reward: {userData?.reward_percent || 7}%</span>
+          <span className="text-[9px] font-black text-[#2A85FF] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 uppercase tracking-tighter">Reward: 7%</span>
         </div>
       </div>
 

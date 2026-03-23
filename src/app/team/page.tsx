@@ -94,7 +94,7 @@ export default function TeamPage() {
                 </span>
                 <Copy className="h-3 w-3 text-slate-400" />
               </div>
-              <span className="text-[11px] font-bold text-slate-400">Reward: {userData?.reward_percent || 7}%</span>
+              <span className="text-[11px] font-bold text-slate-400">Reward: 7%</span>
             </div>
           </div>
           <div 
