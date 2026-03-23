@@ -15,11 +15,12 @@ export function BottomNav() {
     setMounted(true);
   }, []);
 
-  // Hide nav bar on auth pages and sub-history pages
+  // Hide nav bar on auth pages, admin pages, and sub-history pages
   const isExcludedPage = 
     pathname === '/login' || 
     pathname === '/register' || 
     pathname === '/' ||
+    pathname?.startsWith('/admin') ||
     pathname === '/buy-history' ||
     pathname === '/sell-history';
   

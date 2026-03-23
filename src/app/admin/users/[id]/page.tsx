@@ -1,0 +1,254 @@
+
+"use client";
+
+import { useEffect, useState, use } from 'react';
+import { useRouter } from 'next/navigation';
+import { 
+  ChevronLeft, 
+  Wallet, 
+  PlusCircle, 
+  MinusCircle, 
+  ShieldCheck, 
+  Phone, 
+  Key,
+  Link as LinkIcon,
+  Clock,
+  ArrowUpRight,
+  ArrowDownLeft
+} from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useToast } from '@/hooks/use-toast';
+
+export default function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [amount, setAmount] = useState('');
+  const [processing, setProcessing] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdminAuthenticated');
+    if (isAdmin !== 'true') {
+      router.push('/admin/login');
+      return;
+    }
+
+    async function fetchUser() {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (data) setUser(user);
+      if (error) {
+        toast({ variant: "destructive", title: "Error", description: "User not found." });
+        router.push('/admin');
+      }
+      setLoading(false);
+    }
+
+    // Direct fetch instead of state for simpler logic
+    const fetchDirect = async () => {
+      const { data } = await supabase.from('users').select('*').eq('id', id).single();
+      if (data) setUser(data);
+      setLoading(false);
+    };
+    fetchDirect();
+  }, [id, router, toast]);
+
+  const handleUpdateBalance = async (type: 'ADD' | 'DEDUCT') => {
+    if (!amount || isNaN(Number(amount))) {
+      toast({ title: "Invalid Amount", variant: "destructive" });
+      return;
+    }
+
+    setProcessing(true);
+    const value = Number(amount);
+    const newBalance = type === 'ADD' 
+      ? (user.itoken_balance || 0) + value 
+      : Math.max(0, (user.itoken_balance || 0) - value);
+
+    const { error } = await supabase
+      .from('users')
+      .update({ itoken_balance: newBalance })
+      .eq('id', id);
+
+    if (!error) {
+      setUser({ ...user, itoken_balance: newBalance });
+      toast({ 
+        title: "Balance Updated", 
+        description: `Successfully ${type === 'ADD' ? 'added' : 'deducted'} ₹${value}` 
+      });
+      setAmount('');
+    } else {
+      toast({ variant: "destructive", title: "Update Failed" });
+    }
+    setProcessing(false);
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-full bg-[#f8fafc]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-full bg-[#f8fafc] animate-slide-up overflow-hidden">
+      {/* Header */}
+      <div className="bg-white px-6 py-4 flex items-center gap-4 border-b border-slate-100 shrink-0 relative">
+        <button 
+          onClick={() => router.back()}
+          className="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center active:scale-90 transition-all border border-slate-100"
+        >
+          <ChevronLeft className="h-5 w-5 text-slate-600" />
+        </button>
+        <h1 className="text-[16px] font-black text-slate-800 uppercase tracking-tight">User Management</h1>
+      </div>
+
+      <div className="flex-1 overflow-y-auto smooth-scroll p-4 pb-24 space-y-4">
+        {/* User Profile Card */}
+        <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4">
+             <div className="bg-green-50 text-green-600 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border border-green-100">Verified</div>
+          </div>
+          
+          <Avatar className="h-20 w-20 border-4 border-slate-50 shadow-md mb-4">
+            <AvatarImage src={`https://picsum.photos/seed/${user.id}/200`} />
+            <AvatarFallback className="bg-blue-600 text-white font-black text-xl">U</AvatarFallback>
+          </Avatar>
+          
+          <h2 className="text-[18px] font-black text-slate-800 mb-1">{user.phone}</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] bg-slate-50 px-2 py-0.5 rounded">ID: {user.numeric_id}</span>
+          </div>
+
+          <div className="w-full grid grid-cols-2 gap-3 pt-4 border-t border-slate-50">
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter mb-0.5">Current Balance</span>
+              <span className="text-[18px] font-black text-blue-600">₹{user.itoken_balance?.toFixed(2)}</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter mb-0.5">Today Profit</span>
+              <span className="text-[18px] font-black text-emerald-500">₹{user.today_profit?.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Balance Controls */}
+        <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 mb-2">
+            <Wallet className="h-4 w-4 text-slate-400" />
+            <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">Manual Adjustment</h3>
+          </div>
+
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-400">₹</span>
+            <Input 
+              placeholder="Enter amount..." 
+              type="number"
+              className="pl-8 h-12 bg-slate-50 border-none rounded-2xl text-[14px] font-black focus-visible:ring-blue-500"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              onClick={() => handleUpdateBalance('ADD')}
+              disabled={processing}
+              className="h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest gap-2 shadow-sm border-none"
+            >
+              <PlusCircle className="h-4 w-4" /> Add
+            </Button>
+            <Button 
+              onClick={() => handleUpdateBalance('DEDUCT')}
+              disabled={processing}
+              className="h-12 rounded-2xl bg-red-500 hover:bg-red-600 text-white font-black uppercase tracking-widest gap-2 shadow-sm border-none"
+            >
+              <MinusCircle className="h-4 w-4" /> Deduct
+            </Button>
+          </div>
+        </div>
+
+        {/* User Information */}
+        <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-4">
+          <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight mb-2">Quick Info</h3>
+          
+          <div className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+            <div className="flex items-center gap-3">
+              <Phone className="h-4 w-4 text-slate-400" />
+              <span className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">Mobile</span>
+            </div>
+            <span className="text-[12px] font-black text-slate-800">{user.phone}</span>
+          </div>
+
+          <div className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+            <div className="flex items-center gap-3">
+              <Key className="h-4 w-4 text-slate-400" />
+              <span className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">Password</span>
+            </div>
+            <span className="text-[12px] font-black text-slate-800">Protected</span>
+          </div>
+
+          <div className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+            <div className="flex items-center gap-3">
+              <LinkIcon className="h-4 w-4 text-slate-400" />
+              <span className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">UPI Link</span>
+            </div>
+            <span className="text-[10px] font-black text-orange-500 uppercase">1 Active Link</span>
+          </div>
+        </div>
+
+        {/* Transaction History Placeholder */}
+        <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+             <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">Recent Activity</h3>
+             <Clock className="h-4 w-4 text-slate-300" />
+          </div>
+          
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+              <div className="flex items-center gap-3">
+                <div className="bg-emerald-100 p-2 rounded-xl">
+                  <ArrowDownLeft className="h-4 w-4 text-emerald-600" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-black text-slate-700 uppercase">Token Buy</span>
+                  <span className="text-[9px] font-bold text-slate-400 tracking-tighter">2024-03-21 14:20</span>
+                </div>
+              </div>
+              <span className="text-[12px] font-black text-emerald-600">+ ₹500.00</span>
+            </div>
+
+            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl opacity-80">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-100 p-2 rounded-xl">
+                  <ArrowUpRight className="h-4 w-4 text-blue-600" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-black text-slate-700 uppercase">UPI Settlement</span>
+                  <span className="text-[9px] font-bold text-slate-400 tracking-tighter">2024-03-20 09:15</span>
+                </div>
+              </div>
+              <span className="text-[12px] font-black text-blue-600">- ₹200.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer Branding */}
+      <div className="bg-white py-3 text-center border-t border-slate-50 shrink-0">
+        <div className="flex items-center justify-center gap-1.5">
+          <ShieldCheck className="h-3 w-3 text-blue-500" />
+          <p className="text-[9px] font-black text-slate-300 tracking-[0.2em] uppercase">Security Level 4 Active</p>
+        </div>
+      </div>
+    </div>
+  );
+}
