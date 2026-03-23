@@ -65,7 +65,7 @@ export default function LoginPage() {
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
       {/* Top Branding Section */}
-      <div className="bg-[#2A85FF] relative pt-8 pb-10 px-8 flex flex-col items-center overflow-hidden shrink-0">
+      <div className="bg-[#2A85FF] relative pt-12 pb-14 px-8 flex flex-col items-center overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
         <h1 className="text-4xl font-black text-white tracking-tighter mb-1 relative z-10 italic">MONEXO</h1>
         <div className="bg-white/20 backdrop-blur-md px-4 py-1 rounded-full border border-white/30 relative z-10">
@@ -74,7 +74,7 @@ export default function LoginPage() {
       </div>
 
       {/* Login Form Container */}
-      <div className="flex-1 px-5 -mt-6 relative z-20 overflow-hidden">
+      <div className="flex-1 px-5 -mt-8 relative z-20 overflow-hidden pb-8">
         <div className="bg-white rounded-[32px] p-6 shadow-xl space-y-4 h-full flex flex-col">
           <div className="space-y-0.5 shrink-0">
             <h2 className="text-xl font-bold text-slate-800">Account Login</h2>
@@ -133,7 +133,7 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <div className="space-y-4 pt-1 mt-auto">
+            <div className="space-y-4 pt-4 mt-auto">
               <Button 
                 type="submit" 
                 disabled={loading}
@@ -154,11 +154,6 @@ export default function LoginPage() {
             </div>
           </form>
         </div>
-      </div>
-
-      {/* Footer Branding */}
-      <div className="pb-6 text-center mt-auto shrink-0">
-        <p className="text-[9px] font-black text-slate-300 tracking-[0.3em] uppercase">MONEXO PRO v2.0</p>
       </div>
     </div>
   );
