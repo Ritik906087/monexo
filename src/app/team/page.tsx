@@ -47,11 +47,12 @@ export default function TeamPage() {
     fetchUserData();
   }, [router]);
 
-  // Generate real dynamic invite link using the user's invite code
+  // Generate real dynamic working temporary invite link using window.location.origin
   const getInviteLink = () => {
     const code = userData?.invite_code || 'MONEXO';
-    // Format: https://domain.app/#/register?invite=CODE
-    return `https://monexo.app/#/register?invite=${code}`;
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://monexo.app';
+    // Format requested: [origin]/#/register?invite=CODE
+    return `${origin}/#/register?invite=${code}`;
   };
 
   const handleCopyLink = () => {
