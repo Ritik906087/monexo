@@ -9,7 +9,6 @@ import {
   Zap,
   ChevronRight,
   Headphones,
-  Info,
   Clock,
   ArrowUpRight,
   History
@@ -75,12 +74,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Balance Card - Professional Height */}
+      {/* Main Balance Card - Professional Height & Increased Watermark Visibility */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-        <div className="bg-white rounded-[28px] p-5 relative overflow-hidden shadow-sm border border-slate-100 min-h-[180px] flex flex-col justify-between">
-          {/* Subtle Watermark - High Quality feel */}
+        <div className="bg-white rounded-[28px] p-5 relative overflow-hidden shadow-sm border border-slate-100 min-h-[190px] flex flex-col justify-between">
+          {/* Subtle Watermark - Increased Opacity for better visibility */}
           <div 
-            className="absolute inset-0 opacity-[0.04] pointer-events-none" 
+            className="absolute inset-0 opacity-[0.12] pointer-events-none" 
             style={{ 
               backgroundImage: 'url("https://csgdgbbwhmiyafwwxvxd.supabase.co/storage/v1/object/public/Watermark/watermarked-29249.jpg")',
               backgroundSize: 'cover',
@@ -105,7 +104,7 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            <div className="h-[1px] bg-slate-50 my-4"></div>
+            <div className="h-[1px] bg-slate-100/50 my-4"></div>
 
             {/* Stats Grid - High Professionalism */}
             <div className="grid grid-cols-2 gap-x-4 gap-y-3">
@@ -125,11 +124,11 @@ export default function DashboardPage() {
               </div>
               
               <div className="col-span-2 grid grid-cols-2 gap-3 mt-1">
-                 <Button variant="outline" className="h-9 rounded-xl border-slate-100 bg-slate-50/50 text-[9px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-widest gap-2">
+                 <Button variant="outline" className="h-9 rounded-xl border-slate-100 bg-white/60 backdrop-blur-sm text-[9px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-widest gap-2">
                    <History className="h-3 w-3" />
                    Buy Hist
                  </Button>
-                 <Button variant="outline" className="h-9 rounded-xl border-slate-100 bg-slate-50/50 text-[9px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-widest gap-2">
+                 <Button variant="outline" className="h-9 rounded-xl border-slate-100 bg-white/60 backdrop-blur-sm text-[9px] font-black text-slate-600 shadow-none active:scale-95 uppercase tracking-widest gap-2">
                    <ArrowUpRight className="h-3 w-3" />
                    Sell Hist
                  </Button>
