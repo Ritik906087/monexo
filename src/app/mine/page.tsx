@@ -87,17 +87,17 @@ export default function MinePage() {
 
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden select-none">
-      {/* Header - Blue Background */}
+      {/* Header - Blue Background as requested */}
       <div className="text-center py-3 bg-[#2A85FF] shrink-0 shadow-md">
         <h1 className="text-[14px] font-black text-white tracking-[0.2em] uppercase">MONEXO-PAY</h1>
       </div>
 
-      {/* Profile Section - Human Body Logo Avatar */}
-      <div className="px-5 py-4 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
+      {/* Profile Section - Minimized to match screenshot */}
+      <div className="px-5 py-3.5 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
         <div className="flex items-center gap-3">
-          <Avatar className="h-14 w-14 border-2 border-white shadow-sm bg-blue-50 flex items-center justify-center">
+          <Avatar className="h-12 w-12 border-2 border-white shadow-sm bg-blue-50 flex items-center justify-center">
             <AvatarFallback className="bg-blue-50 text-blue-600">
-              <User className="h-7 w-7" />
+              <User className="h-6 w-6" />
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
@@ -112,7 +112,7 @@ export default function MinePage() {
                onClick={() => handleCopy(userData?.numeric_id?.toString(), 'UID')}
                className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer mt-1"
              >
-               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">ID:{userData?.numeric_id || '---'}</span>
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID:{userData?.numeric_id || '---'}</span>
                <Copy className="h-2.5 w-2.5 text-slate-300" />
              </div>
           </div>
@@ -122,36 +122,37 @@ export default function MinePage() {
         </div>
       </div>
 
-      {/* Menu List - Minimized to fit one screen */}
+      {/* Menu List - Icons Restored and Compact */}
       <div className="flex-1 overflow-y-auto smooth-scroll px-1">
-        {menuItems.map((item, idx) => (
-          <div 
-            key={idx} 
-            onClick={item.onClick}
-            className="flex items-center justify-between px-5 py-2.5 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
-          >
-            <div className="flex items-center gap-3.5">
-              <div className="w-5 h-5 flex items-center justify-center">
-                {typeof item.icon === 'function' ? (
-                  item.label === 'IToken' ? (
-                    <item.icon />
+        {menuItems.map((item, idx) => {
+          const Icon = item.icon;
+          return (
+            <div 
+              key={idx} 
+              onClick={item.onClick}
+              className="flex items-center justify-between px-5 py-2.5 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-5 h-5 flex items-center justify-center">
+                  {item.label === 'IToken' ? (
+                    <span className="text-[16px]">🇮🇳</span>
                   ) : (
-                    <item.icon className={`h-[18px] w-[18px] ${item.color || 'text-slate-400'}`} strokeWidth={2} />
-                  )
-                ) : null}
+                    <Icon className={`h-[18px] w-[18px] ${item.color || 'text-slate-400'}`} strokeWidth={2} />
+                  )}
+                </div>
+                <span className="text-[12px] font-bold text-slate-600 uppercase tracking-tight leading-none">{item.label}</span>
               </div>
-              <span className="text-[12px] font-bold text-slate-600 uppercase tracking-tight leading-none">{item.label}</span>
+              <div className="flex items-center gap-1">
+                {item.value !== undefined && (
+                  <span className={`text-[12px] font-black ${item.label === 'IToken' || item.label === 'Today Profit' ? 'text-yellow-500' : 'text-slate-400'}`}>
+                    {item.value}
+                  </span>
+                )}
+                <ChevronRight className="text-slate-200 h-4 w-4" />
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              {item.value && (
-                <span className={`text-[12px] font-black ${item.label === 'IToken' ? 'text-yellow-500' : 'text-slate-400'}`}>
-                  {item.value}
-                </span>
-              )}
-              <ChevronRight className="text-slate-200 h-4 w-4" />
-            </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Action Section */}
         <div className="px-5 py-4 space-y-4">
