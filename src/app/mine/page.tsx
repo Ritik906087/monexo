@@ -5,17 +5,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   ChevronRight, 
-  History, 
-  CreditCard, 
+  LayoutGrid,
+  ClipboardList,
+  ArrowRightLeft,
   Ticket, 
   PlayCircle, 
   Headphones, 
   Lock, 
-  Gift,
-  ArrowRightLeft,
-  LayoutGrid,
-  ClipboardList,
-  ChevronRightSquare
+  Gift
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -79,68 +76,69 @@ export default function MinePage() {
 
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden select-none">
-      {/* Header - Simple Title */}
-      <div className="text-center py-2.5 border-b border-slate-50 shrink-0">
-        <h1 className="text-[15px] font-bold text-slate-700">Mine</h1>
+      {/* Header - Blue Background as requested */}
+      <div className="text-center py-2.5 bg-[#2A85FF] shrink-0 shadow-md">
+        <h1 className="text-[14px] font-black text-white tracking-[0.2em] uppercase">MONEXO-PAY</h1>
       </div>
 
       {/* Profile Section - Ultra Compact */}
-      <div className="px-5 py-3 flex items-center justify-between border-b border-slate-50 shrink-0">
+      <div className="px-5 py-2.5 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 border-2 border-slate-50">
+          <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
             <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/150`} />
             <AvatarFallback className="bg-blue-50 text-blue-600 text-[10px] font-bold">U</AvatarFallback>
           </Avatar>
-          <div className="flex items-center gap-4">
-            <span className="text-[12px] font-bold text-slate-400">Reward: {userData?.reward_percent || 5}%</span>
+          <div className="flex flex-col">
+             <span className="text-[12px] font-black text-slate-800 leading-none mb-1 uppercase tracking-tight">{userData?.phone}</span>
+             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Reward: {userData?.reward_percent || 5}%</span>
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="text-[12px] font-bold text-slate-400">ID:{userData?.numeric_id || '---'}</span>
-          <ChevronRight className="h-4 w-4 text-slate-200" />
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] font-black text-[#2A85FF] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 uppercase tracking-tighter">ID:{userData?.numeric_id || '---'}</span>
+          <ChevronRight className="h-3.5 w-3.5 text-slate-300" />
         </div>
       </div>
 
-      {/* Menu List - Tightened for Single Screen View */}
+      {/* Menu List - Tightened to ensure no scroll */}
       <div className="flex-1 overflow-y-auto smooth-scroll px-1">
         {menuItems.map((item, idx) => (
           <div 
             key={idx} 
             onClick={item.onClick}
-            className="flex items-center justify-between px-5 py-3.5 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
+            className="flex items-center justify-between px-5 py-2.5 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
           >
             <div className="flex items-center gap-3.5">
               <div className="w-5 h-5 flex items-center justify-center">
-                {typeof item.icon === 'function' ? <item.icon /> : <item.icon className={`h-[18px] w-[18px] ${item.color}`} strokeWidth={1.5} />}
+                {typeof item.icon === 'function' ? <item.icon /> : <item.icon className={`h-[16px] w-[16px] ${item.color}`} strokeWidth={1.5} />}
               </div>
-              <span className="text-[13px] font-medium text-slate-700">{item.label}</span>
+              <span className="text-[11.5px] font-bold text-slate-600 uppercase tracking-tight leading-none">{item.label}</span>
             </div>
             <div className="flex items-center gap-1">
               {item.value && (
-                <span className={`text-[13px] font-bold ${item.label === 'IToken' ? 'text-yellow-500' : 'text-slate-300'}`}>
+                <span className={`text-[12px] font-black ${item.label === 'IToken' ? 'text-yellow-500' : 'text-slate-400'}`}>
                   {item.value}
                 </span>
               )}
-              <ChevronRight className="text-slate-200 h-4 w-4" />
+              <ChevronRight className="text-slate-200 h-3.5 w-3.5" />
             </div>
           </div>
         ))}
 
-        {/* Action Section */}
-        <div className="px-5 py-6 space-y-4">
+        {/* Action Section - Compacted */}
+        <div className="px-5 py-4 space-y-3">
           <Button 
             variant="outline" 
             onClick={handleSignOut}
-            className="w-full h-11 rounded-xl border-slate-100 text-slate-700 font-bold text-[15px] hover:bg-slate-50 transition-all shadow-none border"
+            className="w-full h-10 rounded-xl border-slate-200 text-slate-500 font-black text-[12px] uppercase tracking-[0.1em] hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all shadow-none"
           >
             Sign Out
           </Button>
           
-          <div className="text-center space-y-1 pb-4">
-            <p className="text-[10px] text-slate-300 uppercase tracking-tighter">APP Version : 2.0.0</p>
-            <p className="text-[10px] font-medium text-slate-400">
+          <div className="text-center space-y-0.5 pb-2">
+            <p className="text-[8px] text-slate-300 font-black uppercase tracking-[0.2em]">APP Version : 2.0.0</p>
+            <p className="text-[9px] font-bold text-slate-400 leading-none">
               Haven't downloaded the APK?{' '}
-              <span className="text-blue-400 cursor-pointer hover:underline">Click here and Download now</span>
+              <span className="text-blue-400 cursor-pointer hover:underline font-black">Download now</span>
             </p>
           </div>
         </div>
