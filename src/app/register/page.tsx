@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -33,6 +32,7 @@ export default function RegisterPage() {
     }
     checkUser();
 
+    // Correctly parsing the hash-based invite code
     const queryInvite = searchParams.get('invite');
     const url = typeof window !== 'undefined' ? window.location.href : '';
     const hashInviteMatch = url.match(/[?&]invite=([^&]+)/);
@@ -102,9 +102,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
-      {/* Premium Header Section */}
-      <div className="bg-[#2A85FF] pt-16 pb-14 px-8 relative overflow-hidden shrink-0">
+    <div className="h-full flex flex-col bg-slate-50 overflow-hidden select-none">
+      {/* Premium Header Section - Shrink-0 to protect against keyboard squeeze */}
+      <div className="bg-[#2A85FF] pt-14 pb-14 px-8 relative overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute top-20 -left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
         <div className="relative z-10 space-y-0">
@@ -115,9 +115,9 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Form Container */}
-      <div className="px-5 -mt-10 flex-1 relative z-20 flex flex-col overflow-hidden pb-8">
-        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col flex-1 max-h-full overflow-hidden">
+      {/* Form Container - Flex-1 and min-h-0 allows internal card scrolling when viewport height changes */}
+      <div className="px-5 -mt-10 flex-1 relative z-20 flex flex-col overflow-hidden pb-4">
+        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col flex-1 min-h-0">
           <div className="space-y-0.5 mb-4 shrink-0">
             <h2 className="text-lg font-bold text-slate-800">Registration</h2>
             <p className="text-[11px] text-slate-400 font-medium tracking-tight leading-none">Join the premium UPI network</p>
@@ -132,8 +132,9 @@ export default function RegisterPage() {
             </Alert>
           )}
 
-          <form onSubmit={handleRegister} className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto space-y-3 pr-1 mb-4">
+          <form onSubmit={handleRegister} className="flex-1 flex flex-col min-h-0">
+            {/* Scrollable Form Content */}
+            <div className="flex-1 overflow-y-auto smooth-scroll space-y-3 pr-1 mb-4">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <Phone className="h-4 w-4" />
@@ -196,6 +197,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Bottom Button Section - Fixed relative to card bottom */}
             <div className="space-y-3 pt-2 shrink-0">
               <Button 
                 type="submit" 

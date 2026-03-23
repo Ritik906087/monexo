@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -63,8 +62,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
-      {/* Top Branding Section */}
+    <div className="h-full flex flex-col bg-slate-50 overflow-hidden select-none">
+      {/* Top Branding Section - Shrink-0 prevents keyboard squashing it */}
       <div className="bg-[#2A85FF] relative pt-12 pb-14 px-8 flex flex-col items-center overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
         <h1 className="text-4xl font-black text-white tracking-tighter mb-1 relative z-10 italic">MONEXO</h1>
@@ -73,9 +72,9 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Login Form Container */}
-      <div className="flex-1 px-5 -mt-8 relative z-20 overflow-hidden pb-8 flex flex-col">
-        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col max-h-full">
+      {/* Login Form Container - Flex-1 with min-h-0 allows internal scrolling when keyboard is up */}
+      <div className="flex-1 px-5 -mt-8 relative z-20 overflow-hidden flex flex-col pb-4">
+        <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col flex-1 min-h-0">
           <div className="space-y-0.5 shrink-0 mb-4">
             <h2 className="text-xl font-bold text-slate-800">Account Login</h2>
             <p className="text-[12px] text-slate-400 font-medium tracking-tight">Enter your credentials to continue</p>
@@ -90,8 +89,9 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <form onSubmit={handleLogin} className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4">
+          <form onSubmit={handleLogin} className="flex-1 flex flex-col min-h-0">
+            {/* Scrollable area for inputs */}
+            <div className="flex-1 overflow-y-auto smooth-scroll space-y-4 pr-1 mb-4">
               <div className="space-y-3">
                 <div className="relative">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -135,6 +135,7 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Action Buttons area - Shrink-0 keeps it visible or at the bottom of the card */}
             <div className="space-y-4 pt-2 shrink-0">
               <Button 
                 type="submit" 
@@ -145,7 +146,7 @@ export default function LoginPage() {
                 {!loading && <ChevronRight className="ml-1 h-4 w-4" />}
               </Button>
 
-              <div className="text-center pt-1 pb-2">
+              <div className="text-center pb-2">
                 <p className="text-[12px] text-slate-400 font-medium">
                   No Account?{' '}
                   <Link href="/register" className="text-[#2A85FF] font-black hover:underline uppercase tracking-tight">
