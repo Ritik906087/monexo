@@ -16,7 +16,7 @@ import {
   Copy,
   User
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
@@ -68,13 +68,13 @@ export default function MinePage() {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-white">
+    <div className="flex items-center justify-center h-full bg-white">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2A85FF]"></div>
     </div>
   );
 
   const menuItems = [
-    { label: 'IToken', icon: () => <span className="text-[14px]">🇮🇳</span>, value: userData?.itoken_balance?.toFixed(2) || '0.00', color: 'text-orange-400' },
+    { label: 'IToken', icon: () => <span className="text-[16px]">🇮🇳</span>, value: userData?.itoken_balance?.toFixed(2) || '0.00', color: 'text-orange-400' },
     { label: 'Today Profit', icon: Gift, value: userData?.today_profit || '0', color: 'text-yellow-500' },
     { label: 'UPI Sell History', icon: LayoutGrid, color: 'text-blue-500', onClick: () => router.push('/sell-history') },
     { label: 'Buy History', icon: ClipboardList, color: 'text-blue-600', onClick: () => router.push('/buy-history') },
@@ -88,16 +88,16 @@ export default function MinePage() {
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden select-none">
       {/* Header - Blue Background */}
-      <div className="text-center py-2.5 bg-[#2A85FF] shrink-0 shadow-md">
+      <div className="text-center py-3 bg-[#2A85FF] shrink-0 shadow-md">
         <h1 className="text-[14px] font-black text-white tracking-[0.2em] uppercase">MONEXO-PAY</h1>
       </div>
 
-      {/* Profile Section - Stacked Info & Human Body Avatar */}
-      <div className="px-5 py-3 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
+      {/* Profile Section - Human Body Logo Avatar */}
+      <div className="px-5 py-4 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 border-2 border-white shadow-sm bg-blue-50">
+          <Avatar className="h-14 w-14 border-2 border-white shadow-sm bg-blue-50 flex items-center justify-center">
             <AvatarFallback className="bg-blue-50 text-blue-600">
-              <User className="h-6 w-6" />
+              <User className="h-7 w-7" />
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
@@ -105,20 +105,20 @@ export default function MinePage() {
                onClick={() => handleCopy(userData?.phone, 'Mobile Number')}
                className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
              >
-               <span className="text-[12px] font-black text-slate-800 leading-none uppercase tracking-tight">{userData?.phone}</span>
-               <Copy className="h-2.5 w-2.5 text-slate-400" />
+               <span className="text-[13px] font-black text-slate-800 leading-none uppercase tracking-tight">{userData?.phone}</span>
+               <Copy className="h-3 w-3 text-slate-400" />
              </div>
              <div 
                onClick={() => handleCopy(userData?.numeric_id?.toString(), 'UID')}
-               className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer mt-0.5"
+               className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer mt-1"
              >
-               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID:{userData?.numeric_id || '---'}</span>
-               <Copy className="h-2 w-2 text-slate-300" />
+               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">ID:{userData?.numeric_id || '---'}</span>
+               <Copy className="h-2.5 w-2.5 text-slate-300" />
              </div>
           </div>
         </div>
         <div className="flex items-center">
-          <span className="text-[9px] font-black text-[#2A85FF] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 uppercase tracking-tighter">Reward: 7%</span>
+          <span className="text-[10px] font-black text-[#2A85FF] bg-blue-50 px-2 py-1 rounded-lg border border-blue-100 uppercase tracking-tighter">Reward: 7%</span>
         </div>
       </div>
 
@@ -136,11 +136,11 @@ export default function MinePage() {
                   item.label === 'IToken' ? (
                     <item.icon />
                   ) : (
-                    <item.icon className={`h-[16px] w-[16px] ${item.color}`} strokeWidth={1.5} />
+                    <item.icon className={`h-[18px] w-[18px] ${item.color || 'text-slate-400'}`} strokeWidth={2} />
                   )
                 ) : null}
               </div>
-              <span className="text-[11.5px] font-bold text-slate-600 uppercase tracking-tight leading-none">{item.label}</span>
+              <span className="text-[12px] font-bold text-slate-600 uppercase tracking-tight leading-none">{item.label}</span>
             </div>
             <div className="flex items-center gap-1">
               {item.value && (
@@ -148,24 +148,24 @@ export default function MinePage() {
                   {item.value}
                 </span>
               )}
-              <ChevronRight className="text-slate-200 h-3.5 w-3.5" />
+              <ChevronRight className="text-slate-200 h-4 w-4" />
             </div>
           </div>
         ))}
 
         {/* Action Section */}
-        <div className="px-5 py-3 space-y-3">
+        <div className="px-5 py-4 space-y-4">
           <Button 
             variant="outline" 
             onClick={handleSignOut}
-            className="w-full h-9 rounded-xl border-slate-200 text-slate-500 font-black text-[12px] uppercase tracking-[0.1em] hover:bg-red-50 hover:text-red-500 transition-all shadow-none"
+            className="w-full h-10 rounded-xl border-slate-200 text-slate-500 font-black text-[12px] uppercase tracking-[0.1em] hover:bg-red-50 hover:text-red-500 transition-all shadow-none"
           >
             Sign Out
           </Button>
           
-          <div className="text-center space-y-0.5 pb-2">
-            <p className="text-[8px] text-slate-300 font-black uppercase tracking-[0.2em]">APP Version : 2.0.0</p>
-            <p className="text-[9px] font-bold text-slate-400 leading-none">
+          <div className="text-center space-y-1 pb-4">
+            <p className="text-[9px] text-slate-300 font-black uppercase tracking-[0.2em]">APP Version : 2.0.0</p>
+            <p className="text-[10px] font-bold text-slate-400 leading-none">
               Haven't downloaded the APK?{' '}
               <span className="text-blue-400 cursor-pointer hover:underline font-black">Download now</span>
             </p>
