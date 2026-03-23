@@ -47,11 +47,12 @@ export default function TeamPage() {
     fetchUserData();
   }, [router]);
 
-  // Generate real dynamic working temporary invite link using window.location.origin
+  // Generate real dynamic working temporary invite link using current origin and numeric_id
   const getInviteLink = () => {
-    const code = userData?.invite_code || 'MONEXO';
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://monexo.app';
-    // Format requested: [origin]/#/register?invite=CODE
+    // Use numeric_id as the unique referral code for the user
+    const code = userData?.numeric_id || 'MONEXO';
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    // Format requested: [origin]/#/register?invite=REAL_CODE
     return `${origin}/#/register?invite=${code}`;
   };
 
@@ -60,7 +61,7 @@ export default function TeamPage() {
     navigator.clipboard.writeText(inviteLink);
     toast({
       title: "Link Copied!",
-      description: "Your unique invitation link is ready to share.",
+      description: "Your real invitation link is ready to share.",
     });
   };
 
