@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -28,37 +29,6 @@
 }
 
 @layer base {
-  html, body {
-    @apply h-full w-full overflow-hidden;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
-    touch-action: manipulation;
-    background-color: #020617; /* Dark fallback */
-    position: fixed; /* Extra protection against body scroll */
-  }
-
-  @media (min-width: 768px) {
-    body {
-      background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative; /* Unlock fixed for desktop */
-    }
-    
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: url('https://picsum.photos/seed/bg/1920/1080') center/cover no-repeat;
-      filter: blur(40px) brightness(0.3);
-      z-index: -1;
-    }
-  }
-
   * {
     @apply border-border;
     outline: none !important;
@@ -70,9 +40,10 @@
   }
 }
 
+/* App Container (Mobile Feel) */
 .app-container {
   width: 100%;
-  height: 100dvh; /* Use dynamic viewport height */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -88,6 +59,23 @@
     border-radius: 3rem;
     margin: auto;
     border: 8px solid #1e293b;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* Only apply blurred background if app-container is present (User Side) */
+  body:has(.app-container) {
+    background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+  }
+  
+  body:has(.app-container)::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url('https://picsum.photos/seed/bg/1920/1080') center/cover no-repeat;
+    filter: blur(40px) brightness(0.3);
+    z-index: -1;
   }
 }
 
