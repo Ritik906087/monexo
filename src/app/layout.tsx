@@ -7,6 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { BottomNav } from '@/components/bottom-nav';
 import { MobileGuard } from '@/components/mobile-guard';
 import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 export default function RootLayout({
   children,
@@ -14,7 +15,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const isAdmin = pathname?.startsWith('/admin');
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Exclude navbar logic same as bottom-nav.tsx
+  const isExcludedPage = 
+    pathname === '/login' || 
+    pathname === '/register' || 
+    pathname === '/' ||
+    pathname?.startsWith('/admin') ||
+    pathname === '/buy-history' ||
+    pathname === '/sell-history';
+
+  const showNav = mounted && !isExcludedPage;
 
   return (
     <html lang="en" className="h-full">
@@ -37,8 +54,11 @@ export default function RootLayout({
           </div>
         ) : (
           <div className="app-container">
-            {/* Main Content Area - Scrollable like native list */}
-            <main className="flex-1 overflow-x-hidden pt-0 relative smooth-scroll safe-area-top pb-20">
+            {/* Global Scrollable Main Container */}
+            <main className={cn(
+              "flex-1 overflow-x-hidden overflow-y-auto smooth-scroll pt-0 relative safe-area-top",
+              showNav ? "pb-[calc(80px+env(safe-area-inset-bottom))]" : "pb-0"
+            )}>
               {children}
             </main>
             

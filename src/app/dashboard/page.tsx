@@ -49,7 +49,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="page-fade min-h-full pb-24 bg-[#f8fafc] overflow-hidden">
+    <div className="page-fade min-h-full bg-[#f8fafc]">
       {/* Premium Compact Notice Banner */}
       <div className="px-4 pt-3 animate-slide-up">
         <div className="relative rounded-[28px] overflow-hidden bg-gradient-to-br from-[#2A85FF] to-[#1A7BFF] p-5 text-white shadow-lg shadow-blue-100/50 border border-white/20">
@@ -163,7 +163,7 @@ export default function DashboardPage() {
       </div>
 
       {/* News Section */}
-      <div className="mt-4 px-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+      <div className="mt-4 px-4 pb-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
         <div className="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-[15px] font-black text-slate-800 uppercase tracking-tight">News</h3>

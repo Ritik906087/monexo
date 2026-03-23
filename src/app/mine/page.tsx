@@ -86,13 +86,13 @@ export default function MinePage() {
   ];
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-hidden select-none">
-      {/* Header - Blue Background as requested */}
-      <div className="text-center py-3 bg-[#2A85FF] shrink-0 shadow-md">
+    <div className="flex flex-col min-h-full bg-white animate-slide-up">
+      {/* Header - STICKY */}
+      <div className="text-center py-3 bg-[#2A85FF] shrink-0 shadow-md sticky top-0 z-50">
         <h1 className="text-[14px] font-black text-white tracking-[0.2em] uppercase">MONEXO-PAY</h1>
       </div>
 
-      {/* Profile Section - Minimized to match screenshot */}
+      {/* Profile Section */}
       <div className="px-5 py-3.5 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-12 w-12 border-2 border-white shadow-sm bg-blue-50 flex items-center justify-center">
@@ -122,8 +122,8 @@ export default function MinePage() {
         </div>
       </div>
 
-      {/* Menu List - Icons Restored and Compact */}
-      <div className="flex-1 overflow-y-auto smooth-scroll px-1">
+      {/* Menu List */}
+      <div className="px-1">
         {menuItems.map((item, idx) => {
           const Icon = item.icon;
           return (
@@ -155,7 +155,7 @@ export default function MinePage() {
         })}
 
         {/* Action Section */}
-        <div className="px-5 py-4 space-y-4">
+        <div className="px-5 py-4 space-y-4 pb-10">
           <Button 
             variant="outline" 
             onClick={handleSignOut}

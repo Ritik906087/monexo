@@ -38,9 +38,9 @@ export default function BuyPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8fafc] pb-20 animate-slide-up overflow-hidden">
-      {/* Page Header with Back Button */}
-      <div className="bg-white pt-3 pb-1.5 text-center border-b border-slate-100 shrink-0 relative">
+    <div className="flex flex-col min-h-full bg-[#f8fafc] animate-slide-up">
+      {/* Page Header with Back Button - STICKY */}
+      <div className="bg-white pt-3 pb-1.5 text-center border-b border-slate-100 shrink-0 relative sticky top-0 z-50">
         <button 
           onClick={() => router.back()}
           className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center active:scale-90 transition-all border border-slate-100"
@@ -50,8 +50,8 @@ export default function BuyPage() {
         <h1 className="text-[16px] font-black text-[#1e293b] uppercase tracking-tight">Buy</h1>
       </div>
 
-      {/* Tabs System */}
-      <div className="bg-white flex border-b border-slate-100 shrink-0">
+      {/* Tabs System - STICKY Below Header */}
+      <div className="bg-white flex border-b border-slate-100 shrink-0 sticky top-[48.5px] z-40">
         <button 
           onClick={() => setActiveTab('UPI')}
           className={cn(
@@ -74,7 +74,7 @@ export default function BuyPage() {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto smooth-scroll p-3 space-y-3">
+      <div className="p-3 space-y-3">
         {activeTab === 'UPI' ? (
           <>
             {/* Filter Card */}
@@ -148,7 +148,7 @@ export default function BuyPage() {
 
             <div className="bg-orange-50 border border-orange-100 py-1.5 px-4 rounded-md flex items-center justify-center gap-2">
               <div className="w-3.5 h-3.5 bg-orange-100 rounded-sm flex items-center justify-center">
-                <Info className="h-2 w-2 text-orange-400" />
+                <Info className="h-2.5 w-2.5 text-orange-400" />
               </div>
               <p className="text-[11px] font-bold text-orange-400">Please enter the value you want buy</p>
             </div>
@@ -211,7 +211,7 @@ export default function BuyPage() {
 
         {/* Universal History Section Label for UPI */}
         {activeTab === 'UPI' && (
-          <div className="mt-4">
+          <div className="mt-4 pb-4">
             <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Buy History</h3>
             <div className="bg-white rounded-2xl py-8 flex flex-col items-center justify-center border border-dashed border-slate-200">
               <div className="bg-slate-50 p-2 rounded-full mb-2">

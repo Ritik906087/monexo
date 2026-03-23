@@ -35,7 +35,7 @@ export function BottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-100 flex items-center justify-around z-[100] h-[64px] safe-area-bottom shadow-[0_-4px_10px_-5px_rgba(0,0,0,0.05)]">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-100 flex items-center justify-around z-[100] h-[70px] safe-area-bottom shadow-[0_-4px_12px_-4px_rgba(0,0,0,0.1)]">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.path;
@@ -44,7 +44,7 @@ export function BottomNav() {
             key={item.path} 
             href={item.path}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 transition-all duration-200 min-w-[64px] active:scale-90",
+              "flex flex-col items-center justify-center gap-1 transition-all duration-200 min-w-[64px] active:scale-90 h-full",
               isActive ? "text-[#2A85FF]" : "text-slate-400"
             )}
           >
