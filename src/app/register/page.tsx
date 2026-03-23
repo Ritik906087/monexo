@@ -76,6 +76,7 @@ function RegisterForm() {
       if (authError) throw authError;
 
       if (authData.user) {
+        // Updated reward_percent to 7 as per request
         const { error: dbError } = await supabase
           .from('users')
           .insert([{
@@ -85,7 +86,7 @@ function RegisterForm() {
             numeric_id: Math.floor(100000000 + Math.random() * 900000000),
             itoken_balance: 0,
             today_profit: 0,
-            reward_percent: 5
+            reward_percent: 7
           }]);
 
         if (dbError) throw dbError;
