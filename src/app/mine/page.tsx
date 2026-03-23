@@ -12,7 +12,8 @@ import {
   PlayCircle, 
   Headphones, 
   Lock, 
-  Gift
+  Gift,
+  Copy
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -50,6 +51,15 @@ export default function MinePage() {
     fetchUserData();
   }, [router]);
 
+  const handleCopy = (text: string, label: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${label} copied to clipboard.`,
+    });
+  };
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     toast({ title: "Logged Out", description: "Successfully signed out." });
@@ -76,30 +86,42 @@ export default function MinePage() {
 
   return (
     <div className="h-full flex flex-col bg-white overflow-hidden select-none">
-      {/* Header - Blue Background as requested */}
+      {/* Header - Blue Background */}
       <div className="text-center py-2.5 bg-[#2A85FF] shrink-0 shadow-md">
         <h1 className="text-[14px] font-black text-white tracking-[0.2em] uppercase">MONEXO-PAY</h1>
       </div>
 
-      {/* Profile Section - Ultra Compact */}
-      <div className="px-5 py-2.5 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
+      {/* Profile Section - Ultra Compact with Copy Logic */}
+      <div className="px-5 py-2 flex items-center justify-between border-b border-slate-50 bg-slate-50/40 shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
             <AvatarImage src={`https://picsum.photos/seed/${userData?.id}/150`} />
             <AvatarFallback className="bg-blue-50 text-blue-600 text-[10px] font-bold">U</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-             <span className="text-[12px] font-black text-slate-800 leading-none mb-1 uppercase tracking-tight">{userData?.phone}</span>
-             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Reward: {userData?.reward_percent || 5}%</span>
+             <div 
+               onClick={() => handleCopy(userData?.phone, 'Mobile Number')}
+               className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
+             >
+               <span className="text-[12px] font-black text-slate-800 leading-none uppercase tracking-tight">{userData?.phone}</span>
+               <Copy className="h-2.5 w-2.5 text-slate-400" />
+             </div>
+             <div 
+               onClick={() => handleCopy(userData?.numeric_id?.toString(), 'UID')}
+               className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer mt-0.5"
+             >
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID:{userData?.numeric_id || '---'}</span>
+               <Copy className="h-2 w-2 text-slate-300" />
+             </div>
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-[10px] font-black text-[#2A85FF] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 uppercase tracking-tighter">ID:{userData?.numeric_id || '---'}</span>
+          <span className="text-[9px] font-black text-[#2A85FF] bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 uppercase tracking-tighter">Reward: {userData?.reward_percent || 5}%</span>
           <ChevronRight className="h-3.5 w-3.5 text-slate-300" />
         </div>
       </div>
 
-      {/* Menu List - Tightened to ensure no scroll */}
+      {/* Menu List - Minimized to fit one screen */}
       <div className="flex-1 overflow-y-auto smooth-scroll px-1">
         {menuItems.map((item, idx) => (
           <div 
@@ -124,12 +146,12 @@ export default function MinePage() {
           </div>
         ))}
 
-        {/* Action Section - Compacted */}
-        <div className="px-5 py-4 space-y-3">
+        {/* Action Section */}
+        <div className="px-5 py-3 space-y-3">
           <Button 
             variant="outline" 
             onClick={handleSignOut}
-            className="w-full h-10 rounded-xl border-slate-200 text-slate-500 font-black text-[12px] uppercase tracking-[0.1em] hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all shadow-none"
+            className="w-full h-9 rounded-xl border-slate-200 text-slate-500 font-black text-[12px] uppercase tracking-[0.1em] hover:bg-red-50 hover:text-red-500 transition-all shadow-none"
           >
             Sign Out
           </Button>
