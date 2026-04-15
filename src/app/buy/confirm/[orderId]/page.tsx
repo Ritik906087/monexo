@@ -12,7 +12,9 @@ import {
   Phone,
   ShieldCheck,
   CreditCard,
-  ArrowRight
+  ArrowRight,
+  Info,
+  Loader
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -23,14 +25,13 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   const { orderId } = use(params);
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isConfirming, setIsConfirming] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
     async function fetchOrder() {
       try {
-        // Search by either ID (UUID) or Display ID (LGPAY...)
+        // Fetch order checking both ID (UUID) and Display ID (LGPAY...)
         const { data, error } = await supabase
           .from('orders')
           .select('*')
@@ -38,6 +39,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           .maybeSingle();
 
         if (error) throw error;
+        
         if (!data) {
           toast({ variant: "destructive", title: "Order Not Found", description: "This order does not exist." });
           router.push('/buy');
@@ -47,6 +49,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         setOrder(data);
       } catch (err: any) {
         console.error("Fetch error:", err);
+        toast({ variant: "destructive", title: "Error", description: "Could not load order details." });
       } finally {
         setLoading(false);
       }
@@ -68,7 +71,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fafc] animate-slide-up">
-      {/* Header */}
       <div className="bg-white p-4 flex items-center justify-between border-b sticky top-0 z-10">
         <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center">
           <ChevronLeft className="h-5 w-5 text-slate-600" />
@@ -78,7 +80,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
       </div>
 
       <div className="flex-1 p-4 space-y-4 pb-24">
-        {/* Status Banner */}
         <div className="bg-blue-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-200">
            <div className="absolute top-0 right-0 p-4 opacity-10">
              <ShieldCheck className="h-20 w-20" />
@@ -90,7 +91,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
-        {/* P2P Guide Card */}
         <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
            <div className="flex items-center gap-2 mb-3">
              <Info className="h-4 w-4 text-blue-500" />
@@ -101,7 +101,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </p>
         </div>
 
-        {/* Order Summary */}
         <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-4">
            <div className="flex justify-between items-center pb-3 border-b border-slate-50">
              <span className="text-[11px] font-bold text-slate-400 uppercase">Order ID</span>
@@ -113,7 +112,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
-        {/* Payment Details */}
         <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
            <div className="flex items-center gap-2 mb-1">
              <CreditCard className="h-4 w-4 text-blue-500" />
@@ -140,7 +138,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
-        {/* Action Button */}
         <div className="pt-2">
            <Button className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-[0.98] transition-all">
              I Have Paid
