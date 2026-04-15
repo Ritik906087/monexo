@@ -95,7 +95,7 @@ export default function BuyPage() {
         description: `Order ${orderNumber} initialized successfully.`,
       });
 
-      // Navigate using the Display ID (LGPAY...) which we know is reliable for searches
+      // Navigate using the Display ID (LGPAY...)
       router.push(`/buy/confirm/${orderNumber}`);
     } catch (error: any) {
       toast({
@@ -128,7 +128,7 @@ export default function BuyPage() {
       <div className="p-3 space-y-3 pb-24">
         {activeTab === 'UPI' ? (
           <>
-            {/* Instruction Card */}
+            {/* P2P Instruction Card */}
             <div className="bg-blue-500/5 rounded-2xl p-4 border border-blue-100 mb-2">
               <h3 className="text-[12px] font-black text-blue-800 uppercase mb-1">P2P खरीदारी कैसे काम करती है</h3>
               <p className="text-[10px] font-bold text-blue-600 leading-tight">

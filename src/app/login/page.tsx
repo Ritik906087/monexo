@@ -58,9 +58,9 @@ export default function LoginPage() {
     } catch (error: any) {
       let message = "Invalid credentials. Please try again.";
       
-      // Specifically handle "Failed to fetch" which is often a network or config issue
+      // Better network error handling
       if (error.message === "Failed to fetch" || error.message?.includes("fetch")) {
-        message = "Network error. Please check your internet connection and try again.";
+        message = "Network error. Please check your internet connection and Supabase configuration.";
       } else if (error.message) {
         message = error.message;
       }

@@ -31,8 +31,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   useEffect(() => {
     async function fetchOrder() {
       try {
-        // Fetch order checking both ID (UUID) and Display ID (LGPAY...)
-        // This solves the "Order not found" issue where the search might fail on one field
+        // Robust fetching logic: Try searching by UUID first, then by display ID
         const { data, error } = await supabase
           .from('orders')
           .select('*')
