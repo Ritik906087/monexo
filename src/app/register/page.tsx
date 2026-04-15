@@ -68,6 +68,7 @@ function RegisterForm() {
     setLoading(true);
     try {
       const email = `${phone}@monexo.app`;
+      // Check if user already exists in Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -76,25 +77,29 @@ function RegisterForm() {
       if (authError) throw authError;
 
       if (authData.user) {
-        // Updated reward_percent to 7 as per request
+        // Insert into public.users table - Invite code is optional here
         const { error: dbError } = await supabase
           .from('users')
           .insert([{
             id: authData.user.id,
             phone: phone,
-            invite_code: inviteCode || null,
+            invite_code: inviteCode.trim() || null, // Ensure it's null if empty
             numeric_id: Math.floor(100000000 + Math.random() * 900000000),
             itoken_balance: 0,
             today_profit: 0,
             reward_percent: 7
           }]);
 
-        if (dbError) throw dbError;
+        if (dbError) {
+           console.error("DB Insert Error:", dbError);
+           throw dbError;
+        }
 
         toast({ title: "Success", description: "Account created successfully!" });
         router.push('/dashboard');
       }
     } catch (error: any) {
+      console.error("Registration full error:", error);
       const message = error.message || "Failed to create account.";
       setErrorMsg(message);
       toast({ title: "Failed", description: message, variant: "destructive" });
@@ -105,7 +110,6 @@ function RegisterForm() {
 
   return (
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden select-none">
-      {/* Fixed Header Section - Protected from keyboard squash */}
       <div className="bg-[#2A85FF] pt-16 pb-14 px-8 relative overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute top-20 -left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
@@ -117,7 +121,6 @@ function RegisterForm() {
         </div>
       </div>
 
-      {/* Main Form Area - Flex-1 with min-h-0 for internal scroll when keyboard is up */}
       <div className="px-5 -mt-10 flex-1 relative z-20 flex flex-col overflow-hidden pb-4">
         <div className="bg-white rounded-[32px] p-6 shadow-xl flex flex-col flex-1 min-h-0">
           <div className="space-y-0.5 mb-4 shrink-0">
@@ -135,7 +138,6 @@ function RegisterForm() {
           )}
 
           <form onSubmit={handleRegister} className="flex-1 flex flex-col min-h-0">
-            {/* Scrollable Form Content Inside Card */}
             <div className="flex-1 overflow-y-auto smooth-scroll space-y-3 pr-1 mb-4">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -199,7 +201,6 @@ function RegisterForm() {
               </div>
             </div>
 
-            {/* Fixed Action Buttons */}
             <div className="space-y-3 pt-2 shrink-0">
               <Button 
                 type="submit" 

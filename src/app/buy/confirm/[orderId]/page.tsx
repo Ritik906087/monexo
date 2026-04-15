@@ -31,14 +31,17 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   useEffect(() => {
     async function fetchOrder() {
       try {
-        // Robust fetching logic: Try searching by UUID first, then by display ID
+        // Find by either UUID (id) or Display ID (order_id)
         const { data, error } = await supabase
           .from('orders')
           .select('*')
-          .or(`id.eq.${orderId},order_id.eq.${orderId}`)
+          .or(`id.eq."${orderId}",order_id.eq."${orderId}"`)
           .maybeSingle();
 
-        if (error) throw error;
+        if (error) {
+           console.error("Order search error:", error);
+           throw error;
+        }
         
         if (!data) {
           toast({ variant: "destructive", title: "Order Not Found", description: "This order does not exist." });
@@ -48,7 +51,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
 
         setOrder(data);
       } catch (err: any) {
-        console.error("Fetch error:", err);
+        console.error("Fetch error details:", err);
         toast({ variant: "destructive", title: "Error", description: "Could not load order details." });
       } finally {
         setLoading(false);
@@ -80,7 +83,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
       </div>
 
       <div className="flex-1 p-4 space-y-4 pb-24">
-        {/* Urgent Status Header */}
         <div className="bg-blue-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-200">
            <div className="absolute top-0 right-0 p-4 opacity-10">
              <ShieldCheck className="h-20 w-20" />
@@ -92,7 +94,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
-        {/* System Info */}
         <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
            <div className="flex items-center gap-2 mb-3">
              <Info className="h-4 w-4 text-blue-500" />
@@ -103,7 +104,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </p>
         </div>
 
-        {/* Order Details */}
         <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-4">
            <div className="flex justify-between items-center pb-3 border-b border-slate-50">
              <span className="text-[11px] font-bold text-slate-400 uppercase">Order ID</span>
@@ -115,7 +115,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
-        {/* Payment Target Section */}
         <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
            <div className="flex items-center gap-2 mb-1">
              <CreditCard className="h-4 w-4 text-blue-500" />
@@ -142,7 +141,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
-        {/* Action Button */}
         <div className="pt-2">
            <Button className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-[0.98] transition-all">
              I Have Paid
