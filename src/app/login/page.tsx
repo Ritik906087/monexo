@@ -58,7 +58,8 @@ export default function LoginPage() {
     } catch (error: any) {
       let message = "Invalid credentials. Please try again.";
       
-      if (error.message === "Failed to fetch") {
+      // Specifically handle "Failed to fetch" which is often a network or config issue
+      if (error.message === "Failed to fetch" || error.message?.includes("fetch")) {
         message = "Network error. Please check your internet connection and try again.";
       } else if (error.message) {
         message = error.message;
@@ -79,7 +80,7 @@ export default function LoginPage() {
     <div className="h-full flex flex-col bg-slate-50 overflow-hidden select-none">
       <div className="bg-[#2A85FF] relative pt-12 pb-14 px-8 flex flex-col items-center overflow-hidden shrink-0">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
-        <h1 className="text-4xl font-black text-white tracking-tighter mb-1 relative z-10 italic">MONEXO</h1>
+        <h1 className="text-4xl font-black text-white tracking-tighter mb-1 relative z-10 italic text-center">MONEXO</h1>
         <div className="bg-white/20 backdrop-blur-md px-4 py-1 rounded-full border border-white/30 relative z-10">
           <p className="text-[9px] font-black tracking-[0.4em] text-white uppercase">UPI PAYMENTS</p>
         </div>

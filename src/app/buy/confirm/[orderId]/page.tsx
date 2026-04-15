@@ -32,6 +32,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
     async function fetchOrder() {
       try {
         // Fetch order checking both ID (UUID) and Display ID (LGPAY...)
+        // This solves the "Order not found" issue where the search might fail on one field
         const { data, error } = await supabase
           .from('orders')
           .select('*')
@@ -80,6 +81,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
       </div>
 
       <div className="flex-1 p-4 space-y-4 pb-24">
+        {/* Urgent Status Header */}
         <div className="bg-blue-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-lg shadow-blue-200">
            <div className="absolute top-0 right-0 p-4 opacity-10">
              <ShieldCheck className="h-20 w-20" />
@@ -91,6 +93,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
+        {/* System Info */}
         <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
            <div className="flex items-center gap-2 mb-3">
              <Info className="h-4 w-4 text-blue-500" />
@@ -101,6 +104,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </p>
         </div>
 
+        {/* Order Details */}
         <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-4">
            <div className="flex justify-between items-center pb-3 border-b border-slate-50">
              <span className="text-[11px] font-bold text-slate-400 uppercase">Order ID</span>
@@ -112,6 +116,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
+        {/* Payment Target Section */}
         <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
            <div className="flex items-center gap-2 mb-1">
              <CreditCard className="h-4 w-4 text-blue-500" />
@@ -138,6 +143,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
+        {/* Action Button */}
         <div className="pt-2">
            <Button className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-[0.98] transition-all">
              I Have Paid
