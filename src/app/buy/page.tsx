@@ -68,7 +68,7 @@ export default function BuyPage() {
         .limit(1);
 
       if (activeOrders && activeOrders.length > 0) {
-        setActiveOrderId(activeOrders[0].order_id);
+        setActiveOrderId(activeOrders[0].order_id || activeOrders[0].id);
         setShowActiveOrderDialog(true);
         setLoading(false);
         return;
@@ -130,7 +130,7 @@ export default function BuyPage() {
             <div className="bg-blue-500/5 rounded-2xl p-4 border border-blue-100 mb-2">
               <h3 className="text-[12px] font-black text-blue-800 uppercase mb-1">P2P खरीदारी कैसे काम करती है</h3>
               <p className="text-[10px] font-bold text-blue-600 leading-tight">
-                जब आप LGB खरीदते हैं, तो आप एक पीयर-टू-पीयर (P2P) सिस्टम में भाग ले रहे होते हैं। आपका भुगतान सीधे किसी दूसरे उपयोगकर्ता को भेजा जाएगा जो अपना LGB बेच रहा है। कृपया भुगतान निर्देशों का ध्यानपूर्वक पालन करें ताकि आपका लेन-देन जल्दी पूरा हो। यह एक सुरक्षित मनी रोटेशन सिस्टम है जो खरीदारों और विक्रेताओं को जोड़ता।
+                जब आप LGB खरीदते हैं, तो आप एक पीयर-टू-पीयर (P2P) सिस्टम में भाग ले रहे होते हैं। आपका भुगतान सीधे किसी दूसरे उपयोगकर्ता को भेजा जाएगा जो अपना LGB बेच रहा है। कृपया भुगतान निर्देशों का ध्यानपूर्वक पालन करें ताकि आपका लेन-देन जल्दी पूरा हो। यह एक सुरक्षित मनी रोटेशन सिस्टम है जो खरीदारों और विक्रेताओं को जोड़ता है।
               </p>
             </div>
 

@@ -50,11 +50,11 @@ export default function DashboardPage() {
 
   return (
     <div className="page-fade min-h-full bg-[#f8fafc]">
-      {/* Premium Compact Notice Banner */}
+      {/* Premium Compact Notice Banner - Orange/Yellow Gradient like screenshot */}
       <div className="px-4 pt-3 animate-slide-up">
-        <div className="relative rounded-[28px] overflow-hidden bg-gradient-to-br from-[#2A85FF] to-[#1A7BFF] p-5 text-white shadow-lg shadow-blue-100/50 border border-white/20">
-          <div className="absolute top-3 right-3 w-10 h-10 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-0.5 border border-blue-100 z-20">
-             <span className="text-[6px] font-black text-[#2A85FF] leading-none uppercase text-center">MONEXO</span>
+        <div className="relative rounded-[28px] overflow-hidden bg-gradient-to-br from-[#FFB800] to-[#FF8A00] p-5 text-white shadow-lg shadow-orange-100/50 border border-white/20">
+          <div className="absolute top-3 right-3 w-10 h-10 bg-white rounded-xl shadow-md flex flex-col items-center justify-center p-0.5 border border-orange-100 z-20">
+             <span className="text-[6px] font-black text-[#FF8A00] leading-none uppercase text-center">MONEXO</span>
              <span className="text-[5px] font-bold text-slate-400 leading-none mt-0.5 uppercase tracking-tighter">UPI</span>
              <div className="flex gap-0.5 mt-0.5">
                <div className="w-1.5 h-0.5 bg-red-500 rounded-full"></div>
@@ -76,13 +76,13 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Balance Card */}
+      {/* Main Balance Card with User Background Image */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="bg-white rounded-[32px] p-6 relative overflow-hidden shadow-sm border border-slate-100">
           <div 
-            className="absolute inset-0 opacity-[0.08] pointer-events-none" 
+            className="absolute inset-0 opacity-[0.15] pointer-events-none" 
             style={{ 
-              backgroundImage: 'url("https://csgdgbbwhmiyafwwxvxd.supabase.co/storage/v1/object/public/Watermark/watermarked-29249.jpg")',
+              backgroundImage: 'url("https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/public/Lg%20pay/IMG_20260416_075632.jpg")',
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}

@@ -19,7 +19,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
-import { cn } from '@/lib/utils';
 
 export default function OrderConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
