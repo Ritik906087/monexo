@@ -48,6 +48,8 @@ export default function DashboardPage() {
     </div>
   );
 
+  const DASHBOARD_BG_IMAGE = "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/IMG_20260416_075632.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvSU1HXzIwMjYwNDE2XzA3NTYzMi5qcGciLCJpYXQiOjE3NzYzMDcxNjcsImV4cCI6MTgwNzg0MzE2N30.Qiqh9ipjHfmWieqbBs6gsBQxLXyFQQMBWStQ1kJoLok";
+
   return (
     <div className="page-fade min-h-full bg-[#f8fafc]">
       {/* MilesPay Important Notice Banner */}
@@ -79,15 +81,17 @@ export default function DashboardPage() {
       {/* Main Card with Background Image */}
       <div className="px-4 mt-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
         <div className="bg-white rounded-[32px] p-6 relative overflow-hidden shadow-sm border border-slate-100 min-h-[280px]">
-          {/* Background Image Layer */}
+          {/* Background Image Layer with soft opacity and white overlay effect */}
           <div 
-            className="absolute inset-0 opacity-[0.25] pointer-events-none" 
+            className="absolute inset-0 opacity-[0.3] pointer-events-none" 
             style={{ 
-              backgroundImage: 'url("https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/public/Lg%20pay/IMG_20260416_075632.jpg")',
+              backgroundImage: `url("${DASHBOARD_BG_IMAGE}")`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
           />
+          {/* Subtle white radial gradient overlay for better text contrast */}
+          <div className="absolute inset-0 bg-white/10 pointer-events-none" />
           
           <div className="relative z-10">
             <div className="flex items-baseline gap-2 mb-4">
@@ -113,7 +117,7 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            {/* Stats Grid Layout as per Screenshot */}
+            {/* Stats Grid Layout */}
             <div className="grid grid-cols-12 gap-y-6 gap-x-2 pt-4 border-t border-slate-100/50">
               <div className="col-span-4 flex flex-col">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Today Profit</span>
@@ -193,3 +197,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
