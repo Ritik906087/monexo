@@ -22,7 +22,6 @@ export default function RootLayout({
     setMounted(true);
   }, []);
 
-  // Exclude navbar logic same as bottom-nav.tsx
   const isExcludedPage = 
     pathname === '/login' || 
     pathname === '/register' || 
@@ -40,7 +39,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("font-body antialiased", isAdmin ? "bg-slate-50 overflow-auto h-auto" : "h-full w-full overflow-hidden fixed")}>
         {!isAdmin && <MobileGuard />}
@@ -54,17 +53,13 @@ export default function RootLayout({
           </div>
         ) : (
           <div className="app-container">
-            {/* Global Scrollable Main Container */}
             <main className={cn(
-              "flex-1 overflow-x-hidden overflow-y-auto smooth-scroll pt-0 relative safe-area-top",
-              showNav ? "pb-[calc(80px+env(safe-area-inset-bottom))]" : "pb-0"
+              "flex-1 overflow-x-hidden overflow-y-auto smooth-scroll relative safe-area-top",
+              showNav ? "pb-[calc(64px+env(safe-area-inset-bottom))]" : "pb-0"
             )}>
               {children}
             </main>
-            
-            {/* Fixed Bottom Navigation */}
             <BottomNav />
-            
             <Toaster />
           </div>
         )}

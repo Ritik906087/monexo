@@ -15,7 +15,6 @@ export function BottomNav() {
     setMounted(true);
   }, []);
 
-  // Hide nav bar on auth pages, admin pages, and sub-history pages
   const isExcludedPage = 
     pathname === '/login' || 
     pathname === '/register' || 
@@ -35,7 +34,7 @@ export function BottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-100 flex items-center justify-around z-[100] h-[70px] safe-area-bottom shadow-[0_-4px_12px_-4px_rgba(0,0,0,0.1)]">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white border-t border-slate-100 flex items-center justify-around z-[100] h-[64px] safe-area-bottom shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.path;
@@ -44,14 +43,14 @@ export function BottomNav() {
             key={item.path} 
             href={item.path}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 transition-all duration-200 min-w-[64px] active:scale-90 h-full",
+              "flex flex-col items-center justify-center gap-0.5 transition-all duration-200 min-w-[56px] active:scale-90 h-full",
               isActive ? "text-[#2A85FF]" : "text-slate-400"
             )}
           >
-            <Icon className="h-[22px] w-[22px]" strokeWidth={isActive ? 2 : 1.5} />
+            <Icon className="h-[20px] w-[20px]" strokeWidth={isActive ? 2.5 : 1.8} />
             <span className={cn(
-              "text-[9px] font-bold tracking-tight",
-              isActive ? "opacity-100" : "opacity-80"
+              "text-[9px] font-black uppercase tracking-tight",
+              isActive ? "opacity-100" : "opacity-70"
             )}>
               {item.name}
             </span>

@@ -8,11 +8,9 @@ import {
   Users, 
   QrCode, 
   Copy, 
-  Headphones,
-  User,
-  ShieldCheck
+  User
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
@@ -30,30 +28,16 @@ export default function TeamPage() {
         router.push('/login');
         return;
       }
-
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user data:", error);
-      } else {
-        setUserData(data);
-      }
+      const { data } = await supabase.from('users').select('*').eq('id', session.user.id).single();
+      if (data) setUserData(data);
       setLoading(false);
     }
-
     fetchUserData();
   }, [router]);
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied!",
-      description: `${label} has been copied to clipboard.`,
-    });
+    toast({ title: "Copied!", description: `${label} copied.` });
   };
 
   const getInviteLink = () => {
@@ -64,138 +48,59 @@ export default function TeamPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-full bg-white">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2A85FF]"></div>
+      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#2A85FF]"></div>
     </div>
   );
 
   return (
     <div className="flex flex-col min-h-full bg-white animate-slide-up">
-      {/* Page Header - STICKY */}
-      <div className="bg-white pt-3 pb-2 text-center border-b border-slate-50 shrink-0 sticky top-0 z-50">
-        <h1 className="text-[16px] font-black text-slate-800 uppercase tracking-tight">Team Center</h1>
+      <div className="native-header">
+        <h1 className="text-[14px] font-black text-slate-800 uppercase tracking-tight">Team Center</h1>
       </div>
 
-      {/* Real Profile Header Section */}
-      <div className="px-5 py-5 flex items-center justify-between border-b border-slate-50 bg-slate-50/30 shrink-0">
+      <div className="px-4 py-4 flex items-center justify-between border-b border-slate-50 bg-slate-50/20 shrink-0">
         <div className="flex items-center gap-3">
-          <Avatar className="h-14 w-14 border-2 border-white shadow-md bg-blue-50">
-            <AvatarFallback className="bg-blue-50 text-blue-600">
-              <User className="h-7 w-7" />
-            </AvatarFallback>
+          <Avatar className="h-10 w-10 border border-white shadow-sm bg-blue-50">
+            <AvatarFallback className="bg-blue-50 text-blue-600"><User className="h-5 w-5" /></AvatarFallback>
           </Avatar>
-          <div className="flex flex-col gap-1">
-            <div 
-              onClick={() => handleCopy(userData?.phone || '', 'Phone Number')}
-              className="flex items-center gap-1.5 active:scale-95 transition-transform cursor-pointer"
-            >
-              <span className="text-[14px] font-black text-slate-800 uppercase leading-none">
-                {userData?.phone || 'Loading...'}
-              </span>
-              <Copy className="h-3 w-3 text-slate-400" />
-            </div>
-            <span className="text-[11px] font-bold text-slate-400">Reward: 7%</span>
+          <div className="flex flex-col">
+            <span className="text-[12px] font-black text-slate-800 uppercase">{userData?.phone}</span>
+            <span className="text-[9px] font-bold text-slate-400">Reward: 7%</span>
           </div>
         </div>
-        <div 
-          onClick={() => handleCopy(userData?.numeric_id?.toString() || '', 'Account ID')}
-          className="text-right active:scale-95 transition-transform cursor-pointer bg-white p-2 rounded-xl border border-slate-50 shadow-sm"
-        >
-          <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block leading-none mb-1">Account ID</span>
-          <div className="flex items-center justify-end gap-1">
-            <span className="text-[12px] font-black text-[#2A85FF] tracking-tight">{userData?.numeric_id || '---'}</span>
-            <Copy className="h-2.5 w-2.5 text-blue-300" />
-          </div>
+        <div onClick={() => handleCopy(userData?.numeric_id?.toString() || '', 'UID')} className="bg-white px-2 py-1 rounded-lg border border-slate-50 shadow-sm text-right cursor-pointer active:scale-95 transition-all">
+          <span className="text-[7px] font-black text-slate-300 uppercase block mb-0.5">UID</span>
+          <span className="text-[11px] font-black text-[#2A85FF]">{userData?.numeric_id}</span>
         </div>
       </div>
 
-      {/* Stats List */}
-      <div className="space-y-0">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50 active:bg-slate-50 transition-colors">
-          <span className="text-[13px] font-bold text-slate-600 uppercase tracking-tight">Team Count</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[14px] font-black text-[#2A85FF]">0</span>
-            <ChevronRight className="h-4 w-4 text-slate-200" />
-          </div>
-        </div>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50 active:bg-slate-50 transition-colors">
-          <span className="text-[13px] font-bold text-slate-600 uppercase tracking-tight">Total Commission</span>
-          <span className="text-[14px] font-black text-emerald-500">₹0.00</span>
-        </div>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-50 active:bg-slate-50 transition-colors">
-          <span className="text-[13px] font-bold text-slate-600 uppercase tracking-tight">My Total Profit</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[14px] font-black text-[#2A85FF]">₹{userData?.today_profit?.toFixed(2) || '0.00'}</span>
-            <ChevronRight className="h-4 w-4 text-slate-200" />
-          </div>
-        </div>
-      </div>
-
-      {/* Real Invitation Link Section */}
-      <div className="px-5 py-8 space-y-7 pb-10">
-        <div className="relative flex items-start gap-4">
-          <div className="absolute left-3.5 top-7 w-[1px] h-14 border-l border-dashed border-blue-200"></div>
-          <div className="absolute left-[10.5px] top-[60px] w-1.5 h-1.5 border-b border-r border-blue-200 rotate-45"></div>
-
-          <div className="bg-[#2A85FF] p-2 rounded-full z-10 shadow-sm">
-            <User className="h-3 w-3 text-white" />
-          </div>
-          
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-[13px] font-black text-slate-800 uppercase tracking-tight">Invitation Link</span>
-                <div className="bg-blue-50 px-2 py-0.5 rounded text-[8px] font-black text-[#2A85FF] uppercase animate-pulse">Live</div>
-              </div>
-              <QrCode className="h-4 w-4 text-orange-400" />
-            </div>
-            <div 
-              onClick={() => handleCopy(getInviteLink(), 'Invite Link')}
-              className="bg-slate-50 p-3 rounded-xl flex items-center justify-between border border-slate-100 active:scale-[0.98] transition-all cursor-pointer group"
-            >
-              <p className="text-[11px] font-bold text-slate-400 truncate tracking-tight pr-3 lowercase">
-                {getInviteLink()}
-              </p>
-              <div className="bg-white p-1.5 rounded-lg shadow-sm border border-slate-100">
-                <Copy className="h-3.5 w-3.5 text-[#2A85FF]" />
-              </div>
-            </div>
-          </div>
+      <div className="flex-1 overflow-y-auto smooth-scroll px-4 pt-4 pb-20 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-100 p-4 space-y-4 shadow-sm">
+           <div className="flex items-center justify-between">
+             <span className="text-[11px] font-bold text-slate-500 uppercase">Invitation Link</span>
+             <QrCode className="h-4 w-4 text-blue-500" />
+           </div>
+           <div onClick={() => handleCopy(getInviteLink(), 'Link')} className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-center justify-between cursor-pointer active:bg-slate-100 transition-all">
+             <p className="text-[10px] font-bold text-slate-400 truncate pr-4">{getInviteLink()}</p>
+             <Copy className="h-3 w-3 text-blue-500 shrink-0" />
+           </div>
         </div>
 
-        <div className="relative flex items-start gap-4">
-          <div className="absolute left-3.5 top-7 w-[1px] h-14 border-l border-dashed border-blue-200"></div>
-          <div className="absolute left-[10.5px] top-[60px] w-1.5 h-1.5 border-b border-r border-blue-200 rotate-45"></div>
-
-          <div className="bg-blue-500 p-2 rounded-full z-10 shadow-sm">
-            <Users className="h-3 w-3 text-white" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[13px] font-bold text-slate-500 uppercase tracking-tight leading-none mb-1">Level 1 Commission</p>
-            <p className="text-[12px] font-black text-slate-800">Buy Amount × <span className="text-orange-500">0.3 %</span></p>
-          </div>
-        </div>
-
-        <div className="relative flex items-start gap-4">
-          <div className="absolute left-3.5 top-7 w-[1px] h-14 border-l border-dashed border-blue-200"></div>
-          <div className="absolute left-[10.5px] top-[60px] w-1.5 h-1.5 border-b border-r border-blue-200 rotate-45"></div>
-
-          <div className="bg-blue-400 p-2 rounded-full z-10 shadow-sm">
-            <Users className="h-3 w-3 text-white" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[13px] font-bold text-slate-500 uppercase tracking-tight leading-none mb-1">Level 2 Commission</p>
-            <p className="text-[12px] font-black text-slate-800">Buy Amount × <span className="text-orange-500">0.2 %</span></p>
-          </div>
-        </div>
-
-        <div className="relative flex items-start gap-4">
-          <div className="bg-blue-300 p-2 rounded-full z-10 shadow-sm">
-            <Users className="h-3 w-3 text-white" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[13px] font-bold text-slate-500 uppercase tracking-tight leading-none mb-1">Level 3 Commission</p>
-            <p className="text-[12px] font-black text-slate-800">Buy Amount × <span className="text-orange-500">0.1 %</span></p>
-          </div>
+        <div className="space-y-3">
+           <div className="flex items-center gap-3 p-3 bg-slate-50/50 rounded-xl border border-slate-50">
+             <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px] font-black">L1</div>
+             <div className="flex-1">
+               <p className="text-[10px] font-bold text-slate-500 uppercase">Level 1 Commission</p>
+               <p className="text-[11px] font-black text-slate-800">Amount × <span className="text-orange-500">0.3%</span></p>
+             </div>
+           </div>
+           <div className="flex items-center gap-3 p-3 bg-slate-50/50 rounded-xl border border-slate-50">
+             <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white text-[10px] font-black">L2</div>
+             <div className="flex-1">
+               <p className="text-[10px] font-bold text-slate-500 uppercase">Level 2 Commission</p>
+               <p className="text-[11px] font-black text-slate-800">Amount × <span className="text-orange-500">0.2%</span></p>
+             </div>
+           </div>
         </div>
       </div>
     </div>

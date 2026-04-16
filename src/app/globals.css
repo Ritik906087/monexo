@@ -24,7 +24,7 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 214 100% 55%;
-    --radius: 1.25rem;
+    --radius: 1rem;
   }
 }
 
@@ -32,50 +32,45 @@
   * {
     @apply border-border;
     outline: none !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply text-[13px] leading-tight;
   }
 
   input, textarea, select {
     user-select: text !important;
-    font-size: 16px !important; /* STRICT: Prevent iOS zoom */
+    font-size: 16px !important; /* Prevent iOS zoom */
   }
 }
 
-/* App Container (Mobile Feel) */
+/* App Container (Android Native Feel) */
 .app-container {
   width: 100%;
-  height: 100dvh; /* Use dvh to prevent layout jump when keyboard opens */
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
   background-color: #f8fafc;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 @media (min-width: 768px) {
   .app-container {
     max-width: 420px;
-    height: 90vh;
-    border-radius: 3rem;
+    height: 85vh;
+    border-radius: 2.5rem;
     margin: auto;
     border: 8px solid #1e293b;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
 
-  /* Only apply blurred background if app-container is present (User Side) */
   body:has(.app-container) {
     background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
-  }
-  
-  body:has(.app-container)::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: url('https://picsum.photos/seed/bg/1920/1080') center/cover no-repeat;
-    filter: blur(40px) brightness(0.3);
-    z-index: -1;
   }
 }
 
@@ -88,16 +83,15 @@
   display: none;
 }
 
-.fintech-gradient {
-  background: linear-gradient(135deg, #2A85FF 0%, #1A7BFF 100%);
-}
-
-.glass-card {
-  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
-}
-
-.safe-area-top {
-  padding-top: env(safe-area-inset-top, 0px);
+.native-header {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: white;
+  border-bottom: 1px solid #f1f5f9;
+  z-index: 50;
 }
 
 .safe-area-bottom {
@@ -105,10 +99,19 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
+  from { transform: translateY(12px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
 .animate-slide-up {
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.page-fade {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
