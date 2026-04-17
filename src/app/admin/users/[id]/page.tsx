@@ -125,7 +125,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
     } else {
       toast({ variant: "destructive", title: "Sync Failed" });
     }
-    setProcessing(processing);
     setProcessing(false);
   };
 
@@ -259,7 +258,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            {/* UPI Settlement Gateway - MAST UI */}
             <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -281,7 +279,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
               {user.kyc_data ? (
                 <div className="space-y-6">
-                  {/* Brand Header */}
                   <div className={cn("p-6 rounded-[32px] flex items-center gap-4 shadow-lg border border-white/10", partnerConfig?.color || 'bg-slate-900')}>
                     <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center p-2 shadow-inner">
                       {partnerConfig?.logo ? (
@@ -299,7 +296,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                     </div>
                   </div>
 
-                  {/* Detail Grid */}
                   <div className="grid grid-cols-1 gap-3">
                     <div className="flex items-center justify-between p-5 bg-slate-50/50 rounded-[24px] border border-slate-50 group">
                       <div className="space-y-0.5">
@@ -331,7 +327,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                         onClick={() => handleCopy(user.kyc_data.linked_mobile, 'Mobile number')}
                         className="p-2 hover:bg-white rounded-xl transition-all shadow-sm active:scale-90"
                       >
-                        <smartphone className="h-4 w-4 text-slate-400" />
+                        <Smartphone className="h-4 w-4 text-slate-400" />
                       </button>
                     </div>
                   </div>
