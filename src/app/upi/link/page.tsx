@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -26,16 +26,17 @@ const MOBIKWIK_LOGO = "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/objec
 const FREECHARGE_LOGO = "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(3).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDMpLnBuZyIsImlhdCI6MTc3NTE0ODYwOSwiZXhwIjoxODA2Njg0NjA5fQ.pus8pOlgEXCFb2pjIzNsVtU9DxnIxEeaVaeR3TuIQPc";
 
 const partners = [
-  { id: 'paytm-biz', name: 'Paytm Business', desc: 'Secure payment settlement for merchants.', icon: PAYTM_LOGO, status: 'active' },
-  { id: 'phonepe-biz', name: 'Phonepe Business', desc: 'Professional UPI gateway for business.', icon: PHONEPE_LOGO, status: 'active' },
-  { id: 'mobikwik', name: 'Mobikwik', desc: 'Fast digital wallet and UPI service.', icon: MOBIKWIK_LOGO, status: 'active' },
-  { id: 'paytm', name: 'Paytm', desc: 'Standard consumer digital payment app.', icon: PAYTM_LOGO, status: 'active' },
-  { id: 'phonepe', name: 'Phonepe', desc: 'Popular UPI and mobile recharge app.', icon: PHONEPE_LOGO, status: 'active' },
-  { id: 'freecharge', name: 'Freecharge', desc: 'Swift UPI and bill payment services.', icon: FREECHARGE_LOGO, status: 'active' }
+  { id: 'paytm-biz', name: 'Paytm Business', desc: 'Secure payment settlement for merchants.', icon: PAYTM_LOGO },
+  { id: 'phonepe-biz', name: 'Phonepe Business', desc: 'Professional UPI gateway for business.', icon: PHONEPE_LOGO },
+  { id: 'mobikwik', name: 'Mobikwik', desc: 'Fast digital wallet and UPI service.', icon: MOBIKWIK_LOGO },
+  { id: 'paytm', name: 'Paytm', desc: 'Standard consumer digital payment app.', icon: PAYTM_LOGO },
+  { id: 'phonepe', name: 'Phonepe', desc: 'Popular UPI and mobile recharge app.', icon: PHONEPE_LOGO },
+  { id: 'freecharge', name: 'Freecharge', desc: 'Swift UPI and bill payment services.', icon: FREECHARGE_LOGO }
 ];
 
-export default function LinkNewUPIPage() {
+function LinkNewUPIContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
@@ -43,6 +44,18 @@ export default function LinkNewUPIPage() {
   const [upiNo, setUpiNo] = useState('');
   const [linkedMobile, setLinkedMobile] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const type = searchParams.get('type') || 'sell'; // 'buy' or 'sell'
+
+  // Filter partners based on type
+  // Buy: Only Mobikwik and Freecharge
+  // Sell: All
+  const filteredPartners = partners.filter(p => {
+    if (type === 'buy') {
+      return p.id === 'mobikwik' || p.id === 'freecharge';
+    }
+    return true;
+  });
 
   const currentPartner = partners.find(p => p.id === selectedPartner);
 
@@ -65,7 +78,6 @@ export default function LinkNewUPIPage() {
       return;
     }
 
-    // Save to users table in a generic metadata field or specialized columns
     const { error } = await supabase
       .from('users')
       .update({ 
@@ -95,7 +107,9 @@ export default function LinkNewUPIPage() {
           <ChevronLeft className="h-6 w-6 text-slate-400" />
         </button>
         <div className="absolute left-1/2 -translate-x-1/2">
-          <h1 className="text-[15px] font-bold text-slate-700 tracking-tight">Link New UPI</h1>
+          <h1 className="text-[15px] font-bold text-slate-700 tracking-tight uppercase">
+            Link {type === 'buy' ? 'Buy' : 'Sell'} UPI
+          </h1>
         </div>
       </div>
 
@@ -169,23 +183,20 @@ export default function LinkNewUPIPage() {
           <div className="w-12 h-1 bg-slate-100 rounded-full mx-auto mt-3 mb-1" />
           <SheetHeader className="px-6 py-4 text-left">
             <SheetTitle className="text-[11px] font-bold text-slate-300 uppercase tracking-tight">
-              Choose a link authorization partner
+              Choose {type === 'buy' ? 'Buy' : 'Sell'} partner
             </SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto px-6 space-y-6 pb-20 smooth-scroll">
-            {partners.map((partner) => (
+            {filteredPartners.map((partner) => (
               <div key={partner.id} onClick={() => handlePartnerSelect(partner.id)} className="flex items-center gap-4 py-1 active:scale-[0.98] cursor-pointer transition-all">
-                <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 shrink-0 bg-white">
+                <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 shrink-0 bg-white p-1">
                   <img src={partner.icon} alt={partner.name} className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-[15px] font-black text-slate-800 leading-tight mb-0.5">{partner.name}</h3>
-                  <p className="text-[11px] font-bold text-slate-400 line-clamp-2 leading-tight">{partner.desc}</p>
+                  <p className="text-[11px] font-bold text-slate-400 line-clamp-2 leading-tight">Professional UPI gateway.</p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <Button variant="outline" size="sm" className="h-8 px-4 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-[11px] font-black border-none shadow-sm">
-                    Download
-                  </Button>
                   <div className={cn("w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors", selectedPartner === partner.id ? "border-blue-500 bg-white" : "border-slate-200")}>
                     {selectedPartner === partner.id && <div className="w-3 h-3 rounded-full bg-blue-500" />}
                   </div>
@@ -204,5 +215,13 @@ export default function LinkNewUPIPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function LinkNewUPIPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-full"><div className="animate-spin h-6 w-6 border-b-2 border-blue-500 rounded-full" /></div>}>
+      <LinkNewUPIContent />
+    </Suspense>
   );
 }

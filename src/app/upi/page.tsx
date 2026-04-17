@@ -18,6 +18,15 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 
+const PARTNER_LOGOS: Record<string, string> = {
+  'paytm-biz': "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDUpLnBuZyIsImlhdCI6MTc3NTE0ODYzMiwiZXhwIjoxODA2Njg0NjMyfQ.QXSbgSLV3ULTcV3ss9Co9ZMe1oj3tb9bR_OP8xY-Nds",
+  'phonepe-biz': "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDQpLnBuZyIsImlhdCI6MTc3NTE0ODYyMSwiZXhwIjoxODA2Njg0NjIxfQ.b_cMHhiCw52krGt2edtt1k5C1Keo8uGJwYIWpe6vZVo",
+  'mobikwik': "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDEpLnBuZyIsImlhdCI6MTc3NTE0ODU3MywiZXhwIjoxODA2Njg0NTczfQ.m8Z7gn5FV-0ss58kTEUZ833u8Wv_bFun3YZeZtyIa9s",
+  'paytm': "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDUpLnBuZyIsImlhdCI6MTc3NTE0ODYzMiwiZXhwIjoxODA2Njg0NjMyfQ.QXSbgSLV3ULTcV3ss9Co9ZMe1oj3tb9bR_OP8xY-Nds",
+  'phonepe': "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDQpLnBuZyIsImlhdCI6MTc3NTE0ODYyMSwiZXhwIjoxODA2Njg0NjIxfQ.b_cMHhiCw52krGt2edtt1k5C1Keo8uGJwYIWpe6vZVo",
+  'freecharge': "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(3).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDMpLnBuZyIsImlhdCI6MTc3NTE0ODYwOSwiZXhwIjoxODA2Njg0NjA5fQ.pus8pOlgEXCFb2pjIzNsVtU9DxnIxEeaVaeR3TuIQPc"
+};
+
 export default function UPIPage() {
   const [activeTab, setActiveTab] = useState('Buy');
   const [isStopped, setIsStopped] = useState(false);
@@ -44,6 +53,25 @@ export default function UPIPage() {
     fetchUserData();
   }, [router]);
 
+  const maskUpi = (upi: string) => {
+    if (!upi) return '---';
+    const parts = upi.split('@');
+    if (parts.length !== 2) return upi;
+    const id = parts[0];
+    const provider = parts[1];
+    if (id.length <= 7) return `${id.slice(0, 2)}*****${id.slice(-1)}@${provider}`;
+    // Format: 5 chars + 5 stars + 2 chars + @provider
+    return `${id.slice(0, 5)}*****${id.slice(-2)}@${provider}`;
+  };
+
+  const isBuyPartner = (partner: string) => {
+    return partner === 'mobikwik' || partner === 'freecharge';
+  };
+
+  const hasLinkedUpi = userData?.kyc_data?.upi_no;
+  const currentPartner = userData?.kyc_data?.partner;
+  const isLinkedPartnerValidForBuy = hasLinkedUpi && isBuyPartner(currentPartner);
+
   return (
     <div className="flex flex-col min-h-full bg-[#f8fafc] animate-slide-up">
       <div className="native-header bg-white">
@@ -59,7 +87,7 @@ export default function UPIPage() {
 
       <div className="p-3 shrink-0">
         <Button 
-          onClick={() => router.push('/upi/link')}
+          onClick={() => router.push(`/upi/link?type=${activeTab.toLowerCase()}`)}
           className="w-full bg-[#2A85FF] hover:bg-[#1A7BFF] h-10 rounded-lg shadow-sm font-black text-[11px] uppercase tracking-widest gap-2 active:scale-95 transition-all border-none"
         >
           <LinkIcon className="h-3 w-3" />
@@ -75,21 +103,28 @@ export default function UPIPage() {
       <div className="p-2.5 space-y-2.5 pb-24">
         {loading ? (
           <div className="flex justify-center py-10"><div className="animate-spin h-5 w-5 border-b-2 border-blue-500 rounded-full" /></div>
-        ) : userData?.kyc_data ? (
+        ) : (hasLinkedUpi && (activeTab === 'Sell' || isLinkedPartnerValidForBuy)) ? (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-4">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-[14px] font-black shrink-0 shadow-lg shadow-blue-100">
-                {userData.kyc_data.partner?.charAt(0).toUpperCase() || 'U'}
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-white border border-slate-50 flex items-center justify-center shrink-0 shadow-sm p-1">
+                {currentPartner && PARTNER_LOGOS[currentPartner] ? (
+                  <img src={PARTNER_LOGOS[currentPartner]} alt={currentPartner} className="w-full h-full object-contain" />
+                ) : (
+                  <div className="w-full h-full bg-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-black">
+                    {currentPartner?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="text-[13px] font-black text-slate-800 tracking-tight leading-none truncate uppercase">
-                    {userData.kyc_data.partner || 'Linked Partner'}
+                    {currentPartner?.replace('-biz', ' Business') || 'Linked Partner'}
                   </h3>
                   <Badge variant="outline" className="text-[8px] font-black text-emerald-500 bg-emerald-50 border-emerald-100 px-1.5 py-0 uppercase">Verified</Badge>
                 </div>
-                <p className="text-[10px] font-mono font-bold text-slate-500 truncate mb-0.5">{userData.kyc_data.upi_no}</p>
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Linked Mobile: {userData.kyc_data.linked_mobile}</p>
+                <p className="text-[12px] font-mono font-black text-slate-700 tracking-tight mb-2">
+                  {maskUpi(userData.kyc_data.upi_no)}
+                </p>
                 
                 <div className="mt-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -106,12 +141,14 @@ export default function UPIPage() {
         ) : (
           <div className="flex flex-col items-center justify-center py-16 px-6 bg-white rounded-3xl border border-dashed border-slate-200">
             <div className="p-4 bg-slate-50 rounded-full mb-4">
-              <History className="h-8 w-8 text-slate-200" />
+              <LinkIcon className="h-8 w-8 text-slate-200" />
             </div>
-            <p className="text-[11px] font-black text-slate-300 uppercase tracking-widest text-center">No UPI Identity Linked Yet</p>
+            <p className="text-[11px] font-black text-slate-300 uppercase tracking-widest text-center">
+              {activeTab === 'Buy' ? 'No Mobikwik/Freecharge linked' : 'No UPI Identity Linked Yet'}
+            </p>
             <Button 
               variant="link" 
-              onClick={() => router.push('/upi/link')}
+              onClick={() => router.push(`/upi/link?type=${activeTab.toLowerCase()}`)}
               className="text-[#2A85FF] font-black text-[10px] uppercase mt-2"
             >
               Start Linking Now →
@@ -134,3 +171,4 @@ export default function UPIPage() {
     </div>
   );
 }
+
