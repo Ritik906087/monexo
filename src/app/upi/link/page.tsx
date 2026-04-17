@@ -6,10 +6,7 @@ import { useRouter } from 'next/navigation';
 import { 
   ChevronLeft, 
   ChevronRight, 
-  Headphones, 
-  Copy,
-  CheckCircle2,
-  Circle
+  Headphones
 } from 'lucide-react';
 import {
   Sheet,
@@ -77,7 +74,7 @@ export default function LinkNewUPIPage() {
 
   const handlePartnerSelect = (id: string) => {
     setSelectedPartner(id);
-    setIsSheetOpen(false); // Auto-close sheet on selection
+    setIsSheetOpen(false);
   };
 
   return (
@@ -96,8 +93,8 @@ export default function LinkNewUPIPage() {
       </div>
 
       {/* Form Content */}
-      <div className="flex-1 p-5 space-y-2">
-        {/* Partner Row */}
+      <div className="flex-1 p-5 space-y-0">
+        {/* Partner Row - Always Visible */}
         <div 
           onClick={() => setIsSheetOpen(true)}
           className="flex items-center justify-between py-4 border-b border-slate-100 active:bg-slate-50 transition-colors cursor-pointer"
@@ -116,43 +113,48 @@ export default function LinkNewUPIPage() {
           </div>
         </div>
 
-        {/* Name Row */}
-        <div className="flex items-center py-4 border-b border-slate-100">
-          <span className="text-[15px] text-slate-800 w-20 shrink-0 font-medium">Name</span>
-          <Input 
-            placeholder="Enter your name"
-            className="flex-1 border-none bg-transparent h-auto p-0 focus-visible:ring-0 text-[16px] font-medium placeholder:text-slate-200 text-slate-900"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
+        {/* Conditional Fields - Only show after partner is selected */}
+        {selectedPartner && (
+          <div className="animate-slide-up space-y-2">
+            {/* Name Row */}
+            <div className="flex items-center py-4 border-b border-slate-100">
+              <span className="text-[15px] text-slate-800 w-20 shrink-0 font-medium">Name</span>
+              <Input 
+                placeholder="Enter your name"
+                className="flex-1 border-none bg-transparent h-auto p-0 focus-visible:ring-0 text-[16px] font-medium placeholder:text-slate-200 text-slate-900"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
 
-        {/* UPI No Row */}
-        <div className="flex items-center py-4 border-b border-slate-100">
-          <span className="text-[15px] text-slate-800 w-20 shrink-0 font-medium">UPI No</span>
-          <Input 
-            placeholder="Enter Phone No"
-            className="flex-1 border-none bg-transparent h-auto p-0 focus-visible:ring-0 text-[16px] font-medium placeholder:text-slate-200 text-slate-900"
-            value={upiNo}
-            onChange={(e) => setUpiNo(e.target.value)}
-          />
-        </div>
+            {/* UPI No Row */}
+            <div className="flex items-center py-4 border-b border-slate-100">
+              <span className="text-[15px] text-slate-800 w-20 shrink-0 font-medium">UPI No</span>
+              <Input 
+                placeholder="Enter Phone No"
+                className="flex-1 border-none bg-transparent h-auto p-0 focus-visible:ring-0 text-[16px] font-medium placeholder:text-slate-200 text-slate-900"
+                value={upiNo}
+                onChange={(e) => setUpiNo(e.target.value)}
+              />
+            </div>
 
-        {/* Retry Link */}
-        <div className="pt-2">
-          <button className="text-[11px] font-bold text-[#2A85FF] hover:underline px-1">
-            UPI list not loading? Tap to retry.
-          </button>
-        </div>
+            {/* Retry Link */}
+            <div className="pt-2">
+              <button className="text-[11px] font-bold text-[#2A85FF] hover:underline px-1 uppercase tracking-tight">
+                UPI list not loading? Tap to retry.
+              </button>
+            </div>
 
-        {/* Action Button */}
-        <div className="pt-6">
-          <Button 
-            className="w-full h-14 bg-[#2A85FF] hover:bg-blue-600 text-white rounded-xl font-black text-lg uppercase tracking-wider shadow-lg shadow-blue-100 active:scale-[0.98] transition-all border-none"
-          >
-            Link Kyc
-          </Button>
-        </div>
+            {/* Action Button */}
+            <div className="pt-6">
+              <Button 
+                className="w-full h-14 bg-[#2A85FF] hover:bg-blue-600 text-white rounded-xl font-black text-lg uppercase tracking-wider shadow-lg shadow-blue-100 active:scale-[0.98] transition-all border-none"
+              >
+                Link Kyc
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Sheet / Drawer for Partner Selection */}
@@ -208,14 +210,14 @@ export default function LinkNewUPIPage() {
         </SheetContent>
       </Sheet>
 
-      {/* Floating Support Icon */}
+      {/* Floating Support Icon - Matches Screenshot Location */}
       <div className="absolute bottom-8 right-6 z-10">
         <button className="w-[52px] h-[52px] bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100 active:scale-90 transition-all">
           <div className="relative">
             <div className="w-[38px] h-[38px] rounded-full bg-gradient-to-br from-blue-300 to-indigo-500 flex items-center justify-center">
                <Headphones className="h-5 w-5 text-white" />
             </div>
-            {/* Pink dot like in screenshot */}
+            {/* Small decorative dot like in screenshot */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute -top-[21px] -left-[21px]">
                 <circle cx="34" cy="34" r="3" fill="#FF71BD" stroke="white" strokeWidth="2" />
