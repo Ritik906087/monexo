@@ -16,7 +16,11 @@ import {
   Smartphone,
   ShieldCheck,
   AlertCircle,
-  Copy
+  Copy,
+  ExternalLink,
+  Power,
+  CheckCircle2,
+  XCircle
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -24,6 +28,15 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+
+const PARTNER_LOGOS: Record<string, { logo: string, color: string, name: string }> = {
+  'paytm-biz': { name: 'Paytm Business', color: 'bg-[#00baf2]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDUpLnBuZyIsImlhdCI6MTc3NTE0ODYzMiwiZXhwIjoxODA2Njg0NjMyfQ.QXSbgSLV3ULTcV3ss9Co9ZMe1oj3tb9bR_OP8xY-Nds' },
+  'phonepe-biz': { name: 'Phonepe Business', color: 'bg-[#5f259f]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDQpLnBuZyIsImlhdCI6MTc3NTE0ODYyMSwiZXhwIjoxODA2Njg0NjIxfQ.b_cMHhiCw52krGt2edtt1k5C1Keo8uGJwYIWpe6vZVo' },
+  'mobikwik': { name: 'Mobikwik', color: 'bg-[#002d72]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDEpLnBuZyIsImlhdCI6MTc3NTE0ODU3MywiZXhwIjoxODA2Njg0NTczfQ.m8Z7gn5FV-0ss58kTEUZ833u8Wv_bFun3YZeZtyIa9s' },
+  'paytm': { name: 'Paytm', color: 'bg-[#002970]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDUpLnBuZyIsImlhdCI6MTc3NTE0ODYzMiwiZXhwIjoxODA2Njg0NjMyfQ.QXSbgSLV3ULTcV3ss9Co9ZMe1oj3tb9bR_OP8xY-Nds' },
+  'phonepe': { name: 'Phonepe', color: 'bg-[#5f259f]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDQpLnBuZyIsImlhdCI6MTc3NTE0ODYyMSwiZXhwIjoxODA2Njg0NjIxfQ.b_cMHhiCw52krGt2edtt1k5C1Keo8uGJwYIWpe6vZVo' },
+  'freecharge': { name: 'Freecharge', color: 'bg-[#f04f23]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(3).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDMpLnBuZyIsImlhdCI6MTc3NTE0ODYwOSwiZXhwIjoxODA2Njg0NjA5fQ.pus8pOlgEXCFb2pjIzNsVtU9DxnIxEeaVaeR3TuIQPc' }
+};
 
 export default function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -112,6 +125,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
     } else {
       toast({ variant: "destructive", title: "Sync Failed" });
     }
+    setProcessing(processing);
     setProcessing(false);
   };
 
@@ -120,6 +134,9 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900"></div>
     </div>
   );
+
+  const kycPartner = user?.kyc_data?.partner;
+  const partnerConfig = kycPartner ? PARTNER_LOGOS[kycPartner] : null;
 
   return (
     <div className="flex flex-col min-h-screen bg-white animate-slide-up pb-24 font-sans select-none text-slate-900">
@@ -242,6 +259,95 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
+            {/* UPI Settlement Gateway - MAST UI */}
+            <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
+                    <ExternalLink className="h-5 w-5 text-slate-950" />
+                  </div>
+                  <h3 className="text-[14px] font-black uppercase tracking-tight text-slate-950">Settlement Gateway</h3>
+                </div>
+                {user.is_node_active !== undefined && (
+                  <div className={cn(
+                    "px-4 py-1.5 rounded-full flex items-center gap-2",
+                    user.is_node_active ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
+                  )}>
+                    {user.is_node_active ? <CheckCircle2 className="h-3.5 w-3.5" /> : <XCircle className="h-3.5 w-3.5" />}
+                    <span className="text-[10px] font-black uppercase tracking-widest">{user.is_node_active ? 'Active' : 'Stopped'}</span>
+                  </div>
+                )}
+              </div>
+
+              {user.kyc_data ? (
+                <div className="space-y-6">
+                  {/* Brand Header */}
+                  <div className={cn("p-6 rounded-[32px] flex items-center gap-4 shadow-lg border border-white/10", partnerConfig?.color || 'bg-slate-900')}>
+                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center p-2 shadow-inner">
+                      {partnerConfig?.logo ? (
+                        <img src={partnerConfig.logo} alt={partnerConfig.name} className="w-full h-full object-contain" />
+                      ) : (
+                        <Smartphone className="h-8 w-8 text-slate-400" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-0.5">Authorization Partner</p>
+                      <h4 className="text-xl font-black text-white uppercase tracking-tight">{partnerConfig?.name || user.kyc_data.partner}</h4>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                      <Power className={cn("h-5 w-5", user.is_node_active ? "text-emerald-400" : "text-red-400")} />
+                    </div>
+                  </div>
+
+                  {/* Detail Grid */}
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="flex items-center justify-between p-5 bg-slate-50/50 rounded-[24px] border border-slate-50 group">
+                      <div className="space-y-0.5">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Gateway Name</span>
+                        <p className="text-[14px] font-black text-slate-950 uppercase">{user.kyc_data.name}</p>
+                      </div>
+                      <ShieldCheck className="h-5 w-5 text-emerald-500 opacity-20" />
+                    </div>
+
+                    <div className="flex items-center justify-between p-5 bg-slate-50/50 rounded-[24px] border border-slate-50 group">
+                      <div className="space-y-0.5">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">UPI ID</span>
+                        <p className="text-[14px] font-mono font-black text-slate-950">{user.kyc_data.upi_no}</p>
+                      </div>
+                      <button 
+                        onClick={() => handleCopy(user.kyc_data.upi_no, 'UPI ID')}
+                        className="p-2 hover:bg-white rounded-xl transition-all shadow-sm active:scale-90"
+                      >
+                        <Copy className="h-4 w-4 text-slate-400 hover:text-blue-500" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-5 bg-slate-50/50 rounded-[24px] border border-slate-50 group">
+                      <div className="space-y-0.5">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Linked Mobile</span>
+                        <p className="text-[14px] font-black text-slate-950">{user.kyc_data.linked_mobile}</p>
+                      </div>
+                      <button 
+                        onClick={() => handleCopy(user.kyc_data.linked_mobile, 'Mobile number')}
+                        className="p-2 hover:bg-white rounded-xl transition-all shadow-sm active:scale-90"
+                      >
+                        <smartphone className="h-4 w-4 text-slate-400" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-20 text-center bg-slate-50/50 rounded-[32px] border border-dashed border-slate-100">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <Power className="h-8 w-8 text-slate-200" />
+                  </div>
+                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No verified gateway linked</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-8">
             <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
@@ -260,50 +366,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                   <span className="text-[14px] font-black text-slate-950">{new Date(user.created_at).toLocaleString()}</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
-                  <User className="h-5 w-5 text-slate-950" />
-                </div>
-                <h3 className="text-[14px] font-black uppercase tracking-tight text-slate-950">Settlement Identity</h3>
-              </div>
-
-              {user.kyc_data ? (
-                <div className="space-y-6">
-                  <div className="p-6 bg-slate-950 rounded-[24px] flex flex-col gap-1.5 shadow-sm">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Primary Partner</span>
-                    <span className="text-[18px] font-black text-white uppercase tracking-tight">{user.kyc_data.partner}</span>
-                  </div>
-                  <div className="space-y-5 px-1">
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-50">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase">Gateway Name</span>
-                      <span className="text-[14px] font-black text-slate-950">{user.kyc_data.name}</span>
-                    </div>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-50">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase">UPI Address</span>
-                      <span className="text-[14px] font-black text-slate-950 font-mono flex items-center gap-2">
-                        {user.kyc_data.upi_no}
-                        <button onClick={() => handleCopy(user.kyc_data.upi_no, 'UPI Address')}>
-                          <Copy className="h-3 w-3 text-slate-300 hover:text-blue-500" />
-                        </button>
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase">Auth Mobile</span>
-                      <span className="text-[14px] font-black text-slate-950">{user.kyc_data.linked_mobile}</span>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="py-20 text-center bg-slate-50 rounded-[32px] border border-dashed border-slate-100">
-                  <AlertCircle className="h-10 w-10 text-slate-200 mx-auto mb-3" />
-                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No verified gateway linked</p>
-                </div>
-              )}
             </div>
 
             <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
