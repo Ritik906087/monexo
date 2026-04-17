@@ -12,12 +12,11 @@ import {
   ShieldAlert, 
   Smartphone, 
   Monitor, 
-  MoreHorizontal,
-  Filter,
-  ArrowUpRight,
   Clock,
-  ExternalLink,
-  ChevronRight
+  ArrowUpRight,
+  ChevronRight,
+  Activity,
+  User
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Input } from "@/components/ui/input";
@@ -28,8 +27,7 @@ import {
   Dialog, 
   DialogContent, 
   DialogHeader, 
-  DialogTitle, 
-  DialogDescription 
+  DialogTitle 
 } from "@/components/ui/dialog";
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -58,7 +56,6 @@ export default function AdminDashboard() {
 
     async function fetchData() {
       try {
-        // Fetch all users
         const { data: usersData, error: usersError } = await supabase
           .from('users')
           .select('*')
@@ -66,23 +63,14 @@ export default function AdminDashboard() {
 
         if (usersError) throw usersError;
 
-        // In a real app, we would fetch login_history. 
-        // For this demo, we'll derive some data or mock history if table doesn't exist.
-        // We'll calculate suspicious based on unique IPs (simulated if no history table)
-        
         const processedUsers = (usersData || []).map(user => {
-          // Simulation logic for suspicious detection
-          const loginCount = user.total_logins || Math.floor(Math.random() * 10) + 1;
-          const uniqueIPs = user.unique_ips || Math.floor(Math.random() * 4) + 1;
-          const isSuspicious = uniqueIPs > 3;
-
+          const isSuspicious = (user.unique_ips || 0) > 3;
           return {
             ...user,
-            total_logins: loginCount,
-            unique_ips: uniqueIPs,
             status: isSuspicious ? 'suspicious' : 'active',
             last_ip: user.last_ip || '192.168.1.' + Math.floor(Math.random() * 255),
-            device_type: Math.random() > 0.4 ? 'mobile' : 'desktop'
+            device_type: user.device_type || (Math.random() > 0.4 ? 'mobile' : 'desktop'),
+            total_logins: user.total_logins || 0
           };
         });
 
@@ -90,9 +78,9 @@ export default function AdminDashboard() {
         
         setStats({
           totalUsers: processedUsers.length,
-          totalLoginsToday: processedUsers.reduce((acc, curr) => acc + (curr.total_logins > 5 ? 1 : 0), 0),
+          totalLoginsToday: processedUsers.reduce((acc, curr) => acc + (curr.total_logins > 0 ? 1 : 0), 0),
           suspiciousCount: processedUsers.filter(u => u.status === 'suspicious').length,
-          uniqueIPCount: processedUsers.reduce((acc, curr) => acc + curr.unique_ips, 0)
+          uniqueIPCount: processedUsers.reduce((acc, curr) => acc + (curr.unique_ips || 1), 0)
         });
 
       } catch (err: any) {
@@ -137,7 +125,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
-      {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-6 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <div className="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-200">
@@ -166,14 +153,13 @@ export default function AdminDashboard() {
       </header>
 
       <main className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full">
-        {/* Analytics Section */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white p-5 rounded-[24px] border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start">
               <div className="bg-blue-50 p-3 rounded-2xl">
                 <Users className="h-5 w-5 text-blue-600" />
               </div>
-              <Badge variant="outline" className="text-[9px] font-black text-blue-500 border-blue-100 bg-blue-50/30">Total</Badge>
+              <Badge variant="outline" className="text-[9px] font-black text-blue-500 border-blue-100 bg-blue-50/30 uppercase">Total</Badge>
             </div>
             <div className="mt-4">
               <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Total Partners</h3>
@@ -186,7 +172,7 @@ export default function AdminDashboard() {
               <div className="bg-emerald-50 p-3 rounded-2xl">
                 <Clock className="h-5 w-5 text-emerald-600" />
               </div>
-              <Badge variant="outline" className="text-[9px] font-black text-emerald-500 border-emerald-100 bg-emerald-50/30">Live</Badge>
+              <Badge variant="outline" className="text-[9px] font-black text-emerald-500 border-emerald-100 bg-emerald-50/30 uppercase">Live</Badge>
             </div>
             <div className="mt-4">
               <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Active Today</h3>
@@ -203,11 +189,11 @@ export default function AdminDashboard() {
                 <ShieldAlert className={cn("h-5 w-5", stats.suspiciousCount > 0 ? "text-white" : "text-slate-400")} />
               </div>
               {stats.suspiciousCount > 0 && (
-                <Badge className="text-[9px] font-black bg-red-500 text-white border-none animate-pulse">Critical</Badge>
+                <Badge className="text-[9px] font-black bg-red-500 text-white border-none animate-pulse uppercase">Critical</Badge>
               )}
             </div>
             <div className="mt-4">
-              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Suspicious Activity</h3>
+              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Suspicious Status</h3>
               <p className={cn("text-3xl font-black", stats.suspiciousCount > 0 ? "text-red-600" : "text-slate-900")}>{stats.suspiciousCount}</p>
             </div>
           </div>
@@ -217,7 +203,7 @@ export default function AdminDashboard() {
               <div className="bg-indigo-50 p-3 rounded-2xl">
                 <TrendingUp className="h-5 w-5 text-indigo-600" />
               </div>
-              <Badge variant="outline" className="text-[9px] font-black text-indigo-500 border-indigo-100 bg-indigo-50/30">Network</Badge>
+              <Badge variant="outline" className="text-[9px] font-black text-indigo-500 border-indigo-100 bg-indigo-50/30 uppercase">Network</Badge>
             </div>
             <div className="mt-4">
               <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Unique Access Nodes</h3>
@@ -226,7 +212,6 @@ export default function AdminDashboard() {
           </div>
         </section>
 
-        {/* Filters & Search */}
         <section className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-[400px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -246,7 +231,7 @@ export default function AdminDashboard() {
                 filterStatus === 'all' ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-50"
               )}
             >
-              All
+              All Nodes
             </button>
             <button 
               onClick={() => setFilterStatus('suspicious')}
@@ -255,7 +240,7 @@ export default function AdminDashboard() {
                 filterStatus === 'suspicious' ? "bg-red-500 text-white" : "text-slate-500 hover:bg-red-50"
               )}
             >
-              Suspicious {stats.suspiciousCount > 0 && <span className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+              Suspicious
             </button>
             <button 
               onClick={() => setFilterStatus('active')}
@@ -264,12 +249,11 @@ export default function AdminDashboard() {
                 filterStatus === 'active' ? "bg-emerald-500 text-white" : "text-slate-500 hover:bg-emerald-50"
               )}
             >
-              Clean
+              Verified
             </button>
           </div>
         </section>
 
-        {/* Users Table */}
         <section className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -279,7 +263,7 @@ export default function AdminDashboard() {
                   <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Network Access (IP)</th>
                   <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Device Node</th>
                   <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Sessions</th>
-                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Security Status</th>
                   <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
                 </tr>
               </thead>
@@ -318,13 +302,13 @@ export default function AdminDashboard() {
                           ) : (
                             <Monitor className="h-4 w-4 text-slate-400" />
                           )}
-                          <span className="text-[11px] font-bold text-slate-500 uppercase">{user.device_type}</span>
+                          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tight">{user.device_type}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex flex-col items-center">
                           <span className="text-[14px] font-black text-slate-800">{user.total_logins}</span>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase">Total Access</span>
+                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Total Sessions</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -335,7 +319,7 @@ export default function AdminDashboard() {
                             </Badge>
                           ) : (
                             <Badge className="bg-emerald-100 text-emerald-600 border-emerald-200 px-3 py-1 rounded-full font-black text-[9px] uppercase tracking-widest flex gap-1 items-center">
-                              <ShieldCheck className="h-3 w-3" /> Active
+                              <ShieldCheck className="h-3 w-3" /> Verified
                             </Badge>
                           )}
                         </div>
@@ -367,7 +351,7 @@ export default function AdminDashboard() {
                     <td colSpan={6} className="px-6 py-20 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <div className="p-4 bg-slate-50 rounded-full">
-                          <Search className="h-8 w-8 text-slate-200" />
+                          <Activity className="h-8 w-8 text-slate-200" />
                         </div>
                         <p className="text-[12px] font-black text-slate-300 uppercase tracking-[0.2em]">No Nodes Detected</p>
                       </div>
@@ -378,9 +362,8 @@ export default function AdminDashboard() {
             </table>
           </div>
           
-          {/* Pagination Placeholder */}
           <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Showing {filteredUsers.length} Nodes</span>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Showing {filteredUsers.length} Security Nodes</span>
             <div className="flex gap-2">
               <Button disabled variant="outline" size="sm" className="h-8 rounded-xl px-4 text-[10px] font-black uppercase tracking-widest">Prev</Button>
               <Button disabled variant="outline" size="sm" className="h-8 rounded-xl px-4 text-[10px] font-black uppercase tracking-widest">Next</Button>
@@ -389,7 +372,6 @@ export default function AdminDashboard() {
         </section>
       </main>
 
-      {/* Login History Modal */}
       <Dialog open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
         <DialogContent className="max-w-md rounded-[32px] p-0 border-none overflow-hidden bg-white shadow-2xl">
           <div className="bg-slate-900 p-8 text-white relative">
@@ -404,18 +386,18 @@ export default function AdminDashboard() {
                  </Avatar>
                  <div>
                    <DialogTitle className="text-xl font-black tracking-tight">{selectedUser?.phone}</DialogTitle>
-                   <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Tracing Identity Sessions</p>
+                   <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Tracing Node Sessions</p>
                  </div>
                </div>
                <div className="flex gap-4">
                  <div className="bg-white/10 px-3 py-1.5 rounded-xl">
-                   <span className="text-[9px] font-black text-slate-400 uppercase block leading-none mb-1">Total Logins</span>
+                   <span className="text-[9px] font-black text-slate-400 uppercase block leading-none mb-1">Total Sessions</span>
                    <span className="text-[14px] font-black">{selectedUser?.total_logins}</span>
                  </div>
                  <div className="bg-white/10 px-3 py-1.5 rounded-xl">
                    <span className="text-[9px] font-black text-slate-400 uppercase block leading-none mb-1">Unique IPs</span>
-                   <span className={cn("text-[14px] font-black", selectedUser?.unique_ips > 3 ? "text-red-400" : "text-emerald-400")}>
-                     {selectedUser?.unique_ips}
+                   <span className={cn("text-[14px] font-black", (selectedUser?.unique_ips || 0) > 3 ? "text-red-400" : "text-emerald-400")}>
+                     {selectedUser?.unique_ips || 1}
                    </span>
                  </div>
                </div>
@@ -424,7 +406,7 @@ export default function AdminDashboard() {
 
           <div className="p-6 space-y-4 max-h-[400px] overflow-y-auto smooth-scroll">
             <h4 className="text-[12px] font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
-              <HistoryIcon className="h-4 w-4 text-blue-500" /> Session Activity Log
+              <Activity className="h-4 w-4 text-blue-500" /> Node Activity Log
             </h4>
             
             <div className="space-y-3">
@@ -435,8 +417,8 @@ export default function AdminDashboard() {
                        <ArrowUpRight className="h-4 w-4 text-blue-500" />
                      </div>
                      <div className="flex flex-col">
-                       <span className="text-[13px] font-mono font-black text-slate-700">192.168.1.{Math.floor(Math.random() * 255)}</span>
-                       <span className="text-[10px] font-bold text-slate-400 uppercase">2025-03-{21 - i} 12:44:0{i}</span>
+                       <span className="text-[13px] font-mono font-black text-slate-700">{selectedUser?.last_ip}</span>
+                       <span className="text-[10px] font-bold text-slate-400 uppercase">Authorized Session Node</span>
                      </div>
                    </div>
                    <Badge variant="outline" className="text-[8px] font-black border-slate-200 text-slate-400 uppercase">Success</Badge>
@@ -448,7 +430,7 @@ export default function AdminDashboard() {
           <div className="p-6 bg-slate-50 flex items-center justify-between">
              <div className="flex items-center gap-2 text-slate-400">
                <Smartphone className="h-4 w-4" />
-               <span className="text-[10px] font-bold uppercase">Authorized Device Node</span>
+               <span className="text-[10px] font-bold uppercase tracking-widest">Authorized Device Node</span>
              </div>
              <Button variant="ghost" className="text-[11px] font-black text-red-500 uppercase tracking-widest h-8" onClick={() => setIsHistoryOpen(false)}>
                Close Trace
@@ -457,26 +439,5 @@ export default function AdminDashboard() {
         </DialogContent>
       </Dialog>
     </div>
-  );
-}
-
-function HistoryIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-      <path d="m12 7v5l4 2" />
-    </svg>
   );
 }

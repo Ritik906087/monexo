@@ -15,10 +15,8 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   Smartphone,
-  ExternalLink,
   History,
   Activity,
-  User,
   MoreVertical,
   ChevronRight
 } from 'lucide-react';
@@ -48,7 +46,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
     }
 
     async function fetchData() {
-      // Fetch User
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
@@ -60,15 +57,14 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
           ...userData,
           status: (userData.unique_ips || 0) > 3 ? 'suspicious' : 'active',
           last_ip: userData.last_ip || '192.168.1.' + Math.floor(Math.random() * 255),
-          device_type: Math.random() > 0.4 ? 'mobile' : 'desktop'
+          device_type: userData.device_type || (Math.random() > 0.4 ? 'mobile' : 'desktop')
         });
       } else {
-        toast({ variant: "destructive", title: "Error", description: "User not found." });
+        toast({ variant: "destructive", title: "Error", description: "Node not found." });
         router.push('/admin');
         return;
       }
 
-      // Fetch Recent Transactions
       const { data: txData } = await supabase
         .from('orders')
         .select('*')
@@ -92,9 +88,10 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
     setProcessing(true);
     const value = Number(amount);
+    const currentBalance = user.itoken_balance || 0;
     const newBalance = type === 'ADD' 
-      ? (user.itoken_balance || 0) + value 
-      : Math.max(0, (user.itoken_balance || 0) - value);
+      ? currentBalance + value 
+      : Math.max(0, currentBalance - value);
 
     const { error } = await supabase
       .from('users')
@@ -122,7 +119,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fafc] animate-slide-up pb-20">
-      {/* Premium Admin Header */}
       <header className="bg-white px-6 py-4 flex items-center justify-between border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-4">
           <button 
@@ -142,14 +138,12 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       </header>
 
       <div className="p-4 space-y-6 max-w-4xl mx-auto w-full">
-        {/* User Status & Identity Card */}
         <div className="bg-white rounded-[40px] p-8 border border-slate-200 shadow-sm relative overflow-hidden">
-          {/* Security Status Ribbon */}
           <div className={cn(
             "absolute top-0 right-0 px-8 py-2 rotate-45 translate-x-10 -translate-y-2 text-[10px] font-black uppercase tracking-widest text-center min-w-[150px] shadow-sm",
             user.status === 'suspicious' ? "bg-red-500 text-white" : "bg-emerald-500 text-white"
           )}>
-            {user.status === 'suspicious' ? 'Security Alert' : 'Node Verified'}
+            Security Status: {user.status === 'suspicious' ? 'Alert' : 'Verified'}
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
@@ -170,9 +164,9 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               <div>
                 <h2 className="text-3xl font-black text-slate-900 tracking-tighter mb-1">{user.phone}</h2>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                  <Badge variant="outline" className="bg-slate-50 text-slate-500 border-slate-200 text-[9px] font-black uppercase py-1 px-3">Partner VIP Lvl 1</Badge>
+                  <Badge variant="outline" className="bg-slate-50 text-slate-500 border-slate-200 text-[9px] font-black uppercase py-1 px-3">Partner VIP Node</Badge>
                   <Badge variant="outline" className="bg-blue-50 text-blue-600 border-blue-100 text-[9px] font-black uppercase py-1 px-3 flex gap-1.5 items-center">
-                    <Activity className="h-3 w-3" /> {user.device_type} Active
+                    <Activity className="h-3 w-3" /> {user.device_type} Node Active
                   </Badge>
                 </div>
               </div>
@@ -183,9 +177,9 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                   <span className="text-2xl font-black text-blue-700">{user.total_logins}</span>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-3xl border border-slate-200">
-                  <span className="text-[9px] font-black text-slate-400 uppercase block mb-1">Access Nodes</span>
-                  <span className={cn("text-2xl font-black", user.unique_ips > 3 ? "text-red-500" : "text-slate-800")}>
-                    {user.unique_ips} IPs
+                  <span className="text-[9px] font-black text-slate-400 uppercase block mb-1">Network Nodes</span>
+                  <span className={cn("text-2xl font-black", (user.unique_ips || 1) > 3 ? "text-red-500" : "text-slate-800")}>
+                    {user.unique_ips || 1} IPs
                   </span>
                 </div>
               </div>
@@ -194,7 +188,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Financial Section */}
           <div className="space-y-6">
             <div className="bg-slate-900 rounded-[40px] p-8 shadow-2xl text-white space-y-6">
               <div className="flex items-center justify-between">
@@ -204,13 +197,13 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                   </div>
                   <h3 className="text-[14px] font-black uppercase tracking-tight">Vault Balance</h3>
                 </div>
-                <Badge className="bg-white/10 text-white border-white/20 text-[9px] font-bold">LIVE UPDATE</Badge>
+                <Badge className="bg-white/10 text-white border-white/20 text-[9px] font-bold uppercase">Live Update</Badge>
               </div>
 
               <div className="space-y-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">IToken Available</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-5xl font-black tracking-tighter">₹{user.itoken_balance?.toFixed(2)}</span>
+                  <span className="text-5xl font-black tracking-tighter">₹{(user.itoken_balance || 0).toFixed(2)}</span>
                   <ArrowUpRight className="h-6 w-6 text-emerald-500" />
                 </div>
               </div>
@@ -245,7 +238,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            {/* Network Profile Section */}
             <div className="bg-white rounded-[40px] p-8 border border-slate-200 shadow-sm space-y-6">
               <div className="flex items-center gap-3">
                 <div className="bg-indigo-600 p-2.5 rounded-2xl">
@@ -258,55 +250,54 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-[20px] border border-slate-100">
                   <div className="flex items-center gap-3">
                     <Smartphone className="h-5 w-5 text-slate-400" />
-                    <span className="text-[11px] font-black text-slate-500 uppercase">Primary Node</span>
+                    <span className="text-[11px] font-black text-slate-500 uppercase tracking-tighter">Network Access (IP)</span>
                   </div>
                   <span className="text-[14px] font-mono font-black text-slate-700">{user.last_ip}</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-[20px] border border-slate-100">
                   <div className="flex items-center gap-3">
-                    <History className="h-5 w-5 text-slate-400" />
-                    <span className="text-[11px] font-black text-slate-500 uppercase">First Access</span>
+                    <Clock className="h-5 w-5 text-slate-400" />
+                    <span className="text-[11px] font-black text-slate-500 uppercase tracking-tighter">Last Active Node</span>
                   </div>
-                  <span className="text-[14px] font-black text-slate-700">{new Date(user.created_at).toLocaleDateString()}</span>
+                  <span className="text-[13px] font-black text-slate-700">{new Date(user.created_at).toLocaleDateString()}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* UPI & Transactions Section */}
           <div className="space-y-6">
             <div className="bg-white rounded-[40px] p-8 border border-slate-200 shadow-sm space-y-6">
               <div className="flex items-center gap-3">
                 <div className="bg-emerald-600 p-2.5 rounded-2xl">
                   <LinkIcon className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-[14px] font-black uppercase tracking-tight">Linked Settlement Gateway</h3>
+                <h3 className="text-[14px] font-black uppercase tracking-tight">Partner Identity (KYC)</h3>
               </div>
 
               {user.kyc_data ? (
                 <div className="space-y-4">
                   <div className="p-5 bg-emerald-50/50 rounded-[24px] border border-emerald-100 flex flex-col gap-1">
-                    <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em]">Active Gateway</span>
+                    <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em]">Authorized Gateway</span>
                     <span className="text-[16px] font-black text-emerald-700 uppercase tracking-tight">{user.kyc_data.partner}</span>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between py-2 border-b border-slate-50">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase">Gateway Name</span>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">Node Name</span>
                       <span className="text-[13px] font-black text-slate-700">{user.kyc_data.name}</span>
                     </div>
                     <div className="flex items-center justify-between py-2 border-b border-slate-50">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase">Linked UPI</span>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">Network UPI</span>
                       <span className="text-[13px] font-black text-blue-600">{user.kyc_data.upi_no}</span>
                     </div>
                     <div className="flex items-center justify-between py-2">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase">Registered Mobile</span>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">Linked Mobile</span>
                       <span className="text-[13px] font-black text-slate-700">{user.kyc_data.linked_mobile}</span>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="py-12 text-center bg-slate-50/50 border border-dashed border-slate-200 rounded-[24px]">
-                  <p className="text-[11px] font-black text-slate-300 uppercase">No Gateway Linked</p>
+                  <p className="text-[11px] font-black text-slate-300 uppercase tracking-widest">No Partner Identity Linked</p>
                 </div>
               )}
             </div>
@@ -315,11 +306,11 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="bg-slate-100 p-2.5 rounded-2xl">
-                    <Clock className="h-5 w-5 text-slate-500" />
+                    <History className="h-5 w-5 text-slate-500" />
                   </div>
                   <h3 className="text-[14px] font-black uppercase tracking-tight">Node Activity Logs</h3>
                 </div>
-                <Button variant="ghost" className="h-8 px-3 rounded-xl bg-slate-50 text-[10px] font-black text-slate-400 uppercase">Full History</Button>
+                <Button variant="ghost" className="h-8 px-3 rounded-xl bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">History</Button>
               </div>
 
               <div className="space-y-3">
@@ -332,20 +323,20 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                         </div>
                         <div className="flex flex-col">
                           <span className="text-[11px] font-black text-slate-700 uppercase leading-none mb-1">{tx.type === 'buy' ? 'Purchase' : 'Payout'}</span>
-                          <span className="text-[9px] font-bold text-slate-400">{new Date(tx.created_at).toLocaleDateString()} • {new Date(tx.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                          <span className="text-[9px] font-bold text-slate-400">{new Date(tx.created_at).toLocaleDateString()} Node</span>
                         </div>
                       </div>
                       <div className="text-right">
                         <span className={cn("text-[14px] font-black block", tx.type === 'buy' ? "text-emerald-600" : "text-blue-600")}>
                           {tx.type === 'buy' ? '+' : '-'} ₹{tx.amount.toFixed(2)}
                         </span>
-                        <span className="text-[8px] font-bold text-slate-300 uppercase tracking-tighter">NODE COMPLETED</span>
+                        <Badge variant="outline" className="text-[8px] font-bold text-slate-300 border-slate-100 p-0 px-1 uppercase">Success</Badge>
                       </div>
                     </div>
                   ))
                 ) : (
                   <div className="py-12 text-center">
-                    <span className="text-[11px] font-black text-slate-300 uppercase tracking-widest">No Activity Recorded</span>
+                    <span className="text-[11px] font-black text-slate-300 uppercase tracking-widest">No Activity Node Logged</span>
                   </div>
                 )}
               </div>
@@ -354,14 +345,13 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       </div>
 
-      {/* Security Footer Branding */}
       <footer className="mt-auto py-8 text-center px-6">
         <div className="flex flex-col items-center gap-2 max-w-md mx-auto">
           <div className="flex items-center gap-2 bg-slate-100 px-4 py-1.5 rounded-full border border-slate-200">
             <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
-            <p className="text-[10px] font-black text-slate-500 tracking-[0.2em] uppercase">Global Security Authorization: Level 4</p>
+            <p className="text-[10px] font-black text-slate-500 tracking-[0.2em] uppercase">Security Level 4 Authorization Active</p>
           </div>
-          <p className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter">All interactions are logged for audit compliance</p>
+          <p className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter italic">All Interactions Monitored for Node Compliance</p>
         </div>
       </footer>
     </div>
