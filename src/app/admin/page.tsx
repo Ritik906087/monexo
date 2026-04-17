@@ -15,7 +15,8 @@ import {
   Activity,
   UserCheck,
   AlertCircle,
-  Copy
+  Copy,
+  CreditCard
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Input } from "@/components/ui/input";
@@ -129,7 +130,7 @@ export default function AdminDashboard() {
         </Button>
       </header>
 
-      <main className="flex-1 p-4 md:p-8 space-y-8 max-w-[1400px] mx-auto w-full animate-slide-up">
+      <main className="flex-1 p-4 md:p-8 space-y-8 max-w-[1400px] mx-auto w-full animate-slide-up pb-24">
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             { label: 'Total Partners', val: stats.totalUsers, icon: Users, color: 'text-slate-900' },
@@ -252,15 +253,6 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
-            
-            {filteredUsers.length === 0 && (
-              <div className="py-24 text-center space-y-4">
-                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto">
-                  <Filter className="h-8 w-8 text-slate-200" />
-                </div>
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No matching nodes found</p>
-              </div>
-            )}
           </div>
         </section>
       </main>
@@ -269,6 +261,10 @@ export default function AdminDashboard() {
         <button onClick={() => router.push('/admin')} className="flex flex-col items-center gap-1 text-slate-950">
           <Activity className="h-5 w-5" />
           <span className="text-[9px] font-black uppercase tracking-widest">Dashboard</span>
+        </button>
+        <button onClick={() => router.push('/admin/payments')} className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-950 transition-colors">
+          <CreditCard className="h-5 w-5" />
+          <span className="text-[9px] font-black uppercase tracking-widest">Payments</span>
         </button>
         <button onClick={() => router.push('/admin')} className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-950 transition-colors">
           <Users className="h-5 w-5" />

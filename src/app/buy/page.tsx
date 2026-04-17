@@ -42,6 +42,11 @@ export default function BuyPage() {
     { id: '48540735795', price: 1000, reward: 70, itoken: 1070, rewardPercent: 7 },
   ];
 
+  const generateOrderNumber = () => {
+    // Generates a 15-digit numeric order ID
+    return Math.floor(100000000000000 + Math.random() * 900000000000000).toString();
+  };
+
   const handleBuy = async (price: number) => {
     setLoading(true);
     try {
@@ -65,7 +70,7 @@ export default function BuyPage() {
         return;
       }
 
-      const orderNumber = `LGPAY${Math.floor(100000 + Math.random() * 900000)}`;
+      const orderNumber = generateOrderNumber();
       const { data: newOrder, error: insertError } = await supabase
         .from('orders')
         .insert([{

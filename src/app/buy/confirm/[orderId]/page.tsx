@@ -14,7 +14,8 @@ import {
   CreditCard,
   ArrowRight,
   Info,
-  Loader
+  Loader,
+  Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -23,41 +24,45 @@ import { supabase } from '@/lib/supabase';
 export default function OrderConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
   const [order, setOrder] = useState<any>(null);
+  const [adminPayments, setAdminPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    async function fetchOrder() {
+    async function fetchData() {
       try {
-        // Find by either UUID (id) or Display ID (order_id)
-        const { data, error } = await supabase
+        // Fetch Order
+        const { data: orderData, error: orderError } = await supabase
           .from('orders')
           .select('*')
           .or(`id.eq."${orderId}",order_id.eq."${orderId}"`)
           .maybeSingle();
 
-        if (error) {
-           console.error("Order search error:", error);
-           throw error;
-        }
-        
-        if (!data) {
-          toast({ variant: "destructive", title: "Order Not Found", description: "This order does not exist." });
+        if (orderError) throw orderError;
+        if (!orderData) {
+          toast({ variant: "destructive", title: "Order Not Found" });
           router.push('/buy');
           return;
         }
+        setOrder(orderData);
 
-        setOrder(data);
+        // Fetch Admin Payment Methods
+        const { data: payData } = await supabase
+          .from('admin_payment_methods')
+          .select('*')
+          .eq('is_active', true);
+        
+        if (payData) setAdminPayments(payData);
+
       } catch (err: any) {
-        console.error("Fetch error details:", err);
-        toast({ variant: "destructive", title: "Error", description: "Could not load order details." });
+        toast({ variant: "destructive", title: "Error", description: "Could not load data." });
       } finally {
         setLoading(false);
       }
     }
 
-    fetchOrder();
+    fetchData();
   }, [orderId, router, toast]);
 
   const handleCopy = (text: string) => {
@@ -70,6 +75,9 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
     </div>
   );
+
+  const upiMethod = adminPayments.find(p => p.type === 'UPI');
+  const usdtMethod = adminPayments.find(p => p.type === 'USDT');
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fafc] animate-slide-up">
@@ -114,31 +122,54 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
            </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
-           <div className="flex items-center gap-2 mb-1">
-             <CreditCard className="h-4 w-4 text-blue-500" />
-             <h3 className="text-[13px] font-black text-slate-800 uppercase">Payment Details</h3>
-           </div>
+        {upiMethod && (
+          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
+             <div className="flex items-center gap-2 mb-1">
+               <CreditCard className="h-4 w-4 text-blue-500" />
+               <h3 className="text-[13px] font-black text-slate-800 uppercase">UPI Payment</h3>
+             </div>
 
-           <div className="space-y-4">
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 relative group">
-                <span className="text-[9px] font-black text-slate-300 uppercase absolute top-2 left-4">UPI ID</span>
-                <div className="flex items-center justify-between pt-3">
-                  <span className="text-[14px] font-black text-slate-700">monexo@upi</span>
-                  <button onClick={() => handleCopy('monexo@upi')} className="p-2 hover:bg-white rounded-xl transition-all">
-                    <Copy className="h-4 w-4 text-blue-500" />
-                  </button>
+             <div className="space-y-4">
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 relative group">
+                  <span className="text-[9px] font-black text-slate-300 uppercase absolute top-2 left-4">UPI ID</span>
+                  <div className="flex items-center justify-between pt-3">
+                    <span className="text-[14px] font-black text-slate-700">{upiMethod.details}</span>
+                    <button onClick={() => handleCopy(upiMethod.details)} className="p-2 hover:bg-white rounded-xl transition-all">
+                      <Copy className="h-4 w-4 text-blue-500" />
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 relative group">
-                <span className="text-[9px] font-black text-slate-300 uppercase absolute top-2 left-4">Account Name</span>
-                <div className="flex items-center justify-between pt-3">
-                  <span className="text-[14px] font-black text-slate-700 uppercase">Monexo Merchant</span>
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 relative group">
+                  <span className="text-[9px] font-black text-slate-300 uppercase absolute top-2 left-4">Account Name</span>
+                  <div className="flex items-center justify-between pt-3">
+                    <span className="text-[14px] font-black text-slate-700 uppercase">{upiMethod.account_name || 'Merchant'}</span>
+                  </div>
                 </div>
-              </div>
-           </div>
-        </div>
+             </div>
+          </div>
+        )}
+
+        {usdtMethod && (
+          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-5">
+             <div className="flex items-center gap-2 mb-1">
+               <Globe className="h-4 w-4 text-emerald-500" />
+               <h3 className="text-[13px] font-black text-slate-800 uppercase">USDT Payment</h3>
+             </div>
+
+             <div className="space-y-4">
+                <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 relative group">
+                  <span className="text-[9px] font-black text-emerald-300 uppercase absolute top-2 left-4">USDT Address (TRC20)</span>
+                  <div className="flex items-center justify-between pt-3">
+                    <span className="text-[12px] font-black text-emerald-800 truncate pr-4">{usdtMethod.details}</span>
+                    <button onClick={() => handleCopy(usdtMethod.details)} className="p-2 hover:bg-white rounded-xl transition-all">
+                      <Copy className="h-4 w-4 text-emerald-500" />
+                    </button>
+                  </div>
+                </div>
+             </div>
+          </div>
+        )}
 
         <div className="pt-2">
            <Button className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-[0.98] transition-all">
