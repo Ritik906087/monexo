@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -95,8 +94,8 @@ export default function MinePage() {
             <AvatarFallback className="bg-blue-100 text-blue-600"><User className="h-7 w-7" /></AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-             <div onClick={() => handleCopy(userData?.phone, 'Mobile')} className="flex items-center gap-1.5 cursor-pointer group">
-               <span className="text-[16px] font-black text-slate-800 tracking-tight">{userData?.phone}</span>
+             <div onClick={() => handleCopy(userData?.phone, 'Username')} className="flex items-center gap-1.5 cursor-pointer group">
+               <span className="text-[16px] font-black text-slate-800 tracking-tight">{userData?.phone || 'Guest'}</span>
                <Copy className="h-3 w-3 text-slate-300 group-hover:text-blue-500 transition-colors" />
              </div>
              <div onClick={() => handleCopy(userData?.numeric_id?.toString(), 'UID')} className="flex items-center gap-1 cursor-pointer group mt-0.5">

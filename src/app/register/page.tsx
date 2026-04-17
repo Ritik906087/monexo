@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, Suspense } from 'react';
@@ -62,7 +61,7 @@ function RegisterForm() {
 
     setLoading(true);
     try {
-      // 1. Get IP and Device Info
+      // 1. Get IP and Device Info for Security Tracking
       let currentIp = 'Unknown';
       try {
         const ipRes = await fetch('https://api.ipify.org?format=json');
@@ -82,7 +81,7 @@ function RegisterForm() {
       if (authError) throw authError;
 
       if (authData.user) {
-        // 3. Insert into public.users table
+        // 3. Insert into public.users table (Sync with SQL Schema)
         const { error: dbError } = await supabase
           .from('users')
           .insert([{
