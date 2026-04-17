@@ -14,7 +14,8 @@ import {
   Filter,
   Activity,
   UserCheck,
-  AlertCircle
+  AlertCircle,
+  Copy
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Input } from "@/components/ui/input";
@@ -80,6 +81,15 @@ export default function AdminDashboard() {
     fetchData();
   }, [router, toast]);
 
+  const handleCopy = (text: string, label: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${label} has been copied to clipboard.`,
+    });
+  };
+
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
       user.phone?.includes(searchTerm) || 
@@ -120,7 +130,6 @@ export default function AdminDashboard() {
       </header>
 
       <main className="flex-1 p-4 md:p-8 space-y-8 max-w-[1400px] mx-auto w-full animate-slide-up">
-        {/* Stats Section - Clear Contrast */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             { label: 'Total Partners', val: stats.totalUsers, icon: Users, color: 'text-slate-900' },
@@ -138,7 +147,6 @@ export default function AdminDashboard() {
           ))}
         </section>
 
-        {/* Filter & Table Section */}
         <section className="bg-white rounded-[32px] shadow-sm border border-slate-50 overflow-hidden">
           <div className="p-6 flex flex-col md:flex-row gap-4 items-center justify-between border-b border-slate-50">
             <div className="relative w-full md:w-[320px]">
@@ -192,13 +200,25 @@ export default function AdminDashboard() {
                           <AvatarFallback className="bg-slate-100 text-[11px] font-black text-slate-900 uppercase">U</AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-[14px] font-black text-slate-950 tracking-tight leading-none mb-1">{user.phone}</p>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID: {user.numeric_id}</p>
+                          <p 
+                            className="text-[14px] font-black text-slate-950 tracking-tight leading-none mb-1 cursor-pointer hover:text-blue-600 flex items-center gap-1.5 group/copy"
+                            onClick={() => handleCopy(user.phone, 'Phone number')}
+                          >
+                            {user.phone}
+                            <Copy className="h-3 w-3 opacity-0 group-hover/copy:opacity-100 transition-opacity" />
+                          </p>
+                          <p 
+                            className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter cursor-pointer hover:text-blue-500 flex items-center gap-1.5 group/copy-id"
+                            onClick={() => handleCopy(user.numeric_id?.toString(), 'UID')}
+                          >
+                            ID: {user.numeric_id}
+                            <Copy className="h-2 w-2 opacity-0 group-hover/copy-id:opacity-100 transition-opacity" />
+                          </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-5">
-                      <span className="text-[13px] font-bold text-slate-700 font-mono tracking-tight">{user.last_ip || '---'}</span>
+                      <span className="text-[13px] font-black text-emerald-600 font-mono tracking-tight">{user.last_ip || '---'}</span>
                     </td>
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-2">
@@ -245,7 +265,6 @@ export default function AdminDashboard() {
         </section>
       </main>
 
-      {/* Admin Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-50 px-8 py-3.5 flex items-center justify-around z-50 shadow-2xl">
         <button onClick={() => router.push('/admin')} className="flex flex-col items-center gap-1 text-slate-950">
           <Activity className="h-5 w-5" />

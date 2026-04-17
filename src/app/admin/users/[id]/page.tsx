@@ -15,7 +15,8 @@ import {
   ArrowDownLeft,
   Smartphone,
   ShieldCheck,
-  AlertCircle
+  AlertCircle,
+  Copy
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -73,6 +74,15 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
     fetchData();
   }, [id, router, toast]);
+
+  const handleCopy = (text: string, label: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${label} has been copied.`,
+    });
+  };
 
   const handleUpdateBalance = async (type: 'ADD' | 'DEDUCT') => {
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
@@ -135,7 +145,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       </header>
 
       <div className="p-4 md:p-8 space-y-8 max-w-[1200px] mx-auto w-full">
-        {/* Profile Card - Stark Contrast */}
         <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50">
           <div className="flex flex-col md:flex-row items-center gap-10">
             <Avatar className="h-32 w-32 border-4 border-white shadow-md">
@@ -145,16 +154,29 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
             <div className="flex-1 text-center md:text-left space-y-5">
               <div>
-                <h2 className="text-4xl font-black text-slate-950 tracking-tighter mb-1.5">{user.phone}</h2>
+                <div className="flex items-center justify-center md:justify-start gap-3 group">
+                  <h2 className="text-4xl font-black text-slate-950 tracking-tighter mb-1.5">{user.phone}</h2>
+                  <button 
+                    onClick={() => handleCopy(user.phone, 'Phone number')}
+                    className="p-2 hover:bg-slate-50 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <Copy className="h-5 w-5 text-slate-400" />
+                  </button>
+                </div>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                   <div className="bg-slate-950 px-4 py-1.5 rounded-full text-[10px] font-black text-white uppercase tracking-widest flex gap-2 items-center">
                     <Activity className="h-3.5 w-3.5" /> Node System Active
                   </div>
-                  <div className="bg-slate-50 border border-slate-100 px-4 py-1.5 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest">Node Level 4.0</div>
+                  <div 
+                    onClick={() => handleCopy(user.numeric_id?.toString(), 'UID')}
+                    className="bg-slate-50 border border-slate-100 px-4 py-1.5 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 cursor-pointer hover:bg-slate-100 transition-all"
+                  >
+                    UID: {user.numeric_id} <Copy className="h-3 w-3 text-slate-300" />
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6 max-w-sm">
+              <div className="grid grid-cols-2 gap-6 max-w-sm mx-auto md:mx-0">
                 <div className="space-y-1">
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Sessions</span>
                   <p className="text-2xl font-black text-slate-950 tracking-tight">{user.total_logins}</p>
@@ -171,7 +193,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Credit Management Column */}
           <div className="space-y-8">
             <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-8">
               <div className="flex items-center gap-3">
@@ -221,7 +242,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            {/* Trace Info Card */}
             <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
@@ -233,7 +253,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-6 bg-slate-50/50 rounded-[24px] border border-slate-50/50">
                   <span className="text-[11px] font-black text-slate-500 uppercase tracking-tight">Active Gateway (IP)</span>
-                  <span className="text-[15px] font-mono font-black text-slate-950">{user.last_ip || '---'}</span>
+                  <span className="text-[15px] font-mono font-black text-emerald-600">{user.last_ip || '---'}</span>
                 </div>
                 <div className="flex items-center justify-between p-6 bg-slate-50/50 rounded-[24px] border border-slate-50/50">
                   <span className="text-[11px] font-black text-slate-500 uppercase tracking-tight">Node Timestamp</span>
@@ -243,9 +263,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
             </div>
           </div>
 
-          {/* Identity & Logs Column */}
           <div className="space-y-8">
-            {/* Identity Card */}
             <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
@@ -267,7 +285,12 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                     </div>
                     <div className="flex items-center justify-between pb-3 border-b border-slate-50">
                       <span className="text-[11px] font-bold text-slate-500 uppercase">UPI Address</span>
-                      <span className="text-[14px] font-black text-slate-950 font-mono">{user.kyc_data.upi_no}</span>
+                      <span className="text-[14px] font-black text-slate-950 font-mono flex items-center gap-2">
+                        {user.kyc_data.upi_no}
+                        <button onClick={() => handleCopy(user.kyc_data.upi_no, 'UPI Address')}>
+                          <Copy className="h-3 w-3 text-slate-300 hover:text-blue-500" />
+                        </button>
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-[11px] font-bold text-slate-500 uppercase">Auth Mobile</span>
@@ -283,7 +306,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               )}
             </div>
 
-            {/* Logs List */}
             <div className="bg-white rounded-[40px] p-8 shadow-sm border border-slate-50 space-y-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
