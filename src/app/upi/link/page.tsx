@@ -7,7 +7,7 @@ import {
   ChevronLeft, 
   ChevronRight, 
   Headphones,
-  Info
+  Check
 } from 'lucide-react';
 import {
   Sheet,
@@ -19,47 +19,52 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+const PAYTM_LOGO = "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDUpLnBuZyIsImlhdCI6MTc3NTE0ODYzMiwiZXhwIjoxODI2Njg0NjMyfQ.QXSbgSLV3ULTcV3ss9Co9ZMe1oj3tb9bR_OP8xY-Nds";
+const PHONEPE_LOGO = "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDQpLnBuZyIsImlhdCI6MTc3NTE0ODYyMSwiZXhwIjoxODI2Njg0NjIxfQ.b_cMHhiCw52krGt2edtt1k5C1Keo8uGJwYIWpe6vZVo";
+const MOBIKWIK_LOGO = "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDEpLnBuZyIsImlhdCI6MTc3NTE0ODU3MywiZXhwIjoxODI2Njg0NTczfQ.m8Z7gn5FV-0ss58kTEUZ833u8Wv_bFun3YZeZtyIa9s";
+const FREECHARGE_LOGO = "https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(3).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDMpLnBuZyIsImlhdCI6MTc3NTE0ODYwOSwiZXhwIjoxODI2Njg0NjA5fQ.pus8pOlgEXCFb2pjIzNsVtU9DxnIxEeaVaeR3TuIQPc";
+
 const partners = [
   {
     id: 'paytm-biz',
     name: 'Paytm Business',
     desc: 'Paytm Business is an Indian digital payment platform.',
-    icon: 'https://picsum.photos/seed/paytm/40/40',
+    icon: PAYTM_LOGO,
     status: 'active'
   },
   {
     id: 'phonepe-biz',
     name: 'Phonepe Business',
     desc: 'PhonePe Business is an Indian digital payment platform.',
-    icon: 'https://picsum.photos/seed/phonepe/40/40',
+    icon: PHONEPE_LOGO,
     status: 'disabled'
   },
   {
     id: 'mobikwik',
     name: 'Mobikwik',
     desc: 'MobiKwik is an Indian digital payment platform.',
-    icon: 'https://picsum.photos/seed/mobi/40/40',
+    icon: MOBIKWIK_LOGO,
     status: 'active'
   },
   {
     id: 'paytm',
     name: 'Paytm',
     desc: 'Paytm is an Indian digital payment platform.',
-    icon: 'https://picsum.photos/seed/paytm2/40/40',
+    icon: PAYTM_LOGO,
     status: 'active'
   },
   {
     id: 'phonepe',
     name: 'Phonepe',
     desc: 'PhonePe is an Indian digital payment platform.',
-    icon: 'https://picsum.photos/seed/phonepe2/40/40',
+    icon: PHONEPE_LOGO,
     status: 'active'
   },
   {
     id: 'freecharge',
     name: 'Freecharge',
     desc: 'Freecharge offers digital payment and mobile recharge services in India.',
-    icon: 'https://picsum.photos/seed/free/40/40',
+    icon: FREECHARGE_LOGO,
     status: 'active'
   }
 ];
@@ -179,8 +184,8 @@ export default function LinkNewUPIPage() {
                   partner.status === 'disabled' ? "opacity-40 grayscale pointer-events-none" : "active:scale-[0.98] cursor-pointer"
                 )}
               >
-                <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 shrink-0">
-                  <img src={partner.icon} alt={partner.name} className="w-full h-full object-cover" />
+                <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 shrink-0 bg-white">
+                  <img src={partner.icon} alt={partner.name} className="w-full h-full object-contain" />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -211,14 +216,13 @@ export default function LinkNewUPIPage() {
         </SheetContent>
       </Sheet>
 
-      {/* Floating Support Icon - Matches Screenshot Location */}
+      {/* Floating Support Icon */}
       <div className="absolute bottom-8 right-6 z-10">
         <button className="w-[52px] h-[52px] bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100 active:scale-90 transition-all">
           <div className="relative">
             <div className="w-[38px] h-[38px] rounded-full bg-gradient-to-br from-blue-300 to-indigo-500 flex items-center justify-center">
                <Headphones className="h-5 w-5 text-white" />
             </div>
-            {/* Small decorative dot like in screenshot */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute -top-[21px] -left-[21px]">
                 <circle cx="34" cy="34" r="3" fill="#FF71BD" stroke="white" strokeWidth="2" />
