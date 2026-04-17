@@ -62,7 +62,18 @@ function RegisterForm() {
 
     setLoading(true);
     try {
+      // 1. Get IP and Device Info
+      let currentIp = 'Unknown';
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipJson = await ipRes.json();
+        currentIp = ipJson.ip;
+      } catch (e) {}
+      
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       const email = `${phone}@monexo.app`;
+
+      // 2. Auth Sign Up
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -71,7 +82,7 @@ function RegisterForm() {
       if (authError) throw authError;
 
       if (authData.user) {
-        // Omitting invite_code from insert to fix schema mismatch error shown in screenshot
+        // 3. Insert into public.users table
         const { error: dbError } = await supabase
           .from('users')
           .insert([{
@@ -81,20 +92,25 @@ function RegisterForm() {
             itoken_balance: 0,
             today_profit: 0,
             reward_percent: 7,
+            last_ip: currentIp,
+            device_type: isMobile ? 'mobile' : 'desktop',
+            total_logins: 1,
+            unique_ips: 1,
             created_at: new Date().toISOString()
           }]);
 
-        if (dbError) {
-          // If DB insert fails, we should notify but maybe they can still login
-          // However, for admin to see them, this MUST succeed.
-          throw dbError;
-        }
+        if (dbError) throw dbError;
 
         toast({ title: "Success", description: "Account created successfully!" });
         router.push('/dashboard');
       }
     } catch (error: any) {
-      setErrorMsg(error.message || "Failed to create account. Please ensure the phone number is unique.");
+      setErrorMsg(error.message || "Failed to create account.");
+      toast({
+        variant: "destructive",
+        title: "Registration Failed",
+        description: error.message
+      });
     } finally {
       setLoading(false);
     }

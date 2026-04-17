@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -49,23 +50,47 @@ export default function LoginPage() {
 
       if (error) throw error;
 
+      if (data.user) {
+        // Track Login Stats
+        try {
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          const ipData = await ipResponse.json();
+          const currentIp = ipData.ip;
+          const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+          // Get existing user data for IP tracking
+          const { data: userData } = await supabase
+            .from('users')
+            .select('last_ip, total_logins, unique_ips')
+            .eq('id', data.user.id)
+            .single();
+
+          const isNewIp = userData?.last_ip !== currentIp;
+
+          await supabase
+            .from('users')
+            .update({
+              last_ip: currentIp,
+              device_type: isMobile ? 'mobile' : 'desktop',
+              total_logins: (userData?.total_logins || 0) + 1,
+              unique_ips: isNewIp ? (userData?.unique_ips || 1) + 1 : (userData?.unique_ips || 1)
+            })
+            .eq('id', data.user.id);
+        } catch (ipErr) {
+          console.error("Tracking error:", ipErr);
+        }
+      }
+
       toast({
         title: "Welcome back!",
         description: "Successfully logged in to MONEXO UPI.",
       });
       router.push('/dashboard');
     } catch (error: any) {
-      let message = "Invalid credentials. Please try again.";
-      if (error.message === "Failed to fetch" || error.message?.includes("fetch")) {
-        message = "Network error. Please check your internet connection.";
-      } else if (error.message) {
-        message = error.message;
-      }
-      
-      setErrorMsg(message);
+      setErrorMsg(error.message || "Invalid credentials.");
       toast({
         title: "Login Failed",
-        description: message,
+        description: error.message,
         variant: "destructive",
       });
     } finally {
