@@ -13,14 +13,15 @@ import {
   ChevronRight,
   Filter,
   Activity,
-  UserCheck
+  UserCheck,
+  AlertCircle
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from '@/lib/utils';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState<any[]>([]);
@@ -34,6 +35,7 @@ export default function AdminDashboard() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'suspicious' | 'active'>('all');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { toast } = useToast();
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdminAuthenticated');
@@ -76,7 +78,7 @@ export default function AdminDashboard() {
     }
 
     fetchData();
-  }, [router]);
+  }, [router, toast]);
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
@@ -100,55 +102,55 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-white flex flex-col font-sans select-none">
+    <div className="min-h-screen bg-white flex flex-col font-sans select-none text-slate-900">
       <header className="bg-white px-6 py-5 flex items-center justify-between sticky top-0 z-30 border-b border-slate-50">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-slate-950 rounded-xl flex items-center justify-center">
-            <ShieldCheck className="h-5 w-5 text-white" />
+          <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center">
+            <ShieldCheck className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-[15px] font-black text-slate-900 uppercase tracking-tight">Admin Terminal</h1>
-            <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Global Control Node</p>
+            <h1 className="text-[16px] font-black text-slate-950 uppercase tracking-tight leading-none mb-0.5">Admin Terminal</h1>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Control Node</p>
           </div>
         </div>
 
         <Button variant="ghost" size="icon" onClick={handleLogout} className="rounded-full hover:bg-slate-50">
-          <LogOut className="h-5 w-5 text-slate-400" />
+          <LogOut className="h-5 w-5 text-slate-500" />
         </Button>
       </header>
 
       <main className="flex-1 p-4 md:p-8 space-y-8 max-w-[1400px] mx-auto w-full animate-slide-up">
-        {/* Stats Cards - Minimal White Style */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Stats Section - Clear Contrast */}
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             { label: 'Total Partners', val: stats.totalUsers, icon: Users, color: 'text-slate-900' },
             { label: 'Daily Logins', val: stats.totalLoginsToday, icon: Activity, color: 'text-slate-900' },
-            { label: 'Security Alerts', val: stats.suspiciousCount, icon: ShieldCheck, color: stats.suspiciousCount > 0 ? 'text-red-500' : 'text-slate-900' },
+            { label: 'Security Alerts', val: stats.suspiciousCount, icon: AlertCircle, color: stats.suspiciousCount > 0 ? 'text-red-600' : 'text-slate-900' },
             { label: 'Verified Nodes', val: stats.activeNodes, icon: UserCheck, color: 'text-slate-900' }
           ].map((stat, i) => (
-            <div key={i} className="bg-white p-5 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-50 flex flex-col gap-3">
+            <div key={i} className="bg-white p-6 rounded-[24px] shadow-sm border border-slate-50 flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.1em]">{stat.label}</span>
-                <stat.icon className={cn("h-3.5 w-3.5", stat.color)} />
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</span>
+                <stat.icon className={cn("h-4 w-4", stat.color)} />
               </div>
-              <p className={cn("text-2xl font-black tracking-tighter", stat.color)}>{stat.val}</p>
+              <p className={cn("text-3xl font-black tracking-tighter text-slate-950")}>{stat.val}</p>
             </div>
           ))}
         </section>
 
         {/* Filter & Table Section */}
-        <section className="bg-white rounded-[32px] shadow-[0_8px_40px_rgb(0,0,0,0.03)] border border-slate-50 overflow-hidden">
-          <div className="p-5 flex flex-col md:flex-row gap-4 items-center justify-between border-b border-slate-50">
+        <section className="bg-white rounded-[32px] shadow-sm border border-slate-50 overflow-hidden">
+          <div className="p-6 flex flex-col md:flex-row gap-4 items-center justify-between border-b border-slate-50">
             <div className="relative w-full md:w-[320px]">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-300" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input 
                 placeholder="Search by ID or Phone..."
-                className="pl-11 h-11 bg-slate-50/50 border-none rounded-2xl font-bold text-xs"
+                className="pl-11 h-12 bg-slate-50/50 border-none rounded-2xl font-bold text-sm text-slate-900 placeholder:text-slate-400"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex gap-2 bg-slate-50 p-1 rounded-2xl shrink-0">
+            <div className="flex gap-1.5 bg-slate-50/80 p-1.5 rounded-2xl shrink-0">
                {[
                  { id: 'all', label: 'All Nodes' },
                  { id: 'suspicious', label: 'Alerts' },
@@ -158,8 +160,8 @@ export default function AdminDashboard() {
                   key={tab.id}
                   onClick={() => setFilterStatus(tab.id as any)}
                   className={cn(
-                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all",
-                    filterStatus === tab.id ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                    "px-4 py-2.5 rounded-xl text-[10px] font-black uppercase transition-all",
+                    filterStatus === tab.id ? "bg-white text-slate-950 shadow-sm" : "text-slate-500 hover:text-slate-700"
                   )}
                  >
                    {tab.label}
@@ -171,58 +173,59 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-slate-50/30 text-[9px] font-black text-slate-300 uppercase tracking-widest border-b border-slate-50">
-                  <th className="px-6 py-4 text-left">Partner Entity</th>
-                  <th className="px-6 py-4 text-left">Network Node (IP)</th>
-                  <th className="px-6 py-4 text-left">Device Mode</th>
-                  <th className="px-6 py-4 text-center">Sessions</th>
-                  <th className="px-6 py-4 text-center">Security</th>
-                  <th className="px-6 py-4 text-right">Action</th>
+                <tr className="bg-slate-50/30 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-50">
+                  <th className="px-6 py-5 text-left">Partner Entity</th>
+                  <th className="px-6 py-5 text-left">Network Access (IP)</th>
+                  <th className="px-6 py-5 text-left">Device Node</th>
+                  <th className="px-6 py-5 text-center">Sessions</th>
+                  <th className="px-6 py-5 text-center">Security</th>
+                  <th className="px-6 py-5 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-9 w-9 border border-slate-100 shadow-sm">
+                  <tr key={user.id} className="hover:bg-slate-50/30 transition-colors group">
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-4">
+                        <Avatar className="h-10 w-10 border border-slate-100 shadow-sm">
                           <AvatarImage src={`https://picsum.photos/seed/${user.id}/100`} />
-                          <AvatarFallback className="bg-slate-50 text-[10px] font-black uppercase">U</AvatarFallback>
+                          <AvatarFallback className="bg-slate-100 text-[11px] font-black text-slate-900 uppercase">U</AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="text-[13px] font-black text-slate-800 tracking-tight">{user.phone}</p>
-                          <p className="text-[8px] font-bold text-slate-300 uppercase">ID: {user.numeric_id}</p>
+                          <p className="text-[14px] font-black text-slate-950 tracking-tight leading-none mb-1">{user.phone}</p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID: {user.numeric_id}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-[12px] font-mono font-bold text-slate-500">{user.last_ip || '---'}</span>
+                    <td className="px-6 py-5">
+                      <span className="text-[13px] font-bold text-slate-700 font-mono tracking-tight">{user.last_ip || '---'}</span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-5">
                       <div className="flex items-center gap-2">
-                        {user.device_type === 'mobile' ? <Smartphone className="h-3.5 w-3.5 text-slate-300" /> : <Monitor className="h-3.5 w-3.5 text-slate-300" />}
-                        <span className="text-[10px] font-bold text-slate-400 uppercase">{user.device_type || 'Node'}</span>
+                        {user.device_type === 'mobile' ? <Smartphone className="h-4 w-4 text-slate-400" /> : <Monitor className="h-4 w-4 text-slate-400" />}
+                        <span className="text-[11px] font-black text-slate-500 uppercase">{user.device_type || 'Cloud Node'}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="text-[13px] font-black text-slate-800">{user.total_logins}</span>
+                    <td className="px-6 py-5 text-center">
+                      <span className="text-[15px] font-black text-slate-950">{user.total_logins}</span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <div className={cn("w-1.5 h-1.5 rounded-full", user.status === 'suspicious' ? "bg-red-500 animate-pulse" : "bg-emerald-500")} />
-                        <span className={cn("text-[9px] font-black uppercase tracking-tight", user.status === 'suspicious' ? "text-red-500" : "text-emerald-500")}>
-                          {user.status === 'suspicious' ? 'Alert' : 'Verified'}
+                    <td className="px-6 py-5">
+                      <div className="flex items-center justify-center gap-2">
+                        <div className={cn("w-2 h-2 rounded-full shadow-sm", user.status === 'suspicious' ? "bg-red-600" : "bg-emerald-500")} />
+                        <span className={cn("text-[10px] font-black uppercase tracking-tight", user.status === 'suspicious' ? "text-red-600" : "text-emerald-600")}>
+                          {user.status === 'suspicious' ? 'Alert' : 'Active'}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-5 text-right">
                       <Button 
                         onClick={() => router.push(`/admin/users/${user.id}`)} 
                         variant="ghost" 
                         size="sm" 
-                        className="rounded-xl hover:bg-slate-100 h-8 w-8 p-0"
+                        className="rounded-xl hover:bg-slate-100 h-9 px-4 text-slate-950 font-black text-[11px] uppercase tracking-wider group"
                       >
-                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-900 transition-colors" />
+                        Details
+                        <ChevronRight className="ml-1 h-4 w-4 text-slate-400 group-hover:text-slate-950 transition-colors" />
                       </Button>
                     </td>
                   </tr>
@@ -231,9 +234,11 @@ export default function AdminDashboard() {
             </table>
             
             {filteredUsers.length === 0 && (
-              <div className="py-20 text-center space-y-3">
-                <Filter className="h-8 w-8 text-slate-100 mx-auto" />
-                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">No active nodes found</p>
+              <div className="py-24 text-center space-y-4">
+                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto">
+                  <Filter className="h-8 w-8 text-slate-200" />
+                </div>
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">No matching nodes found</p>
               </div>
             )}
           </div>
@@ -241,14 +246,14 @@ export default function AdminDashboard() {
       </main>
 
       {/* Admin Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-50 px-8 py-3 flex items-center justify-around z-50">
-        <button className="flex flex-col items-center gap-1 text-slate-900">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-50 px-8 py-3.5 flex items-center justify-around z-50 shadow-2xl">
+        <button onClick={() => router.push('/admin')} className="flex flex-col items-center gap-1 text-slate-950">
           <Activity className="h-5 w-5" />
-          <span className="text-[8px] font-black uppercase tracking-widest">Terminal</span>
+          <span className="text-[9px] font-black uppercase tracking-widest">Dashboard</span>
         </button>
-        <button onClick={() => router.push('/admin')} className="flex flex-col items-center gap-1 text-slate-300 hover:text-slate-900 transition-colors">
+        <button onClick={() => router.push('/admin')} className="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-950 transition-colors">
           <Users className="h-5 w-5" />
-          <span className="text-[8px] font-black uppercase tracking-widest">Partners</span>
+          <span className="text-[9px] font-black uppercase tracking-widest">Partners</span>
         </button>
       </nav>
     </div>
