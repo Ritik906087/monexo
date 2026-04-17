@@ -7,7 +7,7 @@ import {
   ChevronLeft, 
   ChevronRight, 
   Headphones, 
-  Download,
+  Copy,
   CheckCircle2,
   Circle
 } from 'lucide-react';
@@ -16,7 +16,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -59,7 +59,7 @@ const partners = [
   {
     id: 'freecharge',
     name: 'Freecharge',
-    desc: 'Freecharge offers digital payment and mobile recharge services in',
+    desc: 'Freecharge offers digital payment and mobile recharge services in India.',
     icon: 'https://picsum.photos/seed/free/40/40',
     status: 'active'
   }
