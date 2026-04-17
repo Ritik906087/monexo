@@ -10,7 +10,8 @@ import {
   ChevronRight,
   ShieldCheck,
   Activity,
-  History
+  History,
+  ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -47,11 +48,27 @@ export default function UPIPage() {
         .eq('id', session.user.id)
         .single();
       
-      if (data) setUserData(data);
+      if (data) {
+        setUserData(data);
+        setIsStopped(!data.is_node_active);
+      }
       setLoading(false);
     }
     fetchUserData();
   }, [router]);
+
+  const toggleNode = async (checked: boolean) => {
+    const active = checked;
+    setIsStopped(!active);
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await supabase
+        .from('users')
+        .update({ is_node_active: active })
+        .eq('id', session.user.id);
+    }
+  };
 
   const maskUpi = (upi: string) => {
     if (!upi) return '---';
@@ -59,8 +76,7 @@ export default function UPIPage() {
     if (parts.length !== 2) return upi;
     const id = parts[0];
     const provider = parts[1];
-    if (id.length <= 7) return `${id.slice(0, 2)}*****${id.slice(-1)}@${provider}`;
-    // Format: 5 chars + 5 stars + 2 chars + @provider
+    if (id.length <= 7) return `${id.slice(0, 5)}*****${id.slice(-2)}@${provider}`;
     return `${id.slice(0, 5)}*****${id.slice(-2)}@${provider}`;
   };
 
@@ -100,11 +116,11 @@ export default function UPIPage() {
         <button onClick={() => setActiveTab('Sell')} className={cn("flex-1 py-3 text-[10px] font-black transition-all relative uppercase tracking-wider", activeTab === 'Sell' ? "text-[#2A85FF]" : "text-slate-400")}>Sell Settings{activeTab === 'Sell' && <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#2A85FF]" />}</button>
       </div>
 
-      <div className="p-2.5 space-y-2.5 pb-24">
+      <div className="p-4 space-y-4 pb-24">
         {loading ? (
           <div className="flex justify-center py-10"><div className="animate-spin h-5 w-5 border-b-2 border-blue-500 rounded-full" /></div>
         ) : (hasLinkedUpi && (activeTab === 'Sell' || isLinkedPartnerValidForBuy)) ? (
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-4">
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-5">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-white border border-slate-50 flex items-center justify-center shrink-0 shadow-sm p-1">
                 {currentPartner && PARTNER_LOGOS[currentPartner] ? (
@@ -122,7 +138,7 @@ export default function UPIPage() {
                   </h3>
                   <Badge variant="outline" className="text-[8px] font-black text-emerald-500 bg-emerald-50 border-emerald-100 px-1.5 py-0 uppercase">Verified</Badge>
                 </div>
-                <p className="text-[12px] font-mono font-black text-slate-700 tracking-tight mb-2">
+                <p className="text-[14px] font-mono font-black text-slate-700 tracking-tight mb-2">
                   {maskUpi(userData.kyc_data.upi_no)}
                 </p>
                 
@@ -131,11 +147,37 @@ export default function UPIPage() {
                     <span className={cn("text-[9px] font-black uppercase tracking-tighter", isStopped ? "text-red-400" : "text-emerald-500")}>
                       {isStopped ? "Node Stopped" : "Node Active"}
                     </span>
-                    <Switch checked={!isStopped} onCheckedChange={(checked) => setIsStopped(!checked)} className="scale-75" />
+                    <Switch checked={!isStopped} onCheckedChange={toggleNode} className="scale-75" />
                   </div>
                   <Button variant="ghost" className="h-7 px-3 rounded-lg bg-slate-50 text-[9px] font-black text-slate-400 uppercase tracking-widest">Details</Button>
                 </div>
               </div>
+            </div>
+          </div>
+        ) : activeTab === 'Buy' && !isLinkedPartnerValidForBuy ? (
+          <div className="space-y-4">
+            <h2 className="text-[14px] font-bold text-red-500">Pay using the following payment UPIs:</h2>
+            <div 
+              onClick={() => router.push('/upi/link?type=buy')}
+              className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm cursor-pointer active:scale-[0.98] transition-all space-y-4"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 border border-slate-100 rounded flex items-center justify-center shrink-0">
+                   <div className="w-4 h-4 border border-slate-300" />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <p className="text-[13px] font-bold text-red-500 leading-tight">
+                    No Payment UPI Available. Link a wallet that supports purchases (e.g., Freecharge, Mobikwik).
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[12px] font-bold text-slate-400">Go to Link UPI</span>
+                    <ArrowRight className="h-3 w-3 text-slate-400" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="pt-2">
+              <span className="text-[12px] font-bold text-slate-300 uppercase tracking-wider">Manage UPI</span>
             </div>
           </div>
         ) : (
@@ -144,7 +186,7 @@ export default function UPIPage() {
               <LinkIcon className="h-8 w-8 text-slate-200" />
             </div>
             <p className="text-[11px] font-black text-slate-300 uppercase tracking-widest text-center">
-              {activeTab === 'Buy' ? 'No Mobikwik/Freecharge linked' : 'No UPI Identity Linked Yet'}
+              No UPI Identity Linked Yet
             </p>
             <Button 
               variant="link" 
@@ -171,4 +213,3 @@ export default function UPIPage() {
     </div>
   );
 }
-
