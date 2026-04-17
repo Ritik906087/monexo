@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 const partners = [
   {
@@ -69,37 +70,88 @@ export default function LinkNewUPIPage() {
   const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
+  const [name, setName] = useState('');
+  const [upiNo, setUpiNo] = useState('');
+
+  const currentPartner = partners.find(p => p.id === selectedPartner);
+
+  const handlePartnerSelect = (id: string) => {
+    setSelectedPartner(id);
+    setIsSheetOpen(false); // Auto-close sheet on selection
+  };
 
   return (
-    <div className="flex flex-col h-full bg-white animate-slide-up relative">
+    <div className="flex flex-col h-full bg-white animate-slide-up relative overflow-hidden">
       {/* Native App Header */}
       <div className="bg-white h-[56px] flex items-center px-4 shrink-0 border-b border-slate-50 relative">
         <button 
           onClick={() => router.back()}
           className="w-10 h-10 flex items-center justify-center -ml-2 active:scale-90 transition-all"
         >
-          <ChevronLeft className="h-6 w-6 text-slate-500" />
+          <ChevronLeft className="h-6 w-6 text-slate-400" />
         </button>
         <div className="absolute left-1/2 -translate-x-1/2">
-          <h1 className="text-[16px] font-medium text-slate-800 tracking-tight">Link New UPI</h1>
+          <h1 className="text-[15px] font-bold text-slate-700 tracking-tight">Link New UPI</h1>
         </div>
       </div>
 
       {/* Form Content */}
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-5 space-y-2">
+        {/* Partner Row */}
         <div 
           onClick={() => setIsSheetOpen(true)}
-          className="flex items-center justify-between py-4 border-b border-slate-100 active:bg-slate-50 transition-colors cursor-pointer group"
+          className="flex items-center justify-between py-4 border-b border-slate-100 active:bg-slate-50 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-4 w-full">
-            <span className="text-[16px] text-slate-500 w-24 shrink-0 font-medium">Partner</span>
+            <span className="text-[15px] text-slate-800 w-20 shrink-0 font-medium">Partner</span>
             <div className="flex items-center justify-between flex-1">
-              <span className="text-[16px] font-bold text-slate-900 tracking-tight">
-                {selectedPartner ? partners.find(p => p.id === selectedPartner)?.name : 'select the kyc partner'}
+              <span className={cn(
+                "text-[16px] font-black tracking-tight",
+                selectedPartner ? "text-slate-900" : "text-slate-300"
+              )}>
+                {selectedPartner ? currentPartner?.name : 'select the kyc partner'}
               </span>
-              <ChevronRight className="h-5 w-5 text-slate-300 group-active:translate-x-1 transition-transform" />
+              <ChevronRight className="h-5 w-5 text-slate-200" />
             </div>
           </div>
+        </div>
+
+        {/* Name Row */}
+        <div className="flex items-center py-4 border-b border-slate-100">
+          <span className="text-[15px] text-slate-800 w-20 shrink-0 font-medium">Name</span>
+          <Input 
+            placeholder="Enter your name"
+            className="flex-1 border-none bg-transparent h-auto p-0 focus-visible:ring-0 text-[16px] font-medium placeholder:text-slate-200 text-slate-900"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        {/* UPI No Row */}
+        <div className="flex items-center py-4 border-b border-slate-100">
+          <span className="text-[15px] text-slate-800 w-20 shrink-0 font-medium">UPI No</span>
+          <Input 
+            placeholder="Enter Phone No"
+            className="flex-1 border-none bg-transparent h-auto p-0 focus-visible:ring-0 text-[16px] font-medium placeholder:text-slate-200 text-slate-900"
+            value={upiNo}
+            onChange={(e) => setUpiNo(e.target.value)}
+          />
+        </div>
+
+        {/* Retry Link */}
+        <div className="pt-2">
+          <button className="text-[11px] font-bold text-[#2A85FF] hover:underline px-1">
+            UPI list not loading? Tap to retry.
+          </button>
+        </div>
+
+        {/* Action Button */}
+        <div className="pt-6">
+          <Button 
+            className="w-full h-14 bg-[#2A85FF] hover:bg-blue-600 text-white rounded-xl font-black text-lg uppercase tracking-wider shadow-lg shadow-blue-100 active:scale-[0.98] transition-all border-none"
+          >
+            Link Kyc
+          </Button>
         </div>
       </div>
 
@@ -118,10 +170,10 @@ export default function LinkNewUPIPage() {
             {partners.map((partner) => (
               <div 
                 key={partner.id}
-                onClick={() => partner.status !== 'disabled' && setSelectedPartner(partner.id)}
+                onClick={() => partner.status !== 'disabled' && handlePartnerSelect(partner.id)}
                 className={cn(
                   "flex items-center gap-4 py-1 transition-all",
-                  partner.status === 'disabled' ? "opacity-40 grayscale pointer-events-none" : "active:scale-[0.98]"
+                  partner.status === 'disabled' ? "opacity-40 grayscale pointer-events-none" : "active:scale-[0.98] cursor-pointer"
                 )}
               >
                 <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-50 shrink-0">
@@ -153,26 +205,22 @@ export default function LinkNewUPIPage() {
               </div>
             ))}
           </div>
-
-          <div className="p-4 bg-white border-t border-slate-50 shrink-0">
-            <Button 
-              onClick={() => setIsSheetOpen(false)}
-              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black uppercase text-xs tracking-widest"
-            >
-              Confirm Selection
-            </Button>
-          </div>
         </SheetContent>
       </Sheet>
 
       {/* Floating Support Icon */}
-      <div className="absolute bottom-6 right-6 z-10">
-        <button className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100 active:scale-90 transition-all">
+      <div className="absolute bottom-8 right-6 z-10">
+        <button className="w-[52px] h-[52px] bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100 active:scale-90 transition-all">
           <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
-               <Headphones className="h-6 w-6 text-white" />
+            <div className="w-[38px] h-[38px] rounded-full bg-gradient-to-br from-blue-300 to-indigo-500 flex items-center justify-center">
+               <Headphones className="h-5 w-5 text-white" />
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-pink-400 rounded-full border-2 border-white"></div>
+            {/* Pink dot like in screenshot */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute -top-[21px] -left-[21px]">
+                <circle cx="34" cy="34" r="3" fill="#FF71BD" stroke="white" strokeWidth="2" />
+              </svg>
+            </div>
           </div>
         </button>
       </div>
