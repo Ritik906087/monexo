@@ -71,25 +71,30 @@ function RegisterForm() {
       if (authError) throw authError;
 
       if (authData.user) {
+        // Omitting invite_code from insert to fix schema mismatch error shown in screenshot
         const { error: dbError } = await supabase
           .from('users')
           .insert([{
             id: authData.user.id,
             phone: phone,
-            invite_code: inviteCode.trim() || null,
             numeric_id: Math.floor(100000000 + Math.random() * 900000000),
             itoken_balance: 0,
             today_profit: 0,
-            reward_percent: 7
+            reward_percent: 7,
+            created_at: new Date().toISOString()
           }]);
 
-        if (dbError) throw dbError;
+        if (dbError) {
+          // If DB insert fails, we should notify but maybe they can still login
+          // However, for admin to see them, this MUST succeed.
+          throw dbError;
+        }
 
         toast({ title: "Success", description: "Account created successfully!" });
         router.push('/dashboard');
       }
     } catch (error: any) {
-      setErrorMsg(error.message || "Failed to create account.");
+      setErrorMsg(error.message || "Failed to create account. Please ensure the phone number is unique.");
     } finally {
       setLoading(false);
     }
@@ -113,9 +118,9 @@ function RegisterForm() {
           </div>
 
           {errorMsg && (
-            <Alert variant="destructive" className="py-1.5 px-3 bg-red-50 border-red-100 text-red-600 rounded-lg mb-3 shrink-0">
+            <Alert variant="destructive" className="py-2 px-3 bg-red-50 border-red-100 text-red-600 rounded-lg mb-3 shrink-0">
               <AlertCircle className="h-3 w-3" />
-              <AlertDescription className="text-[9px] font-bold">
+              <AlertDescription className="text-[10px] font-bold leading-tight">
                 {errorMsg}
               </AlertDescription>
             </Alert>

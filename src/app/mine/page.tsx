@@ -89,43 +89,46 @@ export default function MinePage() {
         </button>
       </div>
 
-      <div className="px-5 py-5 flex items-center justify-between bg-white border-b border-slate-100 shrink-0">
+      <div className="px-5 py-6 flex items-center justify-between bg-white border-b border-slate-100 shrink-0">
         <div className="flex items-center gap-4">
-          <Avatar className="h-12 w-12 border-2 border-slate-50 shadow-sm bg-blue-50">
-            <AvatarFallback className="bg-blue-100 text-blue-600"><User className="h-6 w-6" /></AvatarFallback>
+          <Avatar className="h-14 w-14 border-2 border-slate-50 shadow-md bg-blue-50">
+            <AvatarFallback className="bg-blue-100 text-blue-600"><User className="h-7 w-7" /></AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
              <div onClick={() => handleCopy(userData?.phone, 'Mobile')} className="flex items-center gap-1.5 cursor-pointer group">
-               <span className="text-[14px] font-bold text-slate-800">{userData?.phone}</span>
-               <Copy className="h-2.5 w-2.5 text-slate-300 group-hover:text-blue-500 transition-colors" />
+               <span className="text-[16px] font-black text-slate-800 tracking-tight">{userData?.phone}</span>
+               <Copy className="h-3 w-3 text-slate-300 group-hover:text-blue-500 transition-colors" />
              </div>
-             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">ID: {userData?.numeric_id || '---'}</span>
+             <div onClick={() => handleCopy(userData?.numeric_id?.toString(), 'UID')} className="flex items-center gap-1 cursor-pointer group mt-0.5">
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">UID: {userData?.numeric_id || '---'}</span>
+               <Copy className="h-2 w-2 text-slate-300 group-hover:text-blue-500 transition-colors" />
+             </div>
           </div>
         </div>
-        <div className="bg-blue-50/50 px-2 py-1 rounded-md border border-blue-100">
-           <span className="text-[8px] font-bold text-[#2A85FF] uppercase">VIP Level 1</span>
+        <div className="bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 shadow-sm">
+           <span className="text-[9px] font-black text-[#2A85FF] uppercase tracking-wider">VIP Node</span>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto smooth-scroll px-3 py-3 space-y-3">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
           {menuItems.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div 
                 key={idx} 
                 onClick={item.onClick} 
-                className="flex items-center justify-between px-4 py-3 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
+                className="flex items-center justify-between px-4 py-3.5 active:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className={cn("w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center", item.color)}>
-                    <Icon className="h-3.5 w-3.5" />
+                  <div className={cn("w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center shadow-sm", item.color)}>
+                    <Icon className="h-4 w-4" />
                   </div>
-                  <span className="text-[11px] font-bold text-slate-600 uppercase tracking-tight">{item.label}</span>
+                  <span className="text-[11px] font-black text-slate-600 uppercase tracking-tight">{item.label}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {item.value !== undefined && <span className="text-[11px] font-black text-slate-800">₹{item.value}</span>}
-                  <ChevronRight className="text-slate-200 h-3.5 w-3.5" />
+                  {item.value !== undefined && <span className="text-[12px] font-black text-slate-900 tracking-tight">₹{item.value}</span>}
+                  <ChevronRight className="text-slate-200 h-4 w-4" />
                 </div>
               </div>
             );
@@ -136,12 +139,12 @@ export default function MinePage() {
           <Button 
             variant="outline" 
             onClick={handleSignOut} 
-            className="w-full h-10 rounded-xl border-slate-100 bg-white text-slate-400 font-bold text-[10px] uppercase tracking-widest hover:text-red-500 active:scale-95 transition-all shadow-none"
+            className="w-full h-11 rounded-xl border-slate-100 bg-white text-slate-400 font-black text-[10px] uppercase tracking-widest hover:text-red-500 active:scale-95 transition-all shadow-none"
           >
             End Current Session
           </Button>
           <div className="text-center">
-            <p className="text-[8px] text-slate-300 font-bold uppercase tracking-[0.2em]">Application Version 2.0.4 - Secure</p>
+            <p className="text-[8px] text-slate-300 font-bold uppercase tracking-[0.2em]">Application Version 2.4.0 - Secure</p>
           </div>
         </div>
       </div>
