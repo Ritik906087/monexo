@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -20,7 +21,8 @@ export function BottomNav() {
     pathname === '/' ||
     pathname?.startsWith('/admin') ||
     pathname === '/buy-history' ||
-    pathname === '/sell-history';
+    pathname === '/sell-history' ||
+    pathname === '/upi/link';
   
   if (!mounted || isExcludedPage) return null;
 

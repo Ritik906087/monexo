@@ -28,7 +28,8 @@ export default function RootLayout({
     pathname === '/' ||
     pathname?.startsWith('/admin') ||
     pathname === '/buy-history' ||
-    pathname === '/sell-history';
+    pathname === '/sell-history' ||
+    pathname === '/upi/link';
 
   const showNav = mounted && !isExcludedPage;
 
