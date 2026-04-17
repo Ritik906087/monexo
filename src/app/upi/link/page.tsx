@@ -108,9 +108,11 @@ export default function LinkNewUPIPage() {
         <SheetContent side="bottom" className="rounded-t-[32px] p-0 h-[80vh] bg-white border-none overflow-hidden flex flex-col">
           <div className="w-12 h-1 bg-slate-100 rounded-full mx-auto mt-3 mb-1" />
           
-          <div className="px-6 py-4">
-            <p className="text-[11px] font-bold text-slate-300 uppercase tracking-tight">Choose a link authorization partner</p>
-          </div>
+          <SheetHeader className="px-6 py-4 text-left">
+            <SheetTitle className="text-[11px] font-bold text-slate-300 uppercase tracking-tight">
+              Choose a link authorization partner
+            </SheetTitle>
+          </SheetHeader>
 
           <div className="flex-1 overflow-y-auto px-6 space-y-6 pb-20 smooth-scroll">
             {partners.map((partner) => (
