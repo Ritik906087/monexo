@@ -14,7 +14,8 @@ import {
   Link as LinkIcon,
   Clock,
   ArrowUpRight,
-  ArrowDownLeft
+  ArrowDownLeft,
+  Smartphone
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
   const [loading, setLoading] = useState(true);
   const [amount, setAmount] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -38,28 +40,36 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       return;
     }
 
-    async function fetchUser() {
-      const { data, error } = await supabase
+    async function fetchData() {
+      // Fetch User
+      const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
         .eq('id', id)
         .single();
 
-      if (data) setUser(user);
-      if (error) {
+      if (userData) {
+        setUser(userData);
+      } else {
         toast({ variant: "destructive", title: "Error", description: "User not found." });
         router.push('/admin');
+        return;
       }
+
+      // Fetch Recent Transactions for this user
+      const { data: txData } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (txData) setTransactions(txData);
+      
       setLoading(false);
     }
 
-    // Direct fetch instead of state for simpler logic
-    const fetchDirect = async () => {
-      const { data } = await supabase.from('users').select('*').eq('id', id).single();
-      if (data) setUser(data);
-      setLoading(false);
-    };
-    fetchDirect();
+    fetchData();
   }, [id, router, toast]);
 
   const handleUpdateBalance = async (type: 'ADD' | 'DEDUCT') => {
@@ -140,6 +150,35 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
+        {/* Linked UPI Info (Real Data) */}
+        {user.kyc_data && (
+          <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <LinkIcon className="h-4 w-4 text-[#2A85FF]" />
+              <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">Linked UPI Details</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-3">
+              <div className="bg-slate-50 p-3 rounded-2xl flex justify-between items-center">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">Partner</span>
+                <span className="text-[12px] font-black text-slate-700 uppercase">{user.kyc_data.partner}</span>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-2xl flex justify-between items-center">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">Account Name</span>
+                <span className="text-[12px] font-black text-slate-700">{user.kyc_data.name}</span>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-2xl flex justify-between items-center">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">UPI Address</span>
+                <span className="text-[12px] font-black text-blue-600">{user.kyc_data.upi_no}</span>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-2xl flex justify-between items-center">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">Linked Mobile</span>
+                <span className="text-[12px] font-black text-slate-700">{user.kyc_data.linked_mobile}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Balance Controls */}
         <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-5">
           <div className="flex items-center gap-2 mb-2">
@@ -176,36 +215,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
-        {/* User Information */}
-        <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-4">
-          <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight mb-2">Quick Info</h3>
-          
-          <div className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-            <div className="flex items-center gap-3">
-              <Phone className="h-4 w-4 text-slate-400" />
-              <span className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">Mobile</span>
-            </div>
-            <span className="text-[12px] font-black text-slate-800">{user.phone}</span>
-          </div>
-
-          <div className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-            <div className="flex items-center gap-3">
-              <Key className="h-4 w-4 text-slate-400" />
-              <span className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">Password</span>
-            </div>
-            <span className="text-[12px] font-black text-slate-800">Protected</span>
-          </div>
-
-          <div className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-            <div className="flex items-center gap-3">
-              <LinkIcon className="h-4 w-4 text-slate-400" />
-              <span className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">UPI Link</span>
-            </div>
-            <span className="text-[10px] font-black text-orange-500 uppercase">1 Active Link</span>
-          </div>
-        </div>
-
-        {/* Transaction History Placeholder */}
+        {/* Real Transaction History */}
         <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm">
           <div className="flex items-center justify-between mb-4">
              <h3 className="text-[13px] font-black text-slate-800 uppercase tracking-tight">Recent Activity</h3>
@@ -213,31 +223,28 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
           </div>
           
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
-              <div className="flex items-center gap-3">
-                <div className="bg-emerald-100 p-2 rounded-xl">
-                  <ArrowDownLeft className="h-4 w-4 text-emerald-600" />
+            {transactions.length > 0 ? (
+              transactions.map((tx) => (
+                <div key={tx.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+                  <div className="flex items-center gap-3">
+                    <div className={cn("p-2 rounded-xl", tx.type === 'buy' ? "bg-emerald-100" : "bg-blue-100")}>
+                      {tx.type === 'buy' ? <ArrowDownLeft className="h-4 w-4 text-emerald-600" /> : <ArrowUpRight className="h-4 w-4 text-blue-600" />}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-black text-slate-700 uppercase">{tx.type === 'buy' ? 'Token Buy' : 'UPI Withdrawal'}</span>
+                      <span className="text-[9px] font-bold text-slate-400 tracking-tighter">{new Date(tx.created_at).toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <span className={cn("text-[12px] font-black", tx.type === 'buy' ? "text-emerald-600" : "text-blue-600")}>
+                    {tx.type === 'buy' ? '+' : '-'} ₹{tx.amount.toFixed(2)}
+                  </span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[11px] font-black text-slate-700 uppercase">Token Buy</span>
-                  <span className="text-[9px] font-bold text-slate-400 tracking-tighter">2024-03-21 14:20</span>
-                </div>
+              ))
+            ) : (
+              <div className="py-8 text-center">
+                <span className="text-[10px] font-bold text-slate-300 uppercase">No recent activity</span>
               </div>
-              <span className="text-[12px] font-black text-emerald-600">+ ₹500.00</span>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl opacity-80">
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-100 p-2 rounded-xl">
-                  <ArrowUpRight className="h-4 w-4 text-blue-600" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[11px] font-black text-slate-700 uppercase">UPI Settlement</span>
-                  <span className="text-[9px] font-bold text-slate-400 tracking-tighter">2024-03-20 09:15</span>
-                </div>
-              </div>
-              <span className="text-[12px] font-black text-blue-600">- ₹200.00</span>
-            </div>
+            )}
           </div>
         </div>
       </div>

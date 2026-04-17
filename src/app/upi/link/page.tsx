@@ -65,13 +65,27 @@ export default function LinkNewUPIPage() {
       return;
     }
 
-    // Since there's no specific linked_upis table in current setup, we might save to a metadata field or just show success
-    // In a real app, you'd insert into a 'linked_upis' table
-    setTimeout(() => {
-      setLoading(false);
+    // Save to users table in a generic metadata field or specialized columns
+    const { error } = await supabase
+      .from('users')
+      .update({ 
+        kyc_data: {
+          partner: selectedPartner,
+          name: name,
+          upi_no: upiNo,
+          linked_mobile: linkedMobile,
+          linked_at: new Date().toISOString()
+        }
+      })
+      .eq('id', session.user.id);
+
+    setLoading(false);
+    if (!error) {
       toast({ title: "KYC Linked", description: "Your UPI has been linked successfully." });
       router.push('/upi');
-    }, 1500);
+    } else {
+      toast({ variant: "destructive", title: "Linking Failed", description: error.message });
+    }
   };
 
   return (
