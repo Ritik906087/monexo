@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { 
   ChevronLeft, 
   ChevronRight, 
-  Headphones
+  Headphones,
+  Info
 } from 'lucide-react';
 import {
   Sheet,
