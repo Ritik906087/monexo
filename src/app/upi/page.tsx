@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   AlertCircle, 
   Link as LinkIcon, 
@@ -17,10 +18,11 @@ import { cn } from '@/lib/utils';
 export default function UPIPage() {
   const [activeTab, setActiveTab] = useState('Buy');
   const [isStopped, setIsStopped] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="flex flex-col min-h-full bg-[#f8fafc] animate-slide-up">
-      <div className="native-header">
+      <div className="native-header bg-white">
         <h1 className="text-[14px] font-black text-slate-800 uppercase tracking-tight">UPI Management</h1>
       </div>
 
@@ -32,7 +34,10 @@ export default function UPIPage() {
       </div>
 
       <div className="p-3 shrink-0">
-        <Button className="w-full bg-[#2A85FF] hover:bg-[#1A7BFF] h-10 rounded-lg shadow-sm font-black text-[11px] uppercase tracking-widest gap-2 active:scale-95 transition-all border-none">
+        <Button 
+          onClick={() => router.push('/upi/link')}
+          className="w-full bg-[#2A85FF] hover:bg-[#1A7BFF] h-10 rounded-lg shadow-sm font-black text-[11px] uppercase tracking-widest gap-2 active:scale-95 transition-all border-none"
+        >
           <LinkIcon className="h-3 w-3" />
           Link New UPI
         </Button>
