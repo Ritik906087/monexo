@@ -10,7 +10,8 @@ import {
   ChevronUp,
   ChevronDown,
   Headphones,
-  Check
+  Check,
+  ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -80,16 +81,6 @@ export default function BuyPage() {
   };
 
   const handleOpenSheet = async (item: any) => {
-    if (!userData?.kyc_data?.upi_no || (userData.kyc_data.partner !== 'mobikwik' && userData.kyc_data.partner !== 'freecharge')) {
-      toast({
-        variant: "destructive",
-        title: "Link UPI First",
-        description: "Please link a Mobikwik or Freecharge account to continue.",
-      });
-      router.push('/upi/link?type=buy');
-      return;
-    }
-
     setSelectedItem(item);
     
     // Check for active orders first
@@ -139,6 +130,9 @@ export default function BuyPage() {
       setShowPaymentSheet(false);
     }
   };
+
+  const isBuyPartnerLinked = userData?.kyc_data?.upi_no && 
+    (userData.kyc_data.partner === 'mobikwik' || userData.kyc_data.partner === 'freecharge');
 
   return (
     <div className="flex flex-col min-h-full bg-white animate-slide-up">
@@ -232,7 +226,7 @@ export default function BuyPage() {
             </SheetHeader>
             
             <div className="space-y-4">
-              {userData?.kyc_data && (userData.kyc_data.partner === 'mobikwik' || userData.kyc_data.partner === 'freecharge') && (
+              {isBuyPartnerLinked ? (
                 <div 
                   onClick={confirmPurchase}
                   className="flex items-center justify-between py-2 cursor-pointer active:opacity-70 transition-all"
@@ -252,6 +246,23 @@ export default function BuyPage() {
                   </div>
                   <div className="w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
                     <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+                  </div>
+                </div>
+              ) : (
+                <div 
+                  onClick={() => router.push('/upi/link?type=buy')}
+                  className="flex items-start gap-4 p-4 cursor-pointer active:bg-slate-50 transition-all"
+                >
+                  <div className="w-6 h-6 border-2 border-slate-200 rounded flex items-center justify-center shrink-0 mt-1">
+                    <div className="w-full h-full" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-[14px] font-bold text-red-500 leading-tight">
+                      No Payment UPI Available. Link a wallet that supports purchases (e.g., Freecharge, Mobikwik).
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[12px] font-bold text-slate-400">Go to Link UPI</span>
+                    </div>
                   </div>
                 </div>
               )}
