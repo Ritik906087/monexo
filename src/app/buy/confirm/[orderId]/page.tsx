@@ -12,7 +12,8 @@ import {
   FileText,
   Headphones,
   Volume2,
-  Info
+  Info,
+  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -205,7 +206,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </button>
       </div>
 
-      {/* Timer Banner - Exactly like Screenshot */}
+      {/* Timer Banner */}
       <div className="bg-[#fff1f1] px-4 py-3.5 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="bg-red-500 rounded-full p-1 shadow-sm">
@@ -221,7 +222,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         <Info className="h-5 w-5 text-orange-400" />
       </div>
 
-      {/* Stepper - Exactly like Screenshot */}
+      {/* Stepper */}
       <div className="px-10 py-8 shrink-0">
         <div className="relative flex items-center justify-between w-full">
            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-100 -translate-y-1/2 z-0" />
@@ -326,51 +327,85 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           </>
         )}
 
-        {(currentStep === 1 || currentStep === 2) && (
-          <div className="space-y-8">
-             {/* Red Notice Section Exactly as Screenshot */}
-             <div className="text-center space-y-4">
-               <h2 className="text-[28px] font-black text-red-600 uppercase tracking-tight italic">Notice! &nbsp; सूचना</h2>
-               
-               <div className="space-y-6 text-left">
-                  <div className="flex gap-2">
-                    <div className="flex gap-0.5 shrink-0 mt-1">
-                      <Volume2 className="h-4 w-4 text-red-500" />
-                      <Volume2 className="h-4 w-4 text-red-500" />
-                      <Volume2 className="h-4 w-4 text-red-500" />
-                    </div>
-                    <p className="text-[13px] font-black text-red-500 leading-snug uppercase tracking-tight">
-                      Please carefully check the amount you have paid. If the amount in rupees is insufficient, make sure to complete the remaining payment to the same person. If you have overpaid, unfortunately, you will need to contact the recipient directly to request a refund. We will provide the recipient's contact information and the action steps for refund requests to assist you. Please double-check that your payment is accurate to avoid any unnecessary issues!
+        {currentStep === 1 && (
+          <div className="space-y-8 animate-slide-up">
+            <div className="text-[18px] font-black text-red-600 leading-snug uppercase tracking-tight">
+              Please use the {userData?.kyc_data?.partner || 'payment method'}({userData?.kyc_data?.upi_no || 'linked UPI'}) of your choice to pay
+            </div>
+
+            <div className="text-center space-y-8">
+              <h2 className="text-[32px] font-black text-red-600 uppercase tracking-tight">Notice! &nbsp; सूचना</h2>
+              
+              <div className="space-y-8 text-left">
+                {/* Instruction 1 */}
+                <div className="space-y-1">
+                  <div className="flex gap-1.5 items-center mb-1">
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight">
+                      The Buying amount must be Same , otherwise the transaction will not be completed.
                     </p>
                   </div>
-               </div>
-             </div>
-
-             <div className="pt-2 text-center">
-                <p className="text-[13px] font-medium text-slate-500">
-                  I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-600 font-bold cursor-pointer hover:underline">Cancel</span> my order.
-                </p>
-             </div>
-
-             <div className="flex justify-end pt-2">
-                <button className="text-[15px] font-bold text-blue-500 hover:underline">View tutorial</button>
-             </div>
-
-             {/* Audit Image & Status */}
-             <div className="flex flex-col items-center pt-8 space-y-6">
-                <div className="w-full max-w-[280px] aspect-square relative">
-                   <img 
-                    src="https://picsum.photos/seed/audit-futuristic/600/600" 
-                    alt="Audit Status" 
-                    className="w-full h-full object-contain"
-                    data-ai-hint="futuristic audit"
-                   />
+                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight pl-0">
+                    1. क्रय राशि समान होनी चाहिए, अन्यथा लेनदेन पूरा नहीं होगा।
+                  </p>
                 </div>
-                <div className="text-center space-y-1">
-                   <p className="text-[18px] font-bold text-slate-800">Waiting for review</p>
-                   <button className="text-[15px] font-bold text-blue-500 hover:underline">Contact Customer Service</button>
+
+                {/* Instruction 2 */}
+                <div className="space-y-1">
+                  <div className="flex gap-1.5 items-center mb-1">
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight">
+                      Once payment completed , please wait patiently for the transaction review.
+                    </p>
+                  </div>
+                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight pl-0">
+                    2. एक बार भुगतान पूरा हो जाने पर, कृपया लेनदेन समीक्षा के लिए धैर्यपूर्वक प्रतीक्षा करें।
+                  </p>
                 </div>
-             </div>
+
+                {/* Instruction 3 */}
+                <div className="space-y-1">
+                  <div className="flex gap-1.5 items-center mb-1">
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
+                    <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight">
+                      Payment must be completed on time after token not receive within 30 minutes please contact customer service in your exclusive VIP group.
+                    </p>
+                  </div>
+                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight pl-0">
+                    3. टोकन 30 मिनट के भीतर प्राप्त न होने पर भुगतान समय पर पूरा किया जाना चाहिए कृपया अपने विशिष्ट वीआईपी समूह में ग्राहक सेवा से संपर्क करें
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-10 text-center">
+              <p className="text-[14px] font-medium text-slate-500">
+                I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-600 font-bold cursor-pointer hover:underline">Cancel</span> my order.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {currentStep === 2 && (
+          <div className="flex flex-col items-center pt-20 space-y-8 animate-slide-up">
+            <div className="w-full max-w-[280px] aspect-square relative">
+               <img 
+                src="https://picsum.photos/seed/audit-futuristic/600/600" 
+                alt="Audit Status" 
+                className="w-full h-full object-contain"
+                data-ai-hint="futuristic audit"
+               />
+            </div>
+            <div className="text-center space-y-2">
+               <p className="text-[20px] font-bold text-slate-800">Waiting for review</p>
+               <button className="text-[16px] font-bold text-blue-500 hover:underline">Contact Customer Service</button>
+            </div>
           </div>
         )}
       </div>
@@ -392,7 +427,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       )}
 
-      {/* Success Overlay - Exactly like Screenshot */}
+      {/* Success Overlay */}
       {showSuccessOverlay && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-[#4a5568]/95 backdrop-blur-sm px-6 py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-in fade-in zoom-in duration-300">
