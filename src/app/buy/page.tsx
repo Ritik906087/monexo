@@ -18,14 +18,6 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -41,9 +33,7 @@ export default function BuyPage() {
   const [activeTab, setActiveTab] = useState('UPI');
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<any>(null);
-  const [showActiveOrderDialog, setShowActiveOrderDialog] = useState(false);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
-  const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   
   const router = useRouter();
@@ -80,23 +70,8 @@ export default function BuyPage() {
     return Math.floor(100000000000000 + Math.random() * 900000000000000).toString();
   };
 
-  const handleOpenSheet = async (item: any) => {
+  const handleOpenSheet = (item: any) => {
     setSelectedItem(item);
-    
-    // Check for active orders first
-    const { data: activeOrders } = await supabase
-      .from('orders')
-      .select('order_id, id')
-      .eq('user_id', userData.id)
-      .in('status', ['pending_payment', 'pending_confirmation'])
-      .limit(1);
-
-    if (activeOrders && activeOrders.length > 0) {
-      setActiveOrderId(activeOrders[0].order_id || activeOrders[0].id);
-      setShowActiveOrderDialog(true);
-      return;
-    }
-
     setShowPaymentSheet(true);
   };
 
@@ -286,29 +261,6 @@ export default function BuyPage() {
           </div>
         </button>
       </div>
-
-      {/* Active Order Dialog */}
-      <Dialog open={showActiveOrderDialog} onOpenChange={setShowActiveOrderDialog}>
-        <DialogContent className="w-[85%] max-w-[320px] rounded-[32px] p-6 gap-4">
-          <DialogHeader className="items-center text-center">
-            <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mb-2">
-              <AlertCircle className="h-6 w-6 text-red-500" />
-            </div>
-            <DialogTitle className="text-[15px] font-bold text-slate-800 uppercase">Order in Progress</DialogTitle>
-            <DialogDescription className="text-[12px] font-medium text-slate-500 leading-relaxed">
-              FIRST COMPLETE YOUR OLD ORDER THEN ONLY YOU CAN BUY NEW ORDER.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex flex-col gap-2">
-            <Button 
-              onClick={() => router.push(`/buy/confirm/${activeOrderId}`)}
-              className="w-full h-11 bg-[#2A85FF] hover:bg-[#1A7BFF] rounded-xl font-bold uppercase text-[11px] border-none tracking-widest"
-            >
-              Continue Old Order
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
