@@ -18,6 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
 
 const EXPIRY_MINUTES = 10;
 
