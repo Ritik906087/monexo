@@ -17,6 +17,10 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogContent,
+} from "@/components/ui/alert-dialog";
 
 // Order expiry set to 10 minutes
 const EXPIRY_MINUTES = 10;
@@ -30,6 +34,8 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isExpired, setIsExpired] = useState(false);
   const [currentStep, setCurrentStep] = useState(0); // 0: info, 1: prove
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  
   const router = useRouter();
   const { toast } = useToast();
 
@@ -147,11 +153,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   };
 
   const handleConfirmFinal = () => {
-    toast({
-      title: "Success",
-      description: "Payment details submitted for review."
-    });
-    router.push('/buy-history');
+    setShowConfirmModal(true);
   };
 
   if (loading) return (
@@ -167,7 +169,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           <ChevronLeft className="h-6 w-6 text-slate-400" />
         </button>
         <h1 className="text-[17px] font-bold text-slate-700">Buy Itoken details</h1>
-        <button className="p-2">
+        <button onClick={() => router.push('/buy-history')} className="p-2 active:scale-90 transition-all">
           <FileText className="h-6 w-6 text-[#2A85FF]" />
         </button>
       </div>
@@ -365,6 +367,35 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           </div>
         </button>
       </div>
+
+      <AlertDialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
+        <AlertDialogContent className="max-w-[320px] rounded-[24px] p-0 overflow-hidden border-none animate-in fade-in zoom-in duration-200">
+          <div className="p-8 text-center space-y-4">
+            <h3 className="text-[20px] font-bold text-slate-800 leading-none">Confirm payment</h3>
+            <p className="text-[14px] text-slate-500 leading-relaxed font-medium">
+              Please confirm that you have completed the payment with the {userData?.kyc_data?.partner || 'linked'}({userData?.kyc_data?.upi_no || 'UPI'}) account. If you do not complete the payment, your credit will be affected and your transactions will be limited!
+            </p>
+          </div>
+          <div className="flex border-t border-slate-100">
+            <button 
+              onClick={() => setShowConfirmModal(false)}
+              className="flex-1 py-4 text-[15px] font-bold text-slate-400 border-r border-slate-100 active:bg-slate-50 transition-colors uppercase tracking-tight"
+            >
+              Continue to pay
+            </button>
+            <button 
+              onClick={() => {
+                setShowConfirmModal(false);
+                router.push('/buy-history');
+              }}
+              className="flex-1 py-4 text-[15px] font-black text-[#2A85FF] active:bg-slate-50 transition-colors uppercase tracking-tight"
+            >
+              Got it
+            </button>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
+
