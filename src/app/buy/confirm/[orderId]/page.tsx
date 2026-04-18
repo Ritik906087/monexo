@@ -25,7 +25,7 @@ import {
   AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 
-// Default expiry settings
+// Expiry settings
 const INITIAL_EXPIRY_MINUTES = 10;
 const AUDIT_EXPIRY_MINUTES = 39;
 
@@ -53,7 +53,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           return;
         }
 
-        // Fetch User
         const { data: uData } = await supabase
           .from('users')
           .select('*')
@@ -62,7 +61,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         
         if (uData) setUserData(uData);
 
-        // Fetch Order
         let orderQuery = supabase.from('orders').select('*');
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId);
         
@@ -72,23 +70,19 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           orderQuery = orderQuery.eq('order_id', orderId);
         }
 
-        const { data: orderData, error: orderError } = await orderQuery.maybeSingle();
+        const { data: orderData } = await orderQuery.maybeSingle();
 
-        if (orderError) throw orderError;
         if (!orderData) {
-          toast({ variant: "destructive", title: "Order Not Found" });
           router.push('/buy');
           return;
         }
         setOrder(orderData);
 
-        // Determine step and expiry based on current status
         const isReviewing = orderData.status === 'reviewing' || orderData.status === 'completed';
         if (isReviewing) {
           setCurrentStep(2);
         }
 
-        // Fetch Admin Payment Method
         const { data: payData } = await supabase
           .from('admin_payment_methods')
           .select('*')
@@ -101,7 +95,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           setAdminPayment({ account_name: 'MUKILAN', details: 'monexo@upi', type: 'UPI' });
         }
 
-        // Timer Logic
+        // Timer calculation
         const expiryMins = isReviewing ? AUDIT_EXPIRY_MINUTES : INITIAL_EXPIRY_MINUTES;
         const createdAt = new Date(orderData.created_at).getTime();
         const now = new Date().getTime();
@@ -115,16 +109,15 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           setTimeLeft(remaining);
         }
 
-      } catch (err: any) {
-        console.error("Fetch Error:", err);
-        toast({ variant: "destructive", title: "Error", description: "Could not load order details." });
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
     }
 
     fetchData();
-  }, [orderId, router, toast]);
+  }, [orderId, router]);
 
   useEffect(() => {
     if (timeLeft === null || timeLeft <= 0 || isExpired) return;
@@ -164,16 +157,12 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
     }
   };
 
-  const handleConfirmFinal = () => {
-    setShowConfirmModal(true);
-  };
-
   const handleGotIt = async () => {
     setShowConfirmModal(false);
-    setCurrentStep(2); // Move to Audit step
     setShowSuccessOverlay(true);
+    setCurrentStep(2);
     
-    // Increase timer to 39 minutes for Audit phase
+    // Increase timer to 39 minutes
     if (order) {
       const createdAt = new Date(order.created_at).getTime();
       const now = new Date().getTime();
@@ -182,11 +171,9 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
       setTimeLeft(newRemaining);
       setIsExpired(false);
 
-      // Update order status in background
       supabase.from('orders').update({ status: 'reviewing' }).eq('id', order.id).then();
     }
 
-    // Hide overlay after 2 seconds
     setTimeout(() => {
       setShowSuccessOverlay(false);
     }, 2000);
@@ -199,7 +186,8 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-white animate-slide-up relative font-sans select-none">
+    <div className="flex flex-col min-h-screen bg-white animate-slide-up relative font-sans select-none overflow-hidden">
+      {/* Header */}
       <div className="bg-white px-4 h-14 flex items-center justify-between border-b border-slate-50 sticky top-0 z-50">
         <button 
           onClick={() => {
@@ -217,6 +205,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </button>
       </div>
 
+      {/* Timer Banner - Exactly like Screenshot */}
       <div className="bg-[#fff1f1] px-4 py-3.5 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="bg-red-500 rounded-full p-1 shadow-sm">
@@ -225,18 +214,18 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           <span className="text-[15px] font-black text-red-500 font-mono tracking-wider">
             {isExpired ? "00 : 00 : 00" : formatTime(timeLeft || 0)}
           </span>
-          <span className="text-[13px] font-bold text-red-400/80 ml-1 uppercase tracking-tight">
+          <span className="text-[13px] font-bold text-red-500/90 ml-1 uppercase tracking-tight">
             {currentStep === 2 ? "Under review, Please wait" : "Please pay in time"}
           </span>
         </div>
         <Info className="h-5 w-5 text-orange-400" />
       </div>
 
+      {/* Stepper - Exactly like Screenshot */}
       <div className="px-10 py-8 shrink-0">
         <div className="relative flex items-center justify-between w-full">
            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-100 -translate-y-1/2 z-0" />
            
-           {/* Step 1: Payment info */}
            <div className="relative z-10 flex flex-col items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-[#2A85FF] flex items-center justify-center border-[3px] border-blue-100 shadow-sm">
                  <CheckCircle2 className="h-3 w-3 text-white" />
@@ -244,7 +233,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
               <span className="text-[10px] font-black text-[#2A85FF] absolute top-7 whitespace-nowrap uppercase tracking-tighter">Payment info</span>
            </div>
 
-           {/* Step 2: Payment prove */}
            <div className="relative z-10 flex flex-col items-center gap-2">
               <div className={cn(
                 "w-5 h-5 rounded-full flex items-center justify-center border-[3px] shadow-sm transition-all",
@@ -258,7 +246,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
               )}>Payment prove</span>
            </div>
 
-           {/* Step 3: Audit */}
            <div className="relative z-10 flex flex-col items-center gap-2">
               <div className={cn(
                 "w-5 h-5 rounded-full flex items-center justify-center border-[3px] shadow-sm transition-all",
@@ -274,7 +261,8 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       </div>
 
-      <div className="flex-1 px-5 pt-10 space-y-8 pb-32 overflow-y-auto">
+      {/* Main Content Area */}
+      <div className="flex-1 px-5 pt-10 space-y-8 pb-32 overflow-y-auto smooth-scroll">
         {currentStep === 0 && (
           <>
             <div className="text-[15px] font-black text-red-500 leading-snug uppercase tracking-tight">
@@ -332,76 +320,62 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
 
             <div className="pt-6 text-center">
               <p className="text-[12px] font-black text-slate-300 uppercase tracking-widest">
-                Unable to complete payment? <span onClick={handleCancelOrder} className="text-red-500 cursor-pointer underline underline-offset-4 decoration-red-200">Cancel</span> my order.
+                Unable to complete payment? <span onClick={handleCancelOrder} className="text-red-500 cursor-pointer underline underline-offset-4 decoration-red-200 font-black">Cancel</span> my order.
               </p>
             </div>
           </>
         )}
 
-        {currentStep >= 1 && (
-          <div className="space-y-8 pb-10">
-            <div className="text-[15px] font-black text-red-500 leading-snug uppercase tracking-tight">
-              Please use the {userData?.kyc_data?.partner || 'payment method'}({userData?.kyc_data?.upi_no || 'linked UPI'}) of your choice to pay
-            </div>
-
-            <div className="text-center space-y-2">
-              <h2 className="text-3xl font-black text-red-500 uppercase tracking-tighter">Notice! &nbsp; सूचना</h2>
-            </div>
-
-            <div className="space-y-6">
-               <div className="space-y-2">
-                  <div className="flex items-start gap-2 text-red-500">
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <p className="text-[14px] font-black uppercase leading-tight">
-                      Please carefully check the amount you have paid. If the amount in rupees is insufficient, make sure to complete the remaining payment to the same person.
+        {(currentStep === 1 || currentStep === 2) && (
+          <div className="space-y-8">
+             {/* Red Notice Section Exactly as Screenshot */}
+             <div className="text-center space-y-4">
+               <h2 className="text-[28px] font-black text-red-600 uppercase tracking-tight italic">Notice! &nbsp; सूचना</h2>
+               
+               <div className="space-y-6 text-left">
+                  <div className="flex gap-2">
+                    <div className="flex gap-0.5 shrink-0 mt-1">
+                      <Volume2 className="h-4 w-4 text-red-500" />
+                      <Volume2 className="h-4 w-4 text-red-500" />
+                      <Volume2 className="h-4 w-4 text-red-500" />
+                    </div>
+                    <p className="text-[13px] font-black text-red-500 leading-snug uppercase tracking-tight">
+                      Please carefully check the amount you have paid. If the amount in rupees is insufficient, make sure to complete the remaining payment to the same person. If you have overpaid, unfortunately, you will need to contact the recipient directly to request a refund. We will provide the recipient's contact information and the action steps for refund requests to assist you. Please double-check that your payment is accurate to avoid any unnecessary issues!
                     </p>
                   </div>
-                  <p className="text-[14px] font-black text-red-500 leading-tight pl-24">
-                    1. कृपया आपके द्वारा भुगतान की गई राशि की सावधानीपूर्वक जांच करें। यदि रुपये में राशि अपर्याप्त है, तो शेष भुगतान उसी व्यक्ति को पूरा करना सुनिश्चित करें।
-                  </p>
                </div>
+             </div>
 
-               <div className="space-y-2">
-                  <div className="flex items-start gap-2 text-red-500">
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <p className="text-[14px] font-black uppercase leading-tight">
-                      Once payment completed , please wait patiently for the transaction review.
-                    </p>
-                  </div>
-                  <p className="text-[14px] font-black text-red-500 leading-tight pl-24">
-                    2. एक बार भुगतान पूरा हो जाने पर, कृपया लेनदेन समीक्षा के लिए धैर्यपूर्वक प्रतीक्षा करें।
-                  </p>
-               </div>
-            </div>
-
-            {currentStep === 2 && (
-              <div className="pt-12 flex flex-col items-center space-y-6">
-                 <div className="text-center">
-                    <p className="text-[18px] font-black text-slate-700 uppercase tracking-tight">Waiting for review</p>
-                    <button className="text-[14px] font-bold text-blue-500 hover:underline mt-2">Contact Customer Service</button>
-                 </div>
-                 
-                 <div className="w-full max-w-[200px] opacity-80">
-                   <img src="https://picsum.photos/seed/audit/400/300" alt="Audit" className="w-full h-auto grayscale" data-ai-hint="review pending" />
-                 </div>
-              </div>
-            )}
-
-            {currentStep === 1 && (
-              <div className="pt-6 text-center">
-                <p className="text-[12px] font-black text-slate-300 uppercase tracking-widest">
-                  I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-500 cursor-pointer underline underline-offset-4 decoration-red-200">Cancel</span> my order.
+             <div className="pt-2 text-center">
+                <p className="text-[13px] font-medium text-slate-500">
+                  I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-600 font-bold cursor-pointer hover:underline">Cancel</span> my order.
                 </p>
-              </div>
-            )}
+             </div>
+
+             <div className="flex justify-end pt-2">
+                <button className="text-[15px] font-bold text-blue-500 hover:underline">View tutorial</button>
+             </div>
+
+             {/* Audit Image & Status */}
+             <div className="flex flex-col items-center pt-8 space-y-6">
+                <div className="w-full max-w-[280px] aspect-square relative">
+                   <img 
+                    src="https://picsum.photos/seed/audit-futuristic/600/600" 
+                    alt="Audit Status" 
+                    className="w-full h-full object-contain"
+                    data-ai-hint="futuristic audit"
+                   />
+                </div>
+                <div className="text-center space-y-1">
+                   <p className="text-[18px] font-bold text-slate-800">Waiting for review</p>
+                   <button className="text-[15px] font-bold text-blue-500 hover:underline">Contact Customer Service</button>
+                </div>
+             </div>
           </div>
         )}
       </div>
 
+      {/* Sticky Bottom Buttons */}
       {currentStep < 2 && (
         <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white p-4 flex gap-4 border-t border-slate-50 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           {currentStep === 0 ? (
@@ -412,13 +386,13 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           ) : (
             <>
               <Button onClick={() => setCurrentStep(0)} variant="outline" className="flex-1 h-14 rounded-2xl border-blue-100 text-[#2A85FF] font-black text-[16px] uppercase tracking-widest shadow-sm active:scale-95">Previous</Button>
-              <Button onClick={handleConfirmFinal} className="flex-1 h-14 rounded-2xl bg-[#2A85FF] text-white font-black text-[16px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 border-none">Confirm payment</Button>
+              <Button onClick={() => setShowConfirmModal(true)} className="flex-1 h-14 rounded-2xl bg-[#2A85FF] text-white font-black text-[16px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 border-none">Confirm payment</Button>
             </>
           )}
         </div>
       )}
 
-      {/* Success Overlay */}
+      {/* Success Overlay - Exactly like Screenshot */}
       {showSuccessOverlay && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-[#4a5568]/95 backdrop-blur-sm px-6 py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-in fade-in zoom-in duration-300">
@@ -430,14 +404,16 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       )}
 
+      {/* Floating Support */}
       <div className="fixed bottom-24 right-6 z-[60]">
-        <button className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100 active:scale-90 transition-all">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-300 to-indigo-500 flex items-center justify-center">
+        <button className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg border border-slate-100 active:scale-90 transition-all">
+          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
             <Headphones className="h-6 w-6 text-white" />
           </div>
         </button>
       </div>
 
+      {/* Confirm Payment Modal */}
       <AlertDialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
         <AlertDialogContent className="max-w-[320px] rounded-[24px] p-0 overflow-hidden border-none animate-in fade-in zoom-in duration-200">
           <div className="p-8 text-center space-y-4">
