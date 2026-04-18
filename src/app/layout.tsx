@@ -27,6 +27,7 @@ export default function RootLayout({
     pathname === '/register' || 
     pathname === '/' ||
     pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/buy/confirm') || // Exclude nav on payment confirm
     pathname === '/buy-history' ||
     pathname === '/sell-history' ||
     pathname === '/upi/link';
