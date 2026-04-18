@@ -20,6 +20,8 @@ import { cn } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 
 // Order expiry set to 10 minutes
@@ -371,10 +373,10 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
       <AlertDialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
         <AlertDialogContent className="max-w-[320px] rounded-[24px] p-0 overflow-hidden border-none animate-in fade-in zoom-in duration-200">
           <div className="p-8 text-center space-y-4">
-            <h3 className="text-[20px] font-bold text-slate-800 leading-none">Confirm payment</h3>
-            <p className="text-[14px] text-slate-500 leading-relaxed font-medium">
+            <AlertDialogTitle className="text-[20px] font-bold text-slate-800 leading-none">Confirm payment</AlertDialogTitle>
+            <AlertDialogDescription className="text-[14px] text-slate-500 leading-relaxed font-medium">
               Please confirm that you have completed the payment with the {userData?.kyc_data?.partner || 'linked'}({userData?.kyc_data?.upi_no || 'UPI'}) account. If you do not complete the payment, your credit will be affected and your transactions will be limited!
-            </p>
+            </AlertDialogDescription>
           </div>
           <div className="flex border-t border-slate-100">
             <button 
@@ -398,4 +400,3 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
     </div>
   );
 }
-
