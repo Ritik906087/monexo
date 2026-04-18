@@ -17,7 +17,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
-const EXPIRY_MINUTES = 30;
+// Updated expiry to 10 minutes as requested
+const EXPIRY_MINUTES = 10;
 
 export default function OrderConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
