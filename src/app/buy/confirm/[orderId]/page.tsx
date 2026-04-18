@@ -11,7 +11,8 @@ import {
   CheckCircle2,
   FileText,
   Headphones,
-  Volume2
+  Volume2,
+  Info
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -35,8 +36,9 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isExpired, setIsExpired] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0); // 0: info, 1: prove
+  const [currentStep, setCurrentStep] = useState(0); // 0: info, 1: prove, 2: audit
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
   
   const router = useRouter();
   const { toast } = useToast();
@@ -158,6 +160,22 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
     setShowConfirmModal(true);
   };
 
+  const handleGotIt = async () => {
+    setShowConfirmModal(false);
+    setCurrentStep(2); // Move to Audit step
+    setShowSuccessOverlay(true);
+    
+    // Update order status in background
+    if (order) {
+      supabase.from('orders').update({ status: 'reviewing' }).eq('id', order.id);
+    }
+
+    // Hide overlay after 2 seconds
+    setTimeout(() => {
+      setShowSuccessOverlay(false);
+    }, 2000);
+  };
+
   if (loading) return (
     <div className="flex items-center justify-center h-screen bg-white">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -167,7 +185,14 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   return (
     <div className="flex flex-col min-h-screen bg-white animate-slide-up relative font-sans select-none">
       <div className="bg-white px-4 h-14 flex items-center justify-between border-b border-slate-50 sticky top-0 z-50">
-        <button onClick={() => currentStep === 1 ? setCurrentStep(0) : router.back()} className="p-2 active:scale-90 transition-all">
+        <button 
+          onClick={() => {
+            if (currentStep === 1) setCurrentStep(0);
+            else if (currentStep === 2) setCurrentStep(1);
+            else router.back();
+          }} 
+          className="p-2 active:scale-90 transition-all"
+        >
           <ChevronLeft className="h-6 w-6 text-slate-400" />
         </button>
         <h1 className="text-[17px] font-bold text-slate-700">Buy Itoken details</h1>
@@ -184,9 +209,11 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           <span className="text-[15px] font-black text-red-500 font-mono tracking-wider">
             {isExpired ? "00 : 00 : 00" : formatTime(timeLeft || 0)}
           </span>
-          <span className="text-[13px] font-bold text-red-400/80 ml-1 uppercase tracking-tight">Please pay in time</span>
+          <span className="text-[13px] font-bold text-red-400/80 ml-1 uppercase tracking-tight">
+            {currentStep === 2 ? "Under review, Please wait" : "Please pay in time"}
+          </span>
         </div>
-        <AlertCircle className="h-5 w-5 text-orange-400" />
+        <Info className="h-5 w-5 text-orange-400" />
       </div>
 
       <div className="px-10 py-8 shrink-0">
@@ -217,14 +244,22 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
 
            {/* Step 3: Audit */}
            <div className="relative z-10 flex flex-col items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-slate-200" />
-              <span className="text-[10px] font-black text-slate-300 absolute top-7 whitespace-nowrap uppercase tracking-tighter">Audit</span>
+              <div className={cn(
+                "w-5 h-5 rounded-full flex items-center justify-center border-[3px] shadow-sm transition-all",
+                currentStep === 2 ? "bg-[#2A85FF] border-blue-100" : "bg-slate-200 border-white"
+              )}>
+                {currentStep === 2 && <CheckCircle2 className="h-3 w-3 text-white" />}
+              </div>
+              <span className={cn(
+                "text-[10px] font-black absolute top-7 whitespace-nowrap uppercase tracking-tighter",
+                currentStep === 2 ? "text-[#2A85FF]" : "text-slate-300"
+              )}>Audit</span>
            </div>
         </div>
       </div>
 
       <div className="flex-1 px-5 pt-10 space-y-8 pb-32 overflow-y-auto">
-        {currentStep === 0 ? (
+        {currentStep === 0 && (
           <>
             <div className="text-[15px] font-black text-red-500 leading-snug uppercase tracking-tight">
               Please use the {userData?.kyc_data?.partner || 'payment method'}({userData?.kyc_data?.upi_no || 'linked UPI'}) of your choice to pay
@@ -285,7 +320,9 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
               </p>
             </div>
           </>
-        ) : (
+        )}
+
+        {currentStep >= 1 && (
           <div className="space-y-8 pb-10">
             <div className="text-[15px] font-black text-red-500 leading-snug uppercase tracking-tight">
               Please use the {userData?.kyc_data?.partner || 'payment method'}({userData?.kyc_data?.upi_no || 'linked UPI'}) of your choice to pay
@@ -302,11 +339,11 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                     <Volume2 className="h-5 w-5 shrink-0 mt-1" />
                     <Volume2 className="h-5 w-5 shrink-0 mt-1" />
                     <p className="text-[14px] font-black uppercase leading-tight">
-                      The Buying amount must be Same , otherwise the transaction will not be completed.
+                      Please carefully check the amount you have paid. If the amount in rupees is insufficient, make sure to complete the remaining payment to the same person.
                     </p>
                   </div>
                   <p className="text-[14px] font-black text-red-500 leading-tight pl-24">
-                    1. क्रय राशि समान होनी चाहिए, अन्यथा लेनदेन पूरा नहीं होगा।
+                    1. कृपया आपके द्वारा भुगतान की गई राशि की सावधानीपूर्वक जांच करें। यदि रुपये में राशि अपर्याप्त है, तो शेष भुगतान उसी व्यक्ति को पूरा करना सुनिश्चित करें।
                   </p>
                </div>
 
@@ -323,44 +360,59 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                     2. एक बार भुगतान पूरा हो जाने पर, कृपया लेनदेन समीक्षा के लिए धैर्यपूर्वक प्रतीक्षा करें।
                   </p>
                </div>
-
-               <div className="space-y-2">
-                  <div className="flex items-start gap-2 text-red-500">
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <Volume2 className="h-5 w-5 shrink-0 mt-1" />
-                    <p className="text-[14px] font-black uppercase leading-tight">
-                      Payment must be completed on time after token not receive within 30 minutes please contact customer service in your exclusive VIP group.
-                    </p>
-                  </div>
-                  <p className="text-[14px] font-black text-red-500 leading-tight pl-24">
-                    3. टोकन 30 मिनट के भीतर प्राप्त न होने पर भुगतान समय पर पूरा किया जाना चाहिए कृपया अपने विशिष्ट वीआईपी समूह में ग्राहक सेवा से संपर्क करें
-                  </p>
-               </div>
             </div>
 
-            <div className="pt-6 text-center">
-              <p className="text-[12px] font-black text-slate-300 uppercase tracking-widest">
-                I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-500 cursor-pointer underline underline-offset-4 decoration-red-200">Cancel</span> my order.
-              </p>
-            </div>
+            {currentStep === 2 && (
+              <div className="pt-12 flex flex-col items-center space-y-6">
+                 <div className="text-center">
+                    <p className="text-[18px] font-black text-slate-700 uppercase tracking-tight">Waiting for review</p>
+                    <button className="text-[14px] font-bold text-blue-500 hover:underline mt-2">Contact Customer Service</button>
+                 </div>
+                 
+                 <div className="w-full max-w-[200px] opacity-80">
+                   <img src="https://picsum.photos/seed/audit/400/300" alt="Audit" className="w-full h-auto grayscale" data-ai-hint="review pending" />
+                 </div>
+              </div>
+            )}
+
+            {currentStep === 1 && (
+              <div className="pt-6 text-center">
+                <p className="text-[12px] font-black text-slate-300 uppercase tracking-widest">
+                  I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-500 cursor-pointer underline underline-offset-4 decoration-red-200">Cancel</span> my order.
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white p-4 flex gap-4 border-t border-slate-50 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-        {currentStep === 0 ? (
-          <>
-            <Button variant="outline" className="flex-1 h-14 rounded-2xl border-blue-100 text-[#2A85FF] font-black text-[16px] uppercase tracking-widest shadow-sm active:scale-95">Go pay</Button>
-            <Button onClick={() => setCurrentStep(1)} className="flex-1 h-14 rounded-2xl bg-[#2A85FF] text-white font-black text-[16px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 border-none">Finish payment</Button>
-          </>
-        ) : (
-          <>
-            <Button onClick={() => setCurrentStep(0)} variant="outline" className="flex-1 h-14 rounded-2xl border-blue-100 text-[#2A85FF] font-black text-[16px] uppercase tracking-widest shadow-sm active:scale-95">Previous</Button>
-            <Button onClick={handleConfirmFinal} className="flex-1 h-14 rounded-2xl bg-[#2A85FF] text-white font-black text-[16px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 border-none">Confirm payment</Button>
-          </>
-        )}
-      </div>
+      {currentStep < 2 && (
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white p-4 flex gap-4 border-t border-slate-50 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+          {currentStep === 0 ? (
+            <>
+              <Button variant="outline" className="flex-1 h-14 rounded-2xl border-blue-100 text-[#2A85FF] font-black text-[16px] uppercase tracking-widest shadow-sm active:scale-95">Go pay</Button>
+              <Button onClick={() => setCurrentStep(1)} className="flex-1 h-14 rounded-2xl bg-[#2A85FF] text-white font-black text-[16px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 border-none">Finish payment</Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={() => setCurrentStep(0)} variant="outline" className="flex-1 h-14 rounded-2xl border-blue-100 text-[#2A85FF] font-black text-[16px] uppercase tracking-widest shadow-sm active:scale-95">Previous</Button>
+              <Button onClick={handleConfirmFinal} className="flex-1 h-14 rounded-2xl bg-[#2A85FF] text-white font-black text-[16px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 border-none">Confirm payment</Button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Success Overlay - Same UI as Screenshot */}
+      {showSuccessOverlay && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
+          <div className="bg-[#4a5568]/95 backdrop-blur-sm px-6 py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+              <CheckCircle2 className="h-4 w-4 text-[#4a5568]" />
+            </div>
+            <span className="text-white font-bold text-[14px]">Submission successful, waitting review</span>
+          </div>
+        </div>
+      )}
 
       <div className="fixed bottom-24 right-6 z-[60]">
         <button className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100 active:scale-90 transition-all">
@@ -386,10 +438,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
               Continue to pay
             </button>
             <button 
-              onClick={() => {
-                setShowConfirmModal(false);
-                router.push('/buy-history');
-              }}
+              onClick={handleGotIt}
               className="flex-1 py-4 text-[15px] font-black text-[#2A85FF] active:bg-slate-50 transition-colors uppercase tracking-tight"
             >
               Got it
