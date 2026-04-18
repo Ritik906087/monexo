@@ -28,7 +28,7 @@ import {
 
 // Expiry settings
 const INITIAL_EXPIRY_MINUTES = 10;
-const AUDIT_EXPIRY_MINUTES = 39;
+const AUDIT_EXPIRY_MINUTES = 30; // Updated to 30 minutes as requested
 
 export default function OrderConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
@@ -163,15 +163,11 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
     setShowSuccessOverlay(true);
     setCurrentStep(2);
     
-    // Increase timer to 39 minutes
-    if (order) {
-      const createdAt = new Date(order.created_at).getTime();
-      const now = new Date().getTime();
-      const diffSeconds = Math.floor((now - createdAt) / 1000);
-      const newRemaining = Math.max(0, (AUDIT_EXPIRY_MINUTES * 60) - diffSeconds);
-      setTimeLeft(newRemaining);
-      setIsExpired(false);
+    // Update timer to 30 minutes for audit
+    setTimeLeft(AUDIT_EXPIRY_MINUTES * 60);
+    setIsExpired(false);
 
+    if (order) {
       supabase.from('orders').update({ status: 'reviewing' }).eq('id', order.id).then();
     }
 
@@ -206,8 +202,8 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </button>
       </div>
 
-      {/* Timer Banner */}
-      <div className="bg-[#fff1f1] px-4 py-3.5 flex items-center justify-between shrink-0">
+      {/* Timer Banner - Pink styling from screenshot */}
+      <div className="bg-[#fff1f1] px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="bg-red-500 rounded-full p-1 shadow-sm">
              <Clock className="h-3.5 w-3.5 text-white" />
@@ -263,7 +259,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 px-5 pt-10 space-y-8 pb-32 overflow-y-auto smooth-scroll">
+      <div className="flex-1 px-5 pt-8 space-y-6 pb-32 overflow-y-auto smooth-scroll">
         {currentStep === 0 && (
           <>
             <div className="text-[15px] font-black text-red-500 leading-snug uppercase tracking-tight">
@@ -329,11 +325,11 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
 
         {currentStep === 1 && (
           <div className="space-y-8 animate-slide-up">
-            <div className="text-[18px] font-black text-red-600 leading-snug uppercase tracking-tight">
+            <div className="text-[16px] font-black text-red-600 leading-snug uppercase tracking-tight">
               Please use the {userData?.kyc_data?.partner || 'payment method'}({userData?.kyc_data?.upi_no || 'linked UPI'}) of your choice to pay
             </div>
 
-            <div className="text-center space-y-8">
+            <div className="text-center space-y-6">
               <h2 className="text-[32px] font-black text-red-600 uppercase tracking-tight">Notice! &nbsp; सूचना</h2>
               
               <div className="space-y-8 text-left">
@@ -347,7 +343,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                       The Buying amount must be Same , otherwise the transaction will not be completed.
                     </p>
                   </div>
-                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight pl-0">
+                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight">
                     1. क्रय राशि समान होनी चाहिए, अन्यथा लेनदेन पूरा नहीं होगा।
                   </p>
                 </div>
@@ -362,7 +358,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                       Once payment completed , please wait patiently for the transaction review.
                     </p>
                   </div>
-                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight pl-0">
+                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight">
                     2. एक बार भुगतान पूरा हो जाने पर, कृपया लेनदेन समीक्षा के लिए धैर्यपूर्वक प्रतीक्षा करें।
                   </p>
                 </div>
@@ -377,7 +373,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                       Payment must be completed on time after token not receive within 30 minutes please contact customer service in your exclusive VIP group.
                     </p>
                   </div>
-                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight pl-0">
+                  <p className="text-[14px] font-black text-red-600 leading-tight uppercase tracking-tight">
                     3. टोकन 30 मिनट के भीतर प्राप्त न होने पर भुगतान समय पर पूरा किया जाना चाहिए कृपया अपने विशिष्ट वीआईपी समूह में ग्राहक सेवा से संपर्क करें
                   </p>
                 </div>
@@ -393,18 +389,45 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         )}
 
         {currentStep === 2 && (
-          <div className="flex flex-col items-center pt-20 space-y-8 animate-slide-up">
-            <div className="w-full max-w-[280px] aspect-square relative">
-               <img 
-                src="https://picsum.photos/seed/audit-futuristic/600/600" 
-                alt="Audit Status" 
-                className="w-full h-full object-contain"
-                data-ai-hint="futuristic audit"
-               />
+          <div className="space-y-8 animate-slide-up">
+            <div className="text-center space-y-4">
+              <h2 className="text-[28px] font-black text-red-600 uppercase tracking-tight">Notice! &nbsp; सूचना</h2>
+              
+              <div className="flex gap-2 text-left">
+                <div className="flex gap-0.5 shrink-0 mt-1">
+                  <Volume2 className="h-4 w-4 text-black fill-black" />
+                  <Volume2 className="h-4 w-4 text-black fill-black" />
+                  <Volume2 className="h-4 w-4 text-black fill-black" />
+                </div>
+                <p className="text-[13px] font-bold text-red-600 leading-tight">
+                  Please carefully check the amount you have paid. If the amount in rupees is insufficient, make sure to complete the remaining payment to the same person. If you have overpaid, unfortunately, you will need to contact the recipient directly to request a refund. We will provide the recipient's information for you to take the action. Our company will not be liable for assistance in these cases. Please ensure your payment is accurate to avoid any unnecessary issues!
+                </p>
+              </div>
+
+              <div className="pt-4 text-left">
+                 <p className="text-[13px] font-bold text-slate-700">
+                   I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-600 cursor-pointer hover:underline">Cancel</span> my order.
+                 </p>
+              </div>
+
+              <div className="pt-2 text-right">
+                <button className="text-[14px] font-bold text-[#2A85FF] hover:underline">View tutorial</button>
+              </div>
             </div>
-            <div className="text-center space-y-2">
-               <p className="text-[20px] font-bold text-slate-800">Waiting for review</p>
-               <button className="text-[16px] font-bold text-blue-500 hover:underline">Contact Customer Service</button>
+
+            <div className="flex flex-col items-center pt-4 space-y-6">
+              <div className="w-full max-w-[240px] aspect-square relative">
+                 <img 
+                  src="https://picsum.photos/seed/audit-futuristic-tech/600/600" 
+                  alt="Audit Status" 
+                  className="w-full h-full object-contain"
+                  data-ai-hint="futuristic tech"
+                 />
+              </div>
+              <div className="text-center space-y-3">
+                 <p className="text-[18px] font-bold text-slate-400">Waiting for review</p>
+                 <button className="text-[15px] font-bold text-[#2A85FF] hover:underline">Contact Customer Service</button>
+              </div>
             </div>
           </div>
         )}
@@ -427,7 +450,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       )}
 
-      {/* Success Overlay */}
+      {/* Success Overlay - Identical to screenshot */}
       {showSuccessOverlay && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-[#4a5568]/95 backdrop-blur-sm px-6 py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-in fade-in zoom-in duration-300">
