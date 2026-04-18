@@ -25,8 +25,9 @@ import {
   AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 
-// Order expiry set to 10 minutes
-const EXPIRY_MINUTES = 10;
+// Default expiry settings
+const INITIAL_EXPIRY_MINUTES = 10;
+const AUDIT_EXPIRY_MINUTES = 39;
 
 export default function OrderConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
@@ -61,7 +62,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         
         if (uData) setUserData(uData);
 
-        // Fetch Order (Try internal ID first, then order_id)
+        // Fetch Order
         let orderQuery = supabase.from('orders').select('*');
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId);
         
@@ -81,6 +82,12 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         }
         setOrder(orderData);
 
+        // Determine step and expiry based on current status
+        const isReviewing = orderData.status === 'reviewing' || orderData.status === 'completed';
+        if (isReviewing) {
+          setCurrentStep(2);
+        }
+
         // Fetch Admin Payment Method
         const { data: payData } = await supabase
           .from('admin_payment_methods')
@@ -95,10 +102,11 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         }
 
         // Timer Logic
+        const expiryMins = isReviewing ? AUDIT_EXPIRY_MINUTES : INITIAL_EXPIRY_MINUTES;
         const createdAt = new Date(orderData.created_at).getTime();
         const now = new Date().getTime();
         const diffSeconds = Math.floor((now - createdAt) / 1000);
-        const remaining = Math.max(0, (EXPIRY_MINUTES * 60) - diffSeconds);
+        const remaining = Math.max(0, (expiryMins * 60) - diffSeconds);
         
         if (remaining <= 0) {
           setIsExpired(true);
@@ -165,9 +173,17 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
     setCurrentStep(2); // Move to Audit step
     setShowSuccessOverlay(true);
     
-    // Update order status in background
+    // Increase timer to 39 minutes for Audit phase
     if (order) {
-      supabase.from('orders').update({ status: 'reviewing' }).eq('id', order.id);
+      const createdAt = new Date(order.created_at).getTime();
+      const now = new Date().getTime();
+      const diffSeconds = Math.floor((now - createdAt) / 1000);
+      const newRemaining = Math.max(0, (AUDIT_EXPIRY_MINUTES * 60) - diffSeconds);
+      setTimeLeft(newRemaining);
+      setIsExpired(false);
+
+      // Update order status in background
+      supabase.from('orders').update({ status: 'reviewing' }).eq('id', order.id).then();
     }
 
     // Hide overlay after 2 seconds
@@ -402,7 +418,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       )}
 
-      {/* Success Overlay - Same UI as Screenshot */}
+      {/* Success Overlay */}
       {showSuccessOverlay && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-[#4a5568]/95 backdrop-blur-sm px-6 py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-in fade-in zoom-in duration-300">
