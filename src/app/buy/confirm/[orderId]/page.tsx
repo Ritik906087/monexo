@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
-// Updated expiry to 10 minutes as requested
+// Order expiry set to 10 minutes
 const EXPIRY_MINUTES = 10;
 
 export default function OrderConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
@@ -40,14 +40,28 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           return;
         }
 
-        const { data: uData } = await supabase.from('users').select('*').eq('id', session.user.id).single();
-        setUserData(uData);
-
-        const { data: orderData, error: orderError } = await supabase
-          .from('orders')
+        // Fetch User
+        const { data: uData, error: uError } = await supabase
+          .from('users')
           .select('*')
-          .or(`id.eq."${orderId}",order_id.eq."${orderId}"`)
+          .eq('id', session.user.id)
           .maybeSingle();
+        
+        if (uData) setUserData(uData);
+
+        // Fetch Order (Try internal ID first, then order_id)
+        let orderQuery = supabase.from('orders').select('*');
+        
+        // If it looks like a UUID, check ID, else check order_id
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId);
+        
+        if (isUuid) {
+          orderQuery = orderQuery.eq('id', orderId);
+        } else {
+          orderQuery = orderQuery.eq('order_id', orderId);
+        }
+
+        const { data: orderData, error: orderError } = await orderQuery.maybeSingle();
 
         if (orderError) throw orderError;
         if (!orderData) {
@@ -57,24 +71,36 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         }
         setOrder(orderData);
 
+        // Fetch Admin Payment Method
         const { data: payData } = await supabase
           .from('admin_payment_methods')
           .select('*')
           .eq('is_active', true)
           .limit(1);
         
-        if (payData && payData.length > 0) setAdminPayment(payData[0]);
+        if (payData && payData.length > 0) {
+          setAdminPayment(payData[0]);
+        } else {
+          // Fallback if no payment method found
+          setAdminPayment({ account_name: 'MUKILAN', details: 'monexo@upi', type: 'UPI' });
+        }
 
+        // Timer Logic
         const createdAt = new Date(orderData.created_at).getTime();
         const now = new Date().getTime();
         const diffSeconds = Math.floor((now - createdAt) / 1000);
         const remaining = Math.max(0, (EXPIRY_MINUTES * 60) - diffSeconds);
         
-        if (remaining <= 0) setIsExpired(true);
-        setTimeLeft(remaining);
+        if (remaining <= 0) {
+          setIsExpired(true);
+          setTimeLeft(0);
+        } else {
+          setTimeLeft(remaining);
+        }
 
       } catch (err: any) {
-        toast({ variant: "destructive", title: "Error", description: "Could not load data." });
+        console.error("Fetch Error:", err);
+        toast({ variant: "destructive", title: "Error", description: "Could not load order details." });
       } finally {
         setLoading(false);
       }
@@ -128,112 +154,118 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-white animate-slide-up relative font-sans">
+    <div className="flex flex-col min-h-screen bg-white animate-slide-up relative font-sans select-none">
       <div className="bg-white px-4 h-14 flex items-center justify-between border-b border-slate-50 sticky top-0 z-50">
-        <button onClick={() => router.back()} className="p-2">
+        <button onClick={() => router.back()} className="p-2 active:scale-90 transition-all">
           <ChevronLeft className="h-6 w-6 text-slate-400" />
         </button>
-        <h1 className="text-[17px] font-medium text-slate-700">Buy Itoken details</h1>
+        <h1 className="text-[17px] font-bold text-slate-700">Buy Itoken details</h1>
         <button className="p-2">
           <FileText className="h-6 w-6 text-[#2A85FF]" />
         </button>
       </div>
 
-      <div className="bg-[#fff1f1] px-4 py-3.5 flex items-center justify-between">
+      <div className="bg-[#fff1f1] px-4 py-3.5 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <div className="bg-red-500 rounded-full p-1">
+          <div className="bg-red-500 rounded-full p-1 shadow-sm">
              <Clock className="h-3.5 w-3.5 text-white" />
           </div>
-          <span className="text-[15px] font-bold text-red-500 font-mono tracking-wider">
+          <span className="text-[15px] font-black text-red-500 font-mono tracking-wider">
             {isExpired ? "00 : 00 : 00" : formatTime(timeLeft || 0)}
           </span>
-          <span className="text-[15px] font-medium text-red-400 ml-1">Please pay in time</span>
+          <span className="text-[13px] font-bold text-red-400/80 ml-1 uppercase tracking-tight">Please pay in time</span>
         </div>
         <AlertCircle className="h-5 w-5 text-orange-400" />
       </div>
 
-      <div className="px-10 py-8">
+      <div className="px-10 py-8 shrink-0">
         <div className="relative flex items-center justify-between w-full">
            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-100 -translate-y-1/2 z-0" />
            <div className="relative z-10 flex flex-col items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-[#2A85FF] flex items-center justify-center border-[3px] border-blue-100 shadow-sm">
                  <CheckCircle2 className="h-3 w-3 text-white" />
               </div>
-              <span className="text-[11px] font-medium text-[#2A85FF] absolute top-7 whitespace-nowrap">Payment info</span>
+              <span className="text-[10px] font-black text-[#2A85FF] absolute top-7 whitespace-nowrap uppercase tracking-tighter">Payment info</span>
            </div>
            <div className="relative z-10 flex flex-col items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-slate-200" />
-              <span className="text-[11px] font-medium text-slate-300 absolute top-7 whitespace-nowrap">Payment prove</span>
+              <span className="text-[10px] font-black text-slate-300 absolute top-7 whitespace-nowrap uppercase tracking-tighter">Payment prove</span>
            </div>
            <div className="relative z-10 flex flex-col items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-slate-200" />
-              <span className="text-[11px] font-medium text-slate-300 absolute top-7 whitespace-nowrap">Audit</span>
+              <span className="text-[10px] font-black text-slate-300 absolute top-7 whitespace-nowrap uppercase tracking-tighter">Audit</span>
            </div>
         </div>
       </div>
 
-      <div className="flex-1 px-5 pt-8 space-y-8 pb-32">
-        <div className="text-[16px] font-bold text-red-500 leading-snug">
+      <div className="flex-1 px-5 pt-10 space-y-8 pb-32">
+        <div className="text-[15px] font-black text-red-500 leading-snug uppercase tracking-tight">
           Please use the {userData?.kyc_data?.partner || 'payment method'}({userData?.kyc_data?.upi_no || 'linked UPI'}) of your choice to pay
         </div>
 
-        <div className="space-y-0">
-          <div className="flex items-center justify-between py-4 border-b border-slate-50">
-            <span className="text-[15px] font-medium text-slate-500 w-24">Name</span>
-            <div className="flex-1 flex items-center justify-between">
-              <span className="text-[16px] font-black tracking-tight text-slate-800 uppercase">
+        <div className="space-y-0 bg-white rounded-3xl overflow-hidden border border-slate-50 shadow-sm">
+          <div className="flex items-center justify-between px-4 py-5 border-b border-slate-50">
+            <span className="text-[14px] font-black text-slate-400 uppercase tracking-widest w-24">Name</span>
+            <div className="flex-1 flex items-center justify-between gap-4">
+              <span className="text-[16px] font-black tracking-tight text-slate-800 uppercase truncate">
                 {adminPayment?.account_name || 'MUKILAN'}
               </span>
-              <button onClick={() => handleCopy(adminPayment?.account_name)} className="px-2.5 py-1 rounded-md border border-blue-200 text-[#2A85FF] text-[11px] font-bold">Copy</button>
+              <button onClick={() => handleCopy(adminPayment?.account_name)} className="shrink-0 px-3 py-1.5 rounded-lg bg-blue-50 text-[#2A85FF] text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all">Copy</button>
             </div>
           </div>
 
-          <div className="flex items-center justify-between py-4 border-b border-slate-50">
-            <span className="text-[15px] font-medium text-slate-500 w-24">
-              {adminPayment?.type === 'UPI' ? 'UPI ID' : adminPayment?.type === 'USDT' ? 'USDT Address' : 'Account'}
+          <div className="flex items-center justify-between px-4 py-5 border-b border-slate-50">
+            <span className="text-[14px] font-black text-slate-400 uppercase tracking-widest w-24">
+              {adminPayment?.type || 'Account'}
             </span>
-            <div className="flex-1 flex items-center justify-between">
-              <span className="text-[16px] font-black tracking-tight text-slate-800 uppercase">
+            <div className="flex-1 flex items-center justify-between gap-4">
+              <span className="text-[16px] font-black tracking-tight text-slate-800 font-mono truncate">
                 {adminPayment?.details || '---'}
               </span>
-              <button onClick={() => handleCopy(adminPayment?.details)} className="px-2.5 py-1 rounded-md border border-blue-200 text-[#2A85FF] text-[11px] font-bold">Copy</button>
+              <button onClick={() => handleCopy(adminPayment?.details)} className="shrink-0 px-3 py-1.5 rounded-lg bg-blue-50 text-[#2A85FF] text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all">Copy</button>
             </div>
           </div>
 
-          <div className="flex items-center justify-between py-4 border-b border-slate-50">
-            <span className="text-[15px] font-medium text-slate-500 w-24">Amount</span>
-            <div className="flex-1 flex items-center justify-between">
-              <span className="text-[16px] font-black tracking-tight text-slate-900">
+          <div className="flex items-center justify-between px-4 py-5">
+            <span className="text-[14px] font-black text-slate-400 uppercase tracking-widest w-24">Amount</span>
+            <div className="flex-1 flex items-center justify-between gap-4">
+              <span className="text-[20px] font-black tracking-tighter text-slate-900">
                 ₹ {order?.amount || '0'}
               </span>
-              <button onClick={() => handleCopy(order?.amount?.toString())} className="px-2.5 py-1 rounded-md border border-blue-200 text-[#2A85FF] text-[11px] font-bold">Copy</button>
+              <button onClick={() => handleCopy(order?.amount?.toString())} className="shrink-0 px-3 py-1.5 rounded-lg bg-blue-50 text-[#2A85FF] text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all">Copy</button>
             </div>
           </div>
         </div>
 
-        <div className="space-y-3 pt-4">
-          <p className="text-[14px] font-bold text-red-500 leading-[1.4]">
-            Notice: The remittance amount must be consistent, otherwise the transaction will not be completed.
-          </p>
-          <p className="text-[14px] font-bold text-red-500 leading-[1.4]">
-            Notice: If you have already paid, please wait patiently for the transaction review, please do not cancel the order
-          </p>
+        <div className="space-y-4 pt-4">
+          <div className="flex gap-3">
+             <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
+             <p className="text-[13px] font-black text-red-500 leading-tight uppercase tracking-tight">
+               Notice: The remittance amount must be consistent, otherwise the transaction will not be completed.
+             </p>
+          </div>
+          <div className="flex gap-3">
+             <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
+             <p className="text-[13px] font-black text-red-500 leading-tight uppercase tracking-tight">
+               Notice: If you have already paid, please wait patiently for the transaction review, please do not cancel the order
+             </p>
+          </div>
         </div>
 
-        <div className="pt-4 text-center">
-          <p className="text-[13px] font-medium text-slate-400">
-            Unable to complete payment <span onClick={handleCancelOrder} className="text-red-500 cursor-pointer">Cancel</span> my order.
+        <div className="pt-6 text-center">
+          <p className="text-[12px] font-black text-slate-300 uppercase tracking-widest">
+            Unable to complete payment? <span onClick={handleCancelOrder} className="text-red-500 cursor-pointer underline underline-offset-4 decoration-red-200">Cancel</span> my order.
           </p>
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white p-4 flex gap-4 border-t border-slate-50 z-50">
-        <Button variant="outline" className="flex-1 h-14 rounded-xl border-blue-500 text-[#2A85FF] font-bold text-lg">Go pay</Button>
-        <Button className="flex-1 h-14 rounded-xl bg-[#2A85FF] text-white font-bold text-lg">Finish payment</Button>
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white p-4 flex gap-4 border-t border-slate-50 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <Button variant="outline" className="flex-1 h-14 rounded-2xl border-blue-100 text-[#2A85FF] font-black text-[16px] uppercase tracking-widest shadow-sm active:scale-95">Go pay</Button>
+        <Button className="flex-1 h-14 rounded-2xl bg-[#2A85FF] text-white font-black text-[16px] uppercase tracking-widest shadow-lg shadow-blue-100 active:scale-95 border-none">Finish payment</Button>
       </div>
 
       <div className="fixed bottom-24 right-6 z-[60]">
-        <button className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100">
+        <button className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center shadow-lg border border-blue-100 active:scale-90 transition-all">
           <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-300 to-indigo-500 flex items-center justify-center">
             <Headphones className="h-6 w-6 text-white" />
           </div>
