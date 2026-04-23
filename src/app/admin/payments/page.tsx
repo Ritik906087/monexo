@@ -5,13 +5,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   ChevronLeft, 
-  CreditCard, 
   Smartphone, 
   Globe, 
-  Save, 
   Plus, 
   Trash2,
-  ShieldCheck
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';

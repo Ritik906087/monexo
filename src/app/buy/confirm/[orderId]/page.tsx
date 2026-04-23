@@ -1,19 +1,18 @@
 
 "use client";
 
+export const runtime = 'edge';
+
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   ChevronLeft, 
   Clock, 
-  AlertCircle, 
-  Copy, 
   CheckCircle2,
   FileText,
   Headphones,
   Volume2,
   Info,
-  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -26,9 +25,8 @@ import {
   AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 
-// Expiry settings
 const INITIAL_EXPIRY_MINUTES = 10;
-const AUDIT_EXPIRY_MINUTES = 30; // Updated to 30 minutes as requested
+const AUDIT_EXPIRY_MINUTES = 30;
 
 export default function OrderConfirmPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
@@ -38,7 +36,7 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isExpired, setIsExpired] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0); // 0: info, 1: prove, 2: audit
+  const [currentStep, setCurrentStep] = useState(0); 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
   
@@ -96,7 +94,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
           setAdminPayment({ account_name: 'MUKILAN', details: 'monexo@upi', type: 'UPI' });
         }
 
-        // Timer calculation
         const expiryMins = isReviewing ? AUDIT_EXPIRY_MINUTES : INITIAL_EXPIRY_MINUTES;
         const createdAt = new Date(orderData.created_at).getTime();
         const now = new Date().getTime();
@@ -163,7 +160,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
     setShowSuccessOverlay(true);
     setCurrentStep(2);
     
-    // Update timer to 30 minutes for audit
     setTimeLeft(AUDIT_EXPIRY_MINUTES * 60);
     setIsExpired(false);
 
@@ -184,7 +180,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
 
   return (
     <div className="flex flex-col min-h-screen bg-white animate-slide-up relative font-sans select-none overflow-hidden">
-      {/* Header */}
       <div className="bg-white px-4 h-14 flex items-center justify-between border-b border-slate-50 sticky top-0 z-50">
         <button 
           onClick={() => {
@@ -202,7 +197,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </button>
       </div>
 
-      {/* Timer Banner - Pink styling from screenshot */}
       <div className="bg-[#fff1f1] px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="bg-red-500 rounded-full p-1 shadow-sm">
@@ -218,7 +212,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         <Info className="h-5 w-5 text-orange-400" />
       </div>
 
-      {/* Stepper */}
       <div className="px-10 py-8 shrink-0">
         <div className="relative flex items-center justify-between w-full">
            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-100 -translate-y-1/2 z-0" />
@@ -258,7 +251,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       </div>
 
-      {/* Main Content Area */}
       <div className="flex-1 px-5 pt-8 space-y-6 pb-32 overflow-y-auto smooth-scroll">
         {currentStep === 0 && (
           <>
@@ -333,7 +325,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
               <h2 className="text-[32px] font-black text-red-600 uppercase tracking-tight">Notice! &nbsp; सूचना</h2>
               
               <div className="space-y-8 text-left">
-                {/* Instruction 1 */}
                 <div className="space-y-1">
                   <div className="flex gap-1.5 items-center mb-1">
                     <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
@@ -348,7 +339,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                   </p>
                 </div>
 
-                {/* Instruction 2 */}
                 <div className="space-y-1">
                   <div className="flex gap-1.5 items-center mb-1">
                     <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
@@ -363,7 +353,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                   </p>
                 </div>
 
-                {/* Instruction 3 */}
                 <div className="space-y-1">
                   <div className="flex gap-1.5 items-center mb-1">
                     <Volume2 className="h-5 w-5 text-red-600 shrink-0" />
@@ -409,19 +398,15 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
                    I'm having trouble paying and want to <span onClick={handleCancelOrder} className="text-red-600 cursor-pointer hover:underline">Cancel</span> my order.
                  </p>
               </div>
-
-              <div className="pt-2 text-right">
-                <button className="text-[14px] font-bold text-[#2A85FF] hover:underline">View tutorial</button>
-              </div>
             </div>
 
             <div className="flex flex-col items-center pt-4 space-y-6">
               <div className="w-full max-w-[240px] aspect-square relative">
                  <img 
-                  src="https://picsum.photos/seed/audit-futuristic-tech/600/600" 
+                  src="https://picsum.photos/seed/audit/600/600" 
                   alt="Audit Status" 
                   className="w-full h-full object-contain"
-                  data-ai-hint="futuristic tech"
+                  data-ai-hint="futuristic audit"
                  />
               </div>
               <div className="text-center space-y-3">
@@ -433,7 +418,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         )}
       </div>
 
-      {/* Sticky Bottom Buttons */}
       {currentStep < 2 && (
         <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-white p-4 flex gap-4 border-t border-slate-50 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           {currentStep === 0 ? (
@@ -450,7 +434,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       )}
 
-      {/* Success Overlay - Identical to screenshot */}
       {showSuccessOverlay && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           <div className="bg-[#4a5568]/95 backdrop-blur-sm px-6 py-4 rounded-2xl flex items-center gap-3 shadow-2xl animate-in fade-in zoom-in duration-300">
@@ -462,7 +445,6 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </div>
       )}
 
-      {/* Floating Support */}
       <div className="fixed bottom-24 right-6 z-[60]">
         <button className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg border border-slate-100 active:scale-90 transition-all">
           <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
@@ -471,9 +453,8 @@ export default function OrderConfirmPage({ params }: { params: Promise<{ orderId
         </button>
       </div>
 
-      {/* Confirm Payment Modal */}
       <AlertDialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
-        <AlertDialogContent className="max-w-[320px] rounded-[24px] p-0 overflow-hidden border-none animate-in fade-in zoom-in duration-200">
+        <AlertDialogContent className="max-w-[320px] rounded-[24px] p-0 overflow-hidden border-none">
           <div className="p-8 text-center space-y-4">
             <AlertDialogTitle className="text-[20px] font-bold text-slate-800 leading-none">Confirm payment</AlertDialogTitle>
             <AlertDialogDescription className="text-[14px] text-slate-500 leading-relaxed font-medium">

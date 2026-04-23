@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Phone, Lock, ChevronRight, AlertCircle } from 'lucide-react';
+import { Phone, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -51,14 +51,12 @@ export default function LoginPage() {
       if (error) throw error;
 
       if (data.user) {
-        // Track Login Stats
         try {
           const ipResponse = await fetch('https://api.ipify.org?format=json');
           const ipData = await ipResponse.json();
           const currentIp = ipData.ip;
           const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-          // Get existing user data for IP tracking
           const { data: userData } = await supabase
             .from('users')
             .select('last_ip, total_logins, unique_ips')

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, Suspense } from 'react';
@@ -61,7 +62,6 @@ function RegisterForm() {
 
     setLoading(true);
     try {
-      // 1. Get IP and Device Info for Security Tracking
       let currentIp = 'Unknown';
       try {
         const ipRes = await fetch('https://api.ipify.org?format=json');
@@ -72,7 +72,6 @@ function RegisterForm() {
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       const email = `${phone}@monexo.app`;
 
-      // 2. Auth Sign Up
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -81,7 +80,6 @@ function RegisterForm() {
       if (authError) throw authError;
 
       if (authData.user) {
-        // 3. Insert into public.users table (Sync with SQL Schema)
         const { error: dbError } = await supabase
           .from('users')
           .insert([{
@@ -229,7 +227,7 @@ export default function RegisterPage() {
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center h-full bg-slate-50">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#2A85FF]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2A85FF]"></div>
       </div>
     }>
       <RegisterForm />

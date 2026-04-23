@@ -1,6 +1,8 @@
 
 "use client";
 
+export const runtime = 'edge';
+
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -9,13 +11,11 @@ import {
   PlusCircle, 
   MinusCircle, 
   Activity,
-  User,
   History,
   ArrowUpRight,
   ArrowDownLeft,
   Smartphone,
   ShieldCheck,
-  AlertCircle,
   Copy,
   ExternalLink,
   Power,
@@ -30,12 +30,12 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 const PARTNER_LOGOS: Record<string, { logo: string, color: string, name: string }> = {
-  'paytm-biz': { name: 'Paytm Business', color: 'bg-[#00baf2]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDUpLnBuZyIsImlhdCI6MTc3NTE0ODYzMiwiZXhwIjoxODA2Njg0NjMyfQ.QXSbgSLV3ULTcV3ss9Co9ZMe1oj3tb9bR_OP8xY-Nds' },
-  'phonepe-biz': { name: 'Phonepe Business', color: 'bg-[#5f259f]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDQpLnBuZyIsImlhdCI6MTc3NTE0ODYyMSwiZXhwIjoxODA2Njg0NjIxfQ.b_cMHhiCw52krGt2edtt1k5C1Keo8uGJwYIWpe6vZVo' },
-  'mobikwik': { name: 'Mobikwik', color: 'bg-[#002d72]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(1).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDEpLnBuZyIsImlhdCI6MTc3NTE0ODU3MywiZXhwIjoxODA2Njg0NTczfQ.m8Z7gn5FV-0ss58kTEUZ833u8Wv_bFun3YZeZtyIa9s' },
-  'paytm': { name: 'Paytm', color: 'bg-[#002970]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDUpLnBuZyIsImlhdCI6MTc3NTE0ODYzMiwiZXhwIjoxODA2Njg0NjMyfQ.QXSbgSLV3ULTcV3ss9Co9ZMe1oj3tb9bR_OP8xY-Nds' },
-  'phonepe': { name: 'Phonepe', color: 'bg-[#5f259f]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDQpLnBuZyIsImlhdCI6MTc3NTE0ODYyMSwiZXhwIjoxODA2Njg0NjIxfQ.b_cMHhiCw52krGt2edtt1k5C1Keo8uGJwYIWpe6vZVo' },
-  'freecharge': { name: 'Freecharge', color: 'bg-[#f04f23]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(3).png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jMWRjNDIxNy1iODI0LTQ4ZjEtODQ3ZS04OWU1NWI3YzdhMjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMZyBwYXkvZG93bmxvYWQgKDMpLnBuZyIsImlhdCI6MTc3NTE0ODYwOSwiZXhwIjoxODA2Njg0NjA5fQ.pus8pOlgEXCFb2pjIzNsVtU9DxnIxEeaVaeR3TuIQPc' }
+  'paytm-biz': { name: 'Paytm Business', color: 'bg-[#00baf2]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png' },
+  'phonepe-biz': { name: 'Phonepe Business', color: 'bg-[#5f259f]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png' },
+  'mobikwik': { name: 'Mobikwik', color: 'bg-[#002d72]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(1).png' },
+  'paytm': { name: 'Paytm', color: 'bg-[#002970]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(5).png' },
+  'phonepe': { name: 'Phonepe', color: 'bg-[#5f259f]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(4).png' },
+  'freecharge': { name: 'Freecharge', color: 'bg-[#f04f23]', logo: 'https://gfpzygqegzakluihhkkr.supabase.co/storage/v1/object/sign/Lg%20pay/download%20(3).png' }
 };
 
 export default function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -266,15 +266,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                   </div>
                   <h3 className="text-[14px] font-black uppercase tracking-tight text-slate-950">Settlement Gateway</h3>
                 </div>
-                {user.is_node_active !== undefined && (
-                  <div className={cn(
-                    "px-4 py-1.5 rounded-full flex items-center gap-2",
-                    user.is_node_active ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
-                  )}>
-                    {user.is_node_active ? <CheckCircle2 className="h-3.5 w-3.5" /> : <XCircle className="h-3.5 w-3.5" />}
-                    <span className="text-[10px] font-black uppercase tracking-widest">{user.is_node_active ? 'Active' : 'Stopped'}</span>
-                  </div>
-                )}
               </div>
 
               {user.kyc_data ? (
@@ -290,9 +281,6 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                     <div className="flex-1">
                       <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-0.5">Authorization Partner</p>
                       <h4 className="text-xl font-black text-white uppercase tracking-tight">{partnerConfig?.name || user.kyc_data.partner}</h4>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                      <Power className={cn("h-5 w-5", user.is_node_active ? "text-emerald-400" : "text-red-400")} />
                     </div>
                   </div>
 

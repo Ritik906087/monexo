@@ -11,7 +11,6 @@ import {
   Smartphone, 
   Monitor, 
   ChevronRight,
-  Filter,
   Activity,
   UserCheck,
   AlertCircle,
